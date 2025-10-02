@@ -24,6 +24,10 @@ public class Book {
     @Positive
     private Integer totalPages;
 
+    @Column(name="readed_pages")
+    @Positive
+    private Integer readedPages;
+
     @Column(name="rating")
     @Enumerated(EnumType.STRING)
     private Rating rating;
