@@ -28,6 +28,9 @@ public class Account {
     @Enumerated(EnumType.STRING)
     private AccountType accountType;
 
+    @Column(name="card_number")
+    private Long cardId;
+
     public Account(String username, String password, String email) {
         this.username = username;
         this.password = password;
