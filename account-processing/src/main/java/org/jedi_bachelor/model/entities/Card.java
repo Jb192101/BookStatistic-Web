@@ -14,9 +14,6 @@ public class Card {
     @Column(name="card_number")
     private String cardNumber;
 
-    @Column(name="cvv")
-    private String cvv;
-
     // Поле-заглушка
     @Column(name="balance")
     private Integer balance;

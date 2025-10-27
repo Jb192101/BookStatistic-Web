@@ -2,6 +2,9 @@ package org.jedi_bachelor.model.entities;
 
 import jakarta.persistence.*;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.jedi_bachelor.model.enums.AccountType;
@@ -26,14 +29,24 @@ public class Account {
 
     @Column(name="account_type")
     @Enumerated(EnumType.STRING)
+    @NotNull
     private AccountType accountType;
 
-    @Column(name="card_number")
-    private Long cardId;
+    @OneToOne
+    @JoinColumn(name = "card_id")
+    private Card card;
 
-    public Account(String username, String password, String email) {
+    @Column(name="rating")
+    @PositiveOrZero
+    private Integer rating;
+
+    public Account(String username, String password, String email, AccountType type) {
         this.username = username;
         this.password = password;
         this.email = email;
+
+        this.accountType = type;
+
+        this.rating = 0;
     }
 }

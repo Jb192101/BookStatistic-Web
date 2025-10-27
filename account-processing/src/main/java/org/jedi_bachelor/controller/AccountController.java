@@ -1,6 +1,8 @@
 package org.jedi_bachelor.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.jedi_bachelor.aop.aspects.SendEmailMessage;
+import org.jedi_bachelor.email.EmailService;
 import org.jedi_bachelor.model.entities.Account;
 import org.jedi_bachelor.repository.AccountRepository;
 import org.jedi_bachelor.service.AccountService;
@@ -16,6 +18,8 @@ public class AccountController {
     private final AccountService accountService;
     @Autowired
     private final AccountRepository accountRepository;
+    @Autowired
+    private final EmailService emailService;
 
     @GetMapping("/{id}")
     public ResponseEntity<Account> getAccountById(Long id) {
@@ -32,10 +36,15 @@ public class AccountController {
         if(accountRepository.existsByAccountId(account.getId()) ||
                 (accountRepository.existsByAccountUsername(account.getUsername())) &&
                         accountRepository.existsByAccountUsername(account.getUsername())) {
+            emailService.sendEmail(account.getEmail(), "Ошибка регистрации аккаунта!", "some text");
+
             return ResponseEntity.notFound().build();
         }
 
         accountRepository.save(account);
+
+        // Работа с emailService
+        emailService.sendEmail(account.getEmail(), "Аккаунт зарегистрирован!", "some text");
 
         return ResponseEntity.ok(account);
     }

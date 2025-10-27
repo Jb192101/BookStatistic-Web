@@ -7,8 +7,9 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="book-processing" />
-        <module name="reading-processing" />
+        <module name="bookstatistic-starter" />
         <module name="account-processing" />
+        <module name="reading-processing" />
       </profile>
     </annotationProcessing>
   </component>
@@ -16,6 +17,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="account-processing" options="-parameters" />
       <module name="book-processing" options="-parameters" />
+      <module name="bookstatistic-starter" options="-parameters" />
       <module name="reading-processing" options="-parameters" />
     </option>
   </component>
