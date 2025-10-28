@@ -9,6 +9,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.jedi_bachelor.model.enums.AccountType;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name="accounts")
 @Data
@@ -32,13 +35,12 @@ public class Account {
     @NotNull
     private AccountType accountType;
 
-    @OneToOne
-    @JoinColumn(name = "card_id")
-    private Card card;
-
     @Column(name="rating")
     @PositiveOrZero
     private Integer rating;
+
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<AccountBookRelationShip> bookRelationships = new ArrayList<>();
 
     public Account(String username, String password, String email, AccountType type) {
         this.username = username;

@@ -3,6 +3,8 @@ package org.jedi_bachelor.model.entities;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name="account-book")
 @Data
@@ -11,7 +13,20 @@ public class AccountBookRelationShip {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private Account account;
+
+    // id книги из другого микросервиса
+    @Column(name = "book_id", nullable = false)
     private Long bookId;
+
+    @Column(name="readed_pages")
     private Integer readedPages;
+
+    @Column(name = "started_date")
+    private LocalDateTime startedDate;
+
+    @Column(name = "is_finished")
+    private Boolean isFinished;
 }
