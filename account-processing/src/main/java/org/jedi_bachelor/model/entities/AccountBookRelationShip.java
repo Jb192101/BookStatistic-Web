@@ -2,6 +2,7 @@ package org.jedi_bachelor.model.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.jedi_bachelor.model.enums.Rating;
 
 import java.time.LocalDateTime;
 
@@ -14,7 +15,7 @@ public class AccountBookRelationShip {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "account_id", nullable = false)
     private Account account;
 
     // id книги из другого микросервиса
@@ -29,4 +30,8 @@ public class AccountBookRelationShip {
 
     @Column(name = "is_finished")
     private Boolean isFinished;
+
+    @Column(name = "rating")
+    @Enumerated(EnumType.STRING)
+    private Rating rating;
 }

@@ -56,4 +56,8 @@ public class AccountService {
 
         return true;
     }
+
+    public Optional<Account> getAccountByLogin(String login) {
+        return accountRepository.getAccountByUsername(login);
+    }
 }

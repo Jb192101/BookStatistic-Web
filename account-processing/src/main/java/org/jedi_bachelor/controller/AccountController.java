@@ -27,7 +27,7 @@ public class AccountController {
     }
 
     @PostMapping
-    public ResponseEntity<Account> addNewAccount(Account account) {
+    public ResponseEntity<Account> addNewAccount(@RequestBody Account account) {
         Boolean result = accountService.addNewAccount(account);
         if(!result) {
             emailService.sendEmail(account.getEmail(), "Ошибка регистрации аккаунта!", "some text");
@@ -41,7 +41,7 @@ public class AccountController {
     }
 
     @PatchMapping
-    public ResponseEntity<Account> updateAccount(Account account) {
+    public ResponseEntity<Account> updateAccount(@RequestBody Account account) {
         Boolean result = accountService.updateAccount(account);
 
         if(result)

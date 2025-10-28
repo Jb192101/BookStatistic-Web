@@ -1,16 +1,16 @@
 package org.jedi_bachelor.model.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Positive;
 import lombok.Data;
-import org.jedi_bachelor.model.enums.Rating;
 
 @Entity
 @Data
 @Table(name="books")
 public class Book {
     @Id
-    @ManyToMany
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -24,7 +24,8 @@ public class Book {
     @Positive
     private Integer totalPages;
 
-    @Column(name="rating")
-    @Enumerated(EnumType.STRING)
-    private Rating rating;
+    @Column(name="total_rating")
+    @DecimalMin(value="1.0")
+    @DecimalMax(value="5.0")
+    private Float totalRating;
 }
