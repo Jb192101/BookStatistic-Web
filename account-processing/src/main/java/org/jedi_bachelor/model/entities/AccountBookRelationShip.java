@@ -4,17 +4,14 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
-@Table(name="cards")
+@Table(name="account-book")
 @Data
-public class Card {
+public class AccountBookRelationShip {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="card_number")
-    private String cardNumber;
-
-    // Поле-заглушка
-    @Column(name="balance")
-    private Integer balance;
+    private Long userId;
+    private Long bookId;
+    private Integer readedPages;
 }

@@ -11,8 +11,8 @@ public class RatingService {
     @Autowired
     private AccountRepository accountRepository;
 
-    public void calculateNewRating(Long userId, BookRatingDto bookDto) {
-        Account account = accountRepository.getAccountById(userId);
+    public void calculateNewRating(BookRatingDto bookDto) {
+        Account account = accountRepository.getAccountById(bookDto.getUserId());
 
         Integer addedValueRating = bookDto.getNewReadedPages() * 2;
 
