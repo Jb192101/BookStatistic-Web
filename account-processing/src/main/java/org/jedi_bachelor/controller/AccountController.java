@@ -6,6 +6,7 @@ import org.jedi_bachelor.model.entities.Account;
 import org.jedi_bachelor.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -20,7 +21,8 @@ public class AccountController {
     private final EmailService emailService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<Account> getAccountById(@RequestParam Long id) {
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    public ResponseEntity<Account> getAccountById(@PathVariable Long id) {
         Optional<Account> account = accountService.getAccountById(id);
 
         return account.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());

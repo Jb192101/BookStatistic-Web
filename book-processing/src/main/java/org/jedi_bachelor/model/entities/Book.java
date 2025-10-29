@@ -6,6 +6,7 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Positive;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.jedi_bachelor.model.enums.GenreType;
 
 @Entity
 @Data
@@ -21,6 +22,10 @@ public class Book {
 
     @Column(name="author")
     private String author;
+
+    @Column(name="genre")
+    @Enumerated(value = EnumType.STRING)
+    private GenreType genre;
 
     @Column(name="total_pages")
     @Positive

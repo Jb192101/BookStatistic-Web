@@ -1,6 +1,7 @@
 package org.jedi_bachelor.service;
 
 import lombok.RequiredArgsConstructor;
+import org.jedi_bachelor.kafka.KafkaProducer;
 import org.jedi_bachelor.kafka.dto.BookRatingDto;
 import org.jedi_bachelor.kafka.dto.KafkaDtoMessage;
 import org.jedi_bachelor.model.entities.Account;
@@ -17,6 +18,8 @@ public class AccountService {
     private final RatingService ratingService;
     @Autowired
     private final AccountRepository accountRepository;
+    @Autowired
+    private final KafkaProducer kafkaProducer;
 
     public void updateUserRating(KafkaDtoMessage message) {
         if(message instanceof BookRatingDto) {

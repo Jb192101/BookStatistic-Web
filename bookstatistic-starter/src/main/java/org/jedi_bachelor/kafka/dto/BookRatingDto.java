@@ -1,8 +1,10 @@
 package org.jedi_bachelor.kafka.dto;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode(callSuper=false)
 public class BookRatingDto extends KafkaDtoMessage {
     private Long bookId;
     private Long userId;
