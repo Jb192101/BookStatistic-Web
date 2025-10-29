@@ -1,7 +1,6 @@
 package org.jedi_bachelor.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.jedi_bachelor.dto.UpdateBookDto;
 import org.jedi_bachelor.model.entities.Book;
 import org.jedi_bachelor.model.enums.GenreType;
 import org.jedi_bachelor.service.BookService;
@@ -26,9 +25,10 @@ public class BookController {
         bookService.addNewBook(book);
     }
 
-    @PatchMapping("/update/{id}")
-    public void updateBookById(@PathVariable Long id) {
-        bookService.updateBook(id);
+    @PatchMapping("/update")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    public void updateBookById(@RequestBody Book book) {
+        bookService.updateBook(book);
     }
 
     @GetMapping("/get/{id}")

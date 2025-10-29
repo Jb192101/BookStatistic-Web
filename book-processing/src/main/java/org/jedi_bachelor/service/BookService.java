@@ -25,11 +25,9 @@ public class BookService {
         bookRepository.save(book);
     }
 
-    public void updateBook(Long id) {
-        if(bookRepository.existsById(id)) {
-            bookRepository.save(
-                    bookRepository.getReferenceById(id)
-            );
+    public void updateBook(Book book) {
+        if(bookRepository.existsById(book.getId())) {
+            bookRepository.save(book);
         }
     }
 

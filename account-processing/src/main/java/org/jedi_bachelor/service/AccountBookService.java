@@ -7,6 +7,8 @@ import org.jedi_bachelor.repository.AccountBookRelationShipRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -31,5 +33,19 @@ public class AccountBookService {
                 accountBookRelationShipOptional.get().setIsFinished(true);
             }
         }
+    }
+
+    public List<AccountBookRelationShip> getReadingsByUserId(Long userId) {
+        List<AccountBookRelationShip> relationShips =
+                this.accountBookRelationShipRepository.findAll();
+
+        List<AccountBookRelationShip> neededRelations = new ArrayList<>();
+        for(AccountBookRelationShip relation : relationShips) {
+            if(Objects.equals(relation.getAccount().getId(), userId)) {
+                neededRelations.add(relation);
+            }
+        }
+
+        return neededRelations;
     }
 }
