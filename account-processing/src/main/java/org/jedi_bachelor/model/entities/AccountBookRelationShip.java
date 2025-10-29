@@ -7,7 +7,7 @@ import org.jedi_bachelor.model.enums.Rating;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name="account-book")
+@Table(name="account_book")
 @Data
 public class AccountBookRelationShip {
     @Id

@@ -13,7 +13,6 @@
 	<modules>
 		<module>account-processing</module>
 		<module>book-processing</module>
-		<module>reading-processing</module>
 	</modules>
 
 	<dependencies>
