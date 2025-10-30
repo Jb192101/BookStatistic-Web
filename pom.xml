@@ -12,7 +12,6 @@
 
 	<modules>
 		<module>account-processing</module>
-		<module>book-processing</module>
 	</modules>
 
 	<dependencies>

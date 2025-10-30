@@ -4,6 +4,31 @@ databaseChangeLog:
       author: jedi_bachelor
       changes:
         - createTable:
+            tableName: books
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: title
+                  type: VARCHAR(255)
+              - column:
+                  name: author
+                  type: VARCHAR(255)
+              - column:
+                  name: total_pages
+                  type: INTEGER
+              - column:
+                  name: genre
+                  type: VARCHAR(100)
+              - column:
+                  name: total_rating
+                  type: FLOAT
+        - createTable:
             tableName: accounts
             columns:
               - column:

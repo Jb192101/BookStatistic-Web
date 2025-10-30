@@ -11,6 +11,7 @@ public class RatingService {
     @Autowired
     private AccountRepository accountRepository;
 
+    /*
     public void calculateNewRating(BookRatingDto bookDto) {
         Account account = accountRepository.getAccountById(bookDto.getUserId());
 
@@ -20,4 +21,5 @@ public class RatingService {
 
         accountRepository.save(account);
     }
+     */
 }

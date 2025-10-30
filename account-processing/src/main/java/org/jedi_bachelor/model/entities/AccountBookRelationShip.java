@@ -18,9 +18,9 @@ public class AccountBookRelationShip {
     @JoinColumn(name = "account_id", nullable = false)
     private Account account;
 
-    // id книги из другого микросервиса
-    @Column(name = "book_id", nullable = false)
-    private Long bookId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "book_id", nullable = false)
+    private Book book;
 
     @Column(name="readed_pages")
     private Integer readedPages;
