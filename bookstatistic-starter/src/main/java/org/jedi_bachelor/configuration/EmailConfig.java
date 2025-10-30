@@ -6,13 +6,14 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import java.util.Properties;
 
 @Configuration
-@ConfigurationProperties("classpath:application.properties")
+@PropertySource("classpath:application.properties")
 public class EmailConfig {
     @Value("spring.mail.username")
     private String emailSender;

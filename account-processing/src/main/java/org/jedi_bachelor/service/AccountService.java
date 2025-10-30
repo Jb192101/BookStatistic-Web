@@ -25,7 +25,7 @@ public class AccountService {
      */
 
     public Optional<Account> getAccountById(Long id) {
-        if(!accountRepository.existsByAccountId(id))
+        if(!accountRepository.existsById(id))
             return Optional.empty();
 
         return accountRepository.getAccountById(id);
@@ -36,7 +36,7 @@ public class AccountService {
     }
 
     public Boolean updateAccount(Account account) {
-        if(!accountRepository.existsByAccountId(account.getId())) {
+        if(!accountRepository.existsById(account.getId())) {
             return false;
         }
 
@@ -46,9 +46,9 @@ public class AccountService {
     }
 
     public Boolean addNewAccount(Account account) {
-        if(accountRepository.existsByAccountId(account.getId()) ||
-                (accountRepository.existsByAccountUsername(account.getUsername())) &&
-                        accountRepository.existsByAccountUsername(account.getUsername())) {
+        if(accountRepository.existsById(account.getId()) ||
+                (accountRepository.existsByUsername(account.getUsername())) &&
+                        accountRepository.existsByUsername(account.getUsername())) {
             return false;
         }
 

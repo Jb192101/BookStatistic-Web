@@ -97,13 +97,6 @@ databaseChangeLog:
                   name: rating
                   type: VARCHAR(50)
 
-        - addForeignKeyConstraint:
-            baseTableName: account_book
-            baseColumnNames: account_id
-            referencedTableName: accounts
-            referencedColumnNames: id
-            constraintName: fk_account_book_account
-
   - changeSet:
       id: add_indexes_for_performance
       author: jedi_bachelor

@@ -1,6 +1,5 @@
 package org.jedi_bachelor.service;
 
-import org.jedi_bachelor.kafka.dto.BookRatingDto;
 import org.jedi_bachelor.model.entities.Account;
 import org.jedi_bachelor.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
