@@ -47,7 +47,7 @@ public class Account {
         this.password = password;
         this.email = email;
 
-        this.accountType = type;
+        this.accountType = AccountType.ROLE_ADMIN;
 
         this.rating = 0;
     }

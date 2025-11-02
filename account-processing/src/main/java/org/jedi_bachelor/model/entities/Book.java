@@ -25,7 +25,7 @@ public class Book {
 
     @Column(name="genre")
     @Enumerated(value = EnumType.STRING)
-    private GenreType genre;
+    private GenreType genreType;
 
     @Column(name="total_pages")
     @Positive

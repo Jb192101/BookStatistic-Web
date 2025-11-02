@@ -2,6 +2,8 @@ package org.jedi_bachelor.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.jedi_bachelor.email.EmailService;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.jedi_bachelor.model.entities.Account;
 import org.jedi_bachelor.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
-@RestController
+@Controller
 @RequestMapping("/accounts")
 @RequiredArgsConstructor
 public class AccountController {
@@ -21,6 +23,18 @@ public class AccountController {
     private final EmailService emailService;
 
     @GetMapping("/{id}")
+    public String getAccountById(Model model, @PathVariable Long id) {
+        Optional<Account> account = this.accountService.getAccountById(id);
+        if(account.isPresent()) {
+            model.addAttribute("account", account.get());
+        } else {
+            //model.addAttribute("error", "Не удалось найти аккаунт!");
+        }
+
+        return "account-page";
+    }
+
+    @GetMapping("/admin/{id}")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ResponseEntity<Account> getAccountById(@PathVariable Long id) {
         Optional<Account> account = accountService.getAccountById(id);

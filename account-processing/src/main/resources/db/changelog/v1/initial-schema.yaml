@@ -125,3 +125,30 @@ databaseChangeLog:
             columns:
               - column:
                   name: book_id
+  - changeSet:
+      id: create_account_book_speed_table
+      author: jedi_bachelor
+      changes:
+        - createTable:
+            tableName: account_book_speed
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: account_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_speed_account
+                    references: accounts(id)
+              - column:
+                  name: started_date
+                  type: DATETIME
+              - column:
+                  name: speed_reading_pages
+                  type: INTEGER

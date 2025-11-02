@@ -1,4 +1,4 @@
-package org.jedi_bachelor.configuration;
+package org.jedi_bachelor.config;
 
 import org.springframework.context.annotation.Configuration;
 

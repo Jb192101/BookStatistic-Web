@@ -47,13 +47,11 @@ public class AccountService {
 
     public Boolean addNewAccount(Account account) {
         if(accountRepository.existsById(account.getId()) ||
-                (accountRepository.existsByUsername(account.getUsername())) &&
-                        accountRepository.existsByUsername(account.getUsername())) {
+                accountRepository.existsByUsername(account.getUsername()) ||
+                accountRepository.existsByEmail(account.getEmail())) {
             return false;
         }
-
         accountRepository.save(account);
-
         return true;
     }
 

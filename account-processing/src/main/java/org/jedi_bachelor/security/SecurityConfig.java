@@ -32,12 +32,15 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/auth/login").permitAll()
-                        .requestMatchers("/users/login/**").permitAll()
-                        .requestMatchers("/products/**").hasAnyRole("MASTER", "GRAND_EMPLOYEE")
-                        .requestMatchers("/client-products/**").hasAnyRole("MASTER", "GRAND_EMPLOYEE", "CURRENT_CLIENT")
-                        .requestMatchers("/internal/**").hasAnyRole("MASTER", "GRAND_EMPLOYEE")
+                        /*
+                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/books/page/**").permitAll()
+                        .requestMatchers("/books/api/**").authenticated()
+                        .requestMatchers("/accounts/**").hasRole("ADMIN")
+                        .requestMatchers("/reading/**").authenticated()
                         .anyRequest().authenticated()
+                         */
+                        .anyRequest().permitAll()
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtUtil),
                         UsernamePasswordAuthenticationFilter.class);

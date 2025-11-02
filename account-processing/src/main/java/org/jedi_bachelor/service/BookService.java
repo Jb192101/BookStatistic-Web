@@ -32,7 +32,7 @@ public class BookService {
     }
 
     public Optional<Book> getBookById(Long id) {
-        return Optional.of(bookRepository.getReferenceById(id));
+        return bookRepository.findById(id);
     }
 
     public List<Book> getAllBooks() {
@@ -44,7 +44,7 @@ public class BookService {
 
         List<Book> neededBooks = new ArrayList<>();
         for(Book book : books) {
-            if(book.getGenre().equals(genre)) {
+            if(book.getGenreType().equals(genre)) {
                 neededBooks.add(book);
             }
         }
