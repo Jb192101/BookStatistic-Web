@@ -5,40 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9753a1e7-9738-471e-85b6-9d133f8e3b79" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/account-processing/src/main/resources/templates/account/account-page.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/account-processing/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/account-processing/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/controller/AccountController.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/controller/AccountController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/controller/BookController.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/controller/BookController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/model/entities/Account.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/model/entities/Account.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/model/entities/Book.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/model/entities/Book.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/repository/AccountBookRelationShipRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/repository/AccountBookRelationShipRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/repository/AccountRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/repository/AccountRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/repository/BookRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/repository/BookRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/service/AccountService.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/service/AccountService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/service/BookService.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/service/BookService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/view/PageController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/account-processing/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/account-processing/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/account-processing/src/main/resources/db/changelog/v1/initial-schema.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/account-processing/src/main/resources/db/changelog/v1/initial-schema.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/account-processing/src/main/resources/templates/account/account.html" beforeDir="false" afterPath="$PROJECT_DIR$/account-processing/src/main/resources/templates/account/login.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/account-processing/src/main/resources/templates/books/book.html" beforeDir="false" afterPath="$PROJECT_DIR$/account-processing/src/main/resources/templates/books/all-books.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/account-processing/src/main/resources/templates/books/books-list.html" beforeDir="false" afterPath="$PROJECT_DIR$/account-processing/src/main/resources/templates/books/book-detail.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bookstatistic-starter/pom.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bookstatistic-starter/src/main/java/org/jedi_bachelor/Main.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bookstatistic-starter/src/main/java/org/jedi_bachelor/configuration/AspectConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/config/AspectConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bookstatistic-starter/src/main/java/org/jedi_bachelor/configuration/EmailConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/config/EmailConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bookstatistic-starter/src/main/java/org/jedi_bachelor/email/EmailService.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/email/EmailService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bookstatistic-starter/src/main/java/org/jedi_bachelor/security/JwtAuthenticationFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/security/JwtAuthenticationFilter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bookstatistic-starter/src/main/java/org/jedi_bachelor/security/JwtUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/security/JwtUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bookstatistic-starter/src/main/java/org/jedi_bachelor/security/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/security/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bookstatistic-starter/src/main/resources/application.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/microservices.iml" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -76,6 +44,11 @@
     &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;
   }
 }</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\gogat\Git\BookStatistic-Web\account-processing\src\main\resources" />
+    </key>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
