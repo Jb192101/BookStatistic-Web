@@ -22,7 +22,7 @@ public class AccountBookSpeedReading {
     @JoinColumn(name = "account_id", nullable = false)
     private Account account;
 
-    @Column(name = "started_date")
+    @Column(name = "date")
     private LocalDateTime date;
 
     @Column(name = "speed_reading_pages")

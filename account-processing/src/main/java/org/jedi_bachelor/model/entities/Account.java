@@ -37,7 +37,11 @@ public class Account {
 
     @Column(name="rating")
     @PositiveOrZero
-    private Integer rating;
+    private Float rating;
+
+    @Column(name="distribution")
+    @PositiveOrZero
+    private Float distribution; // общий количественный рейтинг (не виден обычным пользователям)
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<AccountBookRelationShip> bookRelationships = new ArrayList<>();
@@ -49,6 +53,7 @@ public class Account {
 
         this.accountType = AccountType.ROLE_ADMIN;
 
-        this.rating = 0;
+        this.rating = 0.0f;
+        this.distribution = 0.0f;
     }
 }

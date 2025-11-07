@@ -5,8 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9753a1e7-9738-471e-85b6-9d133f8e3b79" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/math/MathDistribution.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/math/MathDistributionImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/model/entities/Achievement.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/model/entities/AchievementAccountRelation.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/repository/AchievementAccountRelationRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/service/AchievementService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/config/BookConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/config/BookConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/model/entities/Account.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/model/entities/Account.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/model/entities/AccountBookSpeedReading.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/model/entities/AccountBookSpeedReading.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/repository/AccountBookSpeedReadingRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/repository/AccountBookSpeedReadingRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/service/RatingService.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/service/RatingService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,6 +27,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Class" />
+        <option value="Interface" />
       </list>
     </option>
   </component>
