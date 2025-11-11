@@ -17,9 +17,8 @@ public class AchievementAccountRelation {
     @JoinColumn(name = "account_id", nullable = false)
     private Account account;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "achievement_id", nullable = false)
-    private Account achievement;
+    @Column(name="achievement_id")
+    private Long achievementId;
 
     @Column(name="date")
     private LocalDateTime dateOfGetting;

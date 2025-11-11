@@ -5,18 +5,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9753a1e7-9738-471e-85b6-9d133f8e3b79" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/math/MathDistribution.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/math/MathDistributionImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/model/entities/Achievement.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/model/entities/AchievementAccountRelation.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/repository/AchievementAccountRelationRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/service/AchievementService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/controller/AchievementController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/model/entities/FriendAccount.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/model/entities/FriendRelationship.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/repository/FriendRelationshipRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/account-processing/src/main/resources/templates/achievements/all-achieves.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/account-processing/src/main/resources/templates/achievements/user-achievements.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/achievements-description.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/config/BookConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/config/BookConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/model/entities/Account.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/model/entities/Account.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/model/entities/AccountBookSpeedReading.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/model/entities/AccountBookSpeedReading.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/repository/AccountBookSpeedReadingRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/repository/AccountBookSpeedReadingRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/service/RatingService.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/service/RatingService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/controller/AccountController.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/controller/AccountController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/model/entities/Achievement.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/model/entities/Achievement.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/model/entities/AchievementAccountRelation.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/model/entities/AchievementAccountRelation.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/repository/AchievementAccountRelationRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/repository/AchievementAccountRelationRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/service/AccountService.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/service/AccountService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/service/AchievementService.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-processing/src/main/java/org/jedi_bachelor/service/AchievementService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/account-processing/src/main/resources/db/changelog/v1/initial-schema.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/account-processing/src/main/resources/db/changelog/v1/initial-schema.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

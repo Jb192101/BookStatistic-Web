@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface AchievementAccountRelationRepository extends JpaRepository<AchievementAccountRelation, Long> {
     List<AchievementAccountRelation> findByAccountId(Long id);
+    boolean existsByAccountIdAndAchievementId(Long accountId, Long achievementId);
 }
