@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle}">Вход в книжную статистику</title>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            display: flex;
+            max-width: 1000px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            min-height: 600px;
+        }
+
+        .book-side {
+            flex: 1;
+            background: linear-gradient(45deg, #2c3e50, #34495e);
+            color: white;
+            padding: 50px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .book-side::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.1"><text x="50%" y="50%" font-family="serif" font-size="20" text-anchor="middle" dominant-baseline="middle">📚</text></svg>');
+        }
+
+        .form-side {
+            flex: 1;
+            padding: 60px 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .logo {
+            font-family: 'Merriweather', serif;
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #ffd700, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .tagline {
+            font-size: 1.1em;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+
+        .stats-highlight {
+            background: rgba(255,255,255,0.1);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 30px 0;
+            border-left: 4px solid #ffd700;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 0.95em;
+        }
+
+        .stat-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .stat-icon {
+            font-size: 1.2em;
+            margin-right: 12px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .quote-section {
+            font-style: italic;
+            opacity: 0.8;
+            text-align: center;
+            font-size: 0.95em;
+            line-height: 1.5;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            padding-top: 20px;
+        }
+
+        .form-title {
+            font-family: 'Merriweather', serif;
+            font-size: 2em;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .form-subtitle {
+            color: #7f8c8d;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #ecf0f1;
+            border-radius: 12px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #3498db;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(52, 152, 219, 0.3);
+        }
+
+        .links {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .links a {
+            color: #3498db;
+            text-decoration: none;
+            margin: 0 10px;
+            transition: color 0.3s ease;
+        }
+
+        .links a:hover {
+            color: #2980b9;
+            text-decoration: underline;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #95a5a6;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 768px) {
+            .login-container {
+                flex-direction: column;
+            }
+
+            .book-side, .form-side {
+                padding: 40px 30px;
+            }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+<div class="login-container">
+    <!-- Левая часть с книжной тематикой -->
+    <div class="book-side">
+        <div>
+            <div class="logo">BookStatistic-Web</div>
+            <div class="tagline">Отслеживай свой читательский прогресс</div>
+
+            <div class="stats-highlight">
+                <div class="stat-item">
+                    <span class="stat-icon">📖</span>
+                    <span>Отслеживайте прочитанные страницы</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-icon">⏱️</span>
+                    <span>Анализируйте скорость чтения</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-icon">📈</span>
+                    <span>Стройте графики прогресса</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-icon">🎯</span>
+                    <span>Достигайте читательские цели</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="quote-section">
+            <div th:text="${motivationalQuote}">Чтение — это беседа с мудрейшими людьми прошлых веков</div>
+        </div>
+    </div>
+
+    <!-- Правая часть с формой входа -->
+    <div class="form-side">
+        <h1 class="form-title">С возвращением!</h1>
+        <p class="form-subtitle">Продолжайте свой читательский путь</p>
+
+        <form th:action="@{/login}" method="post">
+            <div class="form-group">
+                <label for="username">Email или имя пользователя</label>
+                <input type="text" id="username" name="username" class="form-control" placeholder="Введите ваш email" autocomplete="username" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Пароль</label>
+                <input type="password" id="password" name="password" class="form-control" placeholder="Введите ваш пароль" autocomplete="password" required>
+            </div>
+
+            <button type="submit" class="btn-login pulse">Войти в аккаунт</button>
+        </form>
+
+        <div class="links">
+            <a href="#">Забыли пароль?</a>
+            <a th:href="@{/register}">Создать аккаунт</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Простая анимация для элементов формы
+    document.addEventListener('DOMContentLoaded', function() {
+        const inputs = document.querySelectorAll('.form-control');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'translateY(-5px)';
+            });
+
+            input.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'translateY(0)';
+            });
+        });
+    });
+</script>
+</body>
+</html>

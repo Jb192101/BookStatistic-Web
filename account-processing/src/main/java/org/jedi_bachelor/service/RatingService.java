@@ -29,53 +29,36 @@ public class RatingService {
     @Autowired
     private AchievementAccountRelationRepository achievementAccountRelationRepository;
 
-    /*
-    public void calculateNewRating(BookRatingDto bookDto) {
-        Account account = accountRepository.getAccountById(bookDto.getUserId());
-
-        Integer addedValueRating = bookDto.getNewReadedPages() * 2;
-
-        account.setRating(account.getRating() + addedValueRating);
-
-        accountRepository.save(account);
-    }
-     */
-
     public void setNewRating(Long id) {
         Optional<Account> account = this.accountRepository.getAccountById(id);
 
-        List<AccountBookRelationShip> relations = accountBookRelationShipRepository.findByAccountId(id);
-        List<AccountBookSpeedReading> relationsSpeed = accountBookSpeedReadingRepository.findByAccountId(id);
+        if(account.isPresent()) {
+            List<AccountBookSpeedReading> relationsSpeed = accountBookSpeedReadingRepository.findByAccountId(id);
 
-        // Подсчёт всего прочитанных страниц
-        Integer allReadedPages = 0;
-        for(AccountBookRelationShip relation : relations) {
-            allReadedPages += relation.getReadedPages();
+            // Подсчёт новых страниц
+            Integer newPages = 0;
+            for (AccountBookSpeedReading r : relationsSpeed) {
+                if (r.getDate().isAfter(LocalDateTime.now().minusWeeks(1)))
+                    newPages += r.getSpeedReadingPages();
+            }
+
+            // Подсчёт новых достижений
+            Integer newAchievements = 0;
+            List<AchievementAccountRelation> rel = achievementAccountRelationRepository.findByAccountId(id);
+            for (AchievementAccountRelation r : rel) {
+                if (r.getDateOfGetting().isAfter(LocalDateTime.now().minusWeeks(1)))
+                    newAchievements++;
+            }
+
+            account.get().setRating(recalculateRating(account.get().getRating(), newPages, newAchievements));
+            accountRepository.save(account.get());
         }
-
-        // Подсчёт новых страниц
-        Integer newPages = 0;
-        for(AccountBookSpeedReading r : relationsSpeed) {
-            if(r.getDate().isAfter(LocalDateTime.now().minusWeeks(1)))
-                newPages += r.getSpeedReadingPages();
-        }
-
-        // Подсчёт новых достижений
-        Integer newAchievements = 0;
-        List<AchievementAccountRelation> rel = achievementAccountRelationRepository.findByAccountId(id);
-        for(AchievementAccountRelation r : rel) {
-            if(r.getDateOfGetting().isAfter(LocalDateTime.now().minusWeeks(1)))
-                newAchievements++;
-        }
-
-        account.get().setRating(recalculateRating(account.get().getDistribution(), newPages, allReadedPages, newAchievements));
-        accountRepository.save(account.get());
     }
 
-    private Float recalculateRating(Float oldValueOfDistribution, Integer newPages, Integer allReadedPages, Integer newAchievements) {
-        Float x = mathDistribution.x(newPages, allReadedPages, newAchievements);
-        oldValueOfDistribution += x;
+    private Integer recalculateRating(Integer oldValueOfDistribution, Integer newPages, Integer newAchievements) {
+        Float x = mathDistribution.x(newAchievements, newPages, oldValueOfDistribution);
+        oldValueOfDistribution += mathDistribution.newRating(x);
 
-        return mathDistribution.rating(oldValueOfDistribution);
+        return mathDistribution.newRating(oldValueOfDistribution);
     }
 }

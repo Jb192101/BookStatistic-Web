@@ -16,6 +16,12 @@ public class EmailService {
 
     private final String emailSender;
 
+    /*
+    * Метод отправки email-сообщения
+    * @param to (String) - почта, на которую надо отправить сообщение
+    * @param subject (String) - заголовок
+    * @param text (String) - текст сообщения
+     */
     public void sendEmail(String to, String subject, String text) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);

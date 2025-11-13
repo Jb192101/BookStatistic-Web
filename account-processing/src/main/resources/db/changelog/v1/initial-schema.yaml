@@ -26,8 +26,21 @@ databaseChangeLog:
                   name: genre
                   type: VARCHAR(100)
               - column:
-                  name: total_rating
-                  type: FLOAT
+                  name: stars_5_count
+                  type: INTEGER
+              - column:
+                  name: stars_4_count
+                  type: INTEGER
+              - column:
+                  name: stars_3_count
+                  type: INTEGER
+              - column:
+                  name: stars_2_count
+                  type: INTEGER
+              - column:
+                  name: stars_1_count
+                  type: INTEGER
+
         - createTable:
             tableName: accounts
             columns:

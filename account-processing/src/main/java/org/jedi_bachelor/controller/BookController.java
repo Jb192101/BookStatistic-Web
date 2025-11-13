@@ -28,7 +28,7 @@ public class BookController {
             model.addAttribute("books", books);
             return "books/all-books";
         } catch(Exception ex) {
-            //model.addAttribute("error", "Не удалось загрузить список книг");
+            model.addAttribute("error", "Не удалось загрузить список книг");
             return "error";
         }
     }

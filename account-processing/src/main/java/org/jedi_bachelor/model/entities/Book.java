@@ -31,8 +31,18 @@ public class Book {
     @Positive
     private Integer totalPages;
 
-    @Column(name="total_rating")
-    @DecimalMin(value="1.0")
-    @DecimalMax(value="5.0")
-    private Float totalRating;
+    @Column(name="stars_5_count")
+    private Integer fiveStartCount;
+
+    @Column(name="stars_4_count")
+    private Integer fourStarsCount;
+
+    @Column(name="stars_3_count")
+    private Integer threeStarsCount;
+
+    @Column(name="stars_2_count")
+    private Integer twoStartsCount;
+
+    @Column(name="stars_5_count")
+    private Integer oneStartCount;
 }

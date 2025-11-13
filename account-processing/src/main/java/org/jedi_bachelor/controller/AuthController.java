@@ -9,14 +9,15 @@ import org.jedi_bachelor.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.Optional;
+import java.util.Random;
 
-@RestController
+@Controller
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
@@ -29,8 +30,26 @@ public class AuthController {
     @Autowired
     private final AccountService accountService;
 
+    @GetMapping("/login")
+    public String login(Model model) {
+        model.addAttribute("pageTitle", "Вход в книжную статистику");
+        model.addAttribute("currentYear", LocalDate.now().getYear());
+
+        // Случайная мотивирующая цитата о чтении
+        String[] quotes = {
+                "Чтение — это беседа с мудрейшими людьми прошлых веков",
+                "Книги — корабли мысли, странствующие по волнам времени",
+                "Статистика чтения — это карта твоих литературных путешествий"
+        };
+        String randomQuote = quotes[new Random().nextInt(quotes.length)];
+        model.addAttribute("motivationalQuote", randomQuote);
+
+        return "account/login";
+    }
+
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+    @ResponseBody
+    public ResponseEntity<?> login(@ModelAttribute LoginRequest loginRequest) {
         Optional<Account> userOpt = accountService.getAccountByLogin(loginRequest.getLogin());
 
         if (userOpt.isEmpty() || !passwordEncoder.matches(loginRequest.getPassword(), userOpt.get().getPassword())) {

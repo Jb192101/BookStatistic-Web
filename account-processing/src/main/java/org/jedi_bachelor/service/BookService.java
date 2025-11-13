@@ -21,24 +21,46 @@ public class BookService {
     @Autowired
     private final LevenshteinDistance levenshtein;
 
+    /*
+    * Метод для добавления новой книги
+    * @param book (Book) - книга, которую надо добавить
+     */
     public void addNewBook(Book book) {
         bookRepository.save(book);
     }
 
+    /*
+    * Метод для обновления книги
+    * @param book (Book) - книга, которую надо обновить
+     */
     public void updateBook(Book book) {
         if(bookRepository.existsById(book.getId())) {
             bookRepository.save(book);
         }
     }
 
+    /*
+    * Метод получения книги по её ID
+    * @param id (Long) - ID книги
+    * @return book (Optional<Book>) - книга с таким ID, если есть
+     */
     public Optional<Book> getBookById(Long id) {
         return bookRepository.findById(id);
     }
 
+    /*
+    * Метод получения всех книг
+    * @return books (List<Book>) - список всех книг из таблицы
+     */
     public List<Book> getAllBooks() {
         return bookRepository.findAll();
     }
 
+    /*
+    * Метод для поиска книг определённого жанра
+    * @param genre (GenreType) - жанр
+    * @return neededBooks (List<Book>) - список книг, удовлетворяющих условию
+     */
     public List<Book> getBooksOfSuchGenre(GenreType genre) {
         List<Book> books = this.bookRepository.findAll();
 
@@ -52,6 +74,11 @@ public class BookService {
         return neededBooks;
     }
 
+    /*
+    * Метод получения книг определённого автора
+    * @param author (String) - часть имени или целое имя автора
+    * @return neededBooks (List<Book>) - список книг, которые удовлетворяют условию
+     */
     public List<Book> getBooksOfSuchAuthor(String author) {
         List<Book> books = this.bookRepository.findAll();
 
@@ -77,6 +104,11 @@ public class BookService {
         return neededBooks;
     }
 
+    /*
+    * Метод получения книг с определённым фрагментом в названии/определённым заголовком
+    * @param title (String) - фрагмент или заголовок
+    * @return neededBooks (List<Book>) - список книг, удовлетворяющих условию
+     */
     public List<Book> getBooksOfSuchTitle(String title) {
         List<Book> books = this.bookRepository.findAll();
 
@@ -90,6 +122,7 @@ public class BookService {
             lowerCase = book.getTitle().toLowerCase();
             if(lowerCase.contains(titleLowerCase)) {
                 neededBooks.add(book);
+                continue;
             }
 
             searchedDistance = levenshtein.apply(lowerCase, titleLowerCase);
