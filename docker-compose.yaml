@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  book-processing:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bookstatistic-main-container
+    ports:
+      - "8081:8081"
+    networks:
+      - bookstatistic-network
+    restart: unless-stopped
+
+networks:
+  bookstatistic-network:
+    driver: bridge

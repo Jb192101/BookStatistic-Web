@@ -1,65 +1,97 @@
 package org.jedi_bachelor.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.jedi_bachelor.aop.SendEmailMessage;
+import org.jedi_bachelor.dto.RegistrationRequest;
 import org.jedi_bachelor.model.entities.Account;
-import org.jedi_bachelor.security.JwtUtil;
-import org.jedi_bachelor.security.LoginRequest;
-import org.jedi_bachelor.security.LoginResponse;
-import org.jedi_bachelor.service.AccountService;
+import org.jedi_bachelor.service.AuthorityService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDate;
-import java.util.Optional;
-import java.util.Random;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
-@RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
     @Autowired
-    private final JwtUtil jwtUtil;
-
+    private final AuthorityService authorityService;
     @Autowired
-    private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
 
-    @Autowired
-    private final AccountService accountService;
+    @GetMapping("/registration")
+    public String registration(Model model) {
+        model.addAttribute("userForm", new RegistrationRequest());
 
-    @GetMapping("/login")
-    public String login(Model model) {
-        model.addAttribute("pageTitle", "Вход в книжную статистику");
-        model.addAttribute("currentYear", LocalDate.now().getYear());
-
-        // Случайная мотивирующая цитата о чтении
-        String[] quotes = {
-                "Чтение — это беседа с мудрейшими людьми прошлых веков",
-                "Книги — корабли мысли, странствующие по волнам времени",
-                "Статистика чтения — это карта твоих литературных путешествий"
-        };
-        String randomQuote = quotes[new Random().nextInt(quotes.length)];
-        model.addAttribute("motivationalQuote", randomQuote);
-
-        return "account/login";
+        return "account/register";
     }
 
-    @PostMapping("/login")
-    @ResponseBody
-    public ResponseEntity<?> login(@ModelAttribute LoginRequest loginRequest) {
-        Optional<Account> userOpt = accountService.getAccountByLogin(loginRequest.getLogin());
+    @PostMapping("/registration")
+    @SendEmailMessage(idOfMessage = 0)
+    public String addUser(@ModelAttribute("userForm") @Valid RegistrationRequest userForm,
+                                     BindingResult bindingResult, Model model, HttpServletRequest request) {
 
-        if (userOpt.isEmpty() || !passwordEncoder.matches(loginRequest.getPassword(), userOpt.get().getPassword())) {
-            return ResponseEntity.status(401).body("Неверные учетные данные");
+        if (bindingResult.hasErrors()) {
+            return "account/register";
         }
 
-        Account account = userOpt.get();
+        if (!userForm.getPassword().equals(userForm.getPasswordConfirm())) {
+            return "account/register";
+        }
 
-        String token = jwtUtil.generateToken(account.getUsername(), account.getAccountType().name());
+        Account account = new Account(userForm.getUsername(), userForm.getPassword(),
+                userForm.getEmail(), "ROLE_SIMPLE_USER");
 
-        return ResponseEntity.ok(new LoginResponse(token, account.getAccountType().name()));
+        if (!authorityService.saveUser(account)) {
+            return "account/register";
+        }
+
+        authenticateUserAndSetSession(userForm.getUsername(), userForm.getPassword(), request);
+
+        return "redirect:/main";
+    }
+
+    /*
+    * Метод для создания сессии и авторизации пользователя в системе
+    * @param username (String) - имя пользователя
+    * @param rawPassword (String) - "сырой" пароль
+    * @param request (HttpServletRequest) - запрос
+     */
+    private void authenticateUserAndSetSession(String username, String rawPassword, HttpServletRequest request) {
+        try {
+            System.out.println("Starting authentication for user: " + username);
+
+            UsernamePasswordAuthenticationToken token =
+                    new UsernamePasswordAuthenticationToken(username, rawPassword);
+
+            Authentication authentication = authenticationManager.authenticate(token);
+
+            SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+            securityContext.setAuthentication(authentication);
+
+            HttpSession session = request.getSession(true);
+            session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
+
+            SecurityContextHolder.setContext(securityContext);
+
+            System.out.println("Authentication successful for user: " + username);
+            System.out.println("Session ID: " + session.getId());
+            System.out.println("Authorities: " + authentication.getAuthorities());
+
+        } catch (Exception e) {
+            System.out.println("Auto-authentication failed: " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Authentication failed", e);
+        }
     }
 }

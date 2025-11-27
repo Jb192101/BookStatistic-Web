@@ -5,6 +5,7 @@ import org.jedi_bachelor.model.entities.AccountBookRelationShip;
 import org.jedi_bachelor.model.entities.AccountBookSpeedReading;
 import org.jedi_bachelor.repository.AccountBookRelationShipRepository;
 import org.jedi_bachelor.repository.AccountBookSpeedReadingRepository;
+import org.jedi_bachelor.service.interfaces.IAccountBookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,12 +15,18 @@ import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
-public class AccountBookService {
+public class AccountBookService implements IAccountBookService {
     @Autowired
     private final AccountBookRelationShipRepository accountBookRelationShipRepository;
     @Autowired
     private final AccountBookSpeedReadingRepository accountBookSpeedReadingRepository;
 
+    /*
+    * Метод получения чтений по id пользователя
+    * @param userID (Long) - ID пользователя, чьи чтения надо выдать
+    * @return neededRelaions (List<AccountBookRelationShip>) - подходящие результаты
+     */
+    @Override
     public List<AccountBookRelationShip> getReadingsByUserId(Long userId) {
         List<AccountBookRelationShip> relationShips =
                 this.accountBookRelationShipRepository.findAll();
@@ -34,6 +41,12 @@ public class AccountBookService {
         return neededRelations;
     }
 
+    /*
+    * Метод получения всех чтений по ID книги
+    * @param bookId (Long) - ID книги
+    * @return neededRelations (List<AccountBookRelationShip>) - список удовлетворяющих условию книг
+     */
+    @Override
     public List<AccountBookRelationShip> getReadingsByBookId(Long bookId) {
         List<AccountBookRelationShip> relationShips =
                 this.accountBookRelationShipRepository.findAll();
@@ -48,6 +61,7 @@ public class AccountBookService {
         return neededRelations;
     }
 
+    @Override
     public void addNewRelation(AccountBookRelationShip relation) {
         this.accountBookRelationShipRepository.save(relation);
 
@@ -58,6 +72,12 @@ public class AccountBookService {
         //}
     }
 
+    /*
+    * Метод для получения скоростей чтений по ID пользователя
+    * @param userId (Long) - ID пользователя
+    * @return neededSpeeds (List<AccountBookSpeedReading>) - список скоростей, удовлетворяющих условию
+     */
+    @Override
     public List<AccountBookSpeedReading> getSpeedOfReading(Long userId) {
         List<AccountBookSpeedReading> speeds = this.accountBookSpeedReadingRepository.findAll();
 

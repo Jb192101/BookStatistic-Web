@@ -1,7 +1,6 @@
 package org.jedi_bachelor.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.jedi_bachelor.email.EmailService;
 import org.jedi_bachelor.model.entities.FriendAccount;
 import org.jedi_bachelor.model.entities.FriendRelationship;
 import org.springframework.stereotype.Controller;
@@ -21,8 +20,6 @@ import java.util.*;
 public class AccountController {
     @Autowired
     private final AccountService accountService;
-    @Autowired
-    private final EmailService emailService;
 
     @GetMapping("/{id}")
     public String getAccountById(Model model, @PathVariable Long id) {
@@ -78,13 +75,8 @@ public class AccountController {
     public ResponseEntity<Account> addNewAccount(@RequestBody Account account) {
         Boolean result = accountService.addNewAccount(account);
         if(!result) {
-            emailService.sendEmail(account.getEmail(), "Ошибка регистрации аккаунта!", "some text");
-
             return ResponseEntity.notFound().build();
         }
-        // Работа с emailService
-        emailService.sendEmail(account.getEmail(), "Аккаунт зарегистрирован!", "some text");
-
         return ResponseEntity.ok(account);
     }
 

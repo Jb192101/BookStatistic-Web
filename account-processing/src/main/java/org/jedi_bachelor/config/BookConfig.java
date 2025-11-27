@@ -61,7 +61,7 @@ public class BookConfig {
         });
 
         // Достижение "С первой книгой"
-        achievementList.add(new Achievement(1L, "С днём первой книги", "Полностью прочитать первую книгу") {
+        achievementList.add(new Achievement(2L, "С днём первой книги", "Полностью прочитать первую книгу") {
             @Override
             public Boolean isAchieved(Long userId) {
                 List<AccountBookRelationShip> relations = accountBookRelationShipRepository.findByAccountId(userId);
@@ -71,6 +71,14 @@ public class BookConfig {
                     }
                 }
 
+                return false;
+            }
+        });
+
+        // Достижение "Дружба это сила"
+        achievementList.add(new Achievement(3L, "Дружба - это сила!", "Добавьте себе одного друга") {
+            @Override
+            public Boolean isAchieved(Long userId) {
                 return false;
             }
         });

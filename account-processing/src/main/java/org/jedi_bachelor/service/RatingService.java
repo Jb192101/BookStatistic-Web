@@ -2,13 +2,13 @@ package org.jedi_bachelor.service;
 
 import org.jedi_bachelor.math.MathDistribution;
 import org.jedi_bachelor.model.entities.Account;
-import org.jedi_bachelor.model.entities.AccountBookRelationShip;
 import org.jedi_bachelor.model.entities.AccountBookSpeedReading;
 import org.jedi_bachelor.model.entities.AchievementAccountRelation;
 import org.jedi_bachelor.repository.AccountBookRelationShipRepository;
 import org.jedi_bachelor.repository.AccountBookSpeedReadingRepository;
 import org.jedi_bachelor.repository.AccountRepository;
 import org.jedi_bachelor.repository.AchievementAccountRelationRepository;
+import org.jedi_bachelor.service.interfaces.IRatingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class RatingService {
+public class RatingService implements IRatingService {
     @Autowired
     private AccountRepository accountRepository;
     @Autowired
@@ -29,8 +29,13 @@ public class RatingService {
     @Autowired
     private AchievementAccountRelationRepository achievementAccountRelationRepository;
 
+    /*
+    * Метод установки нового рейтинга
+    * @param id (Long) - ID пользователя, чей рейтинг надо поменят
+     */
+    @Override
     public void setNewRating(Long id) {
-        Optional<Account> account = this.accountRepository.getAccountById(id);
+        Optional<Account> account = this.accountRepository.findById(id);
 
         if(account.isPresent()) {
             List<AccountBookSpeedReading> relationsSpeed = accountBookSpeedReadingRepository.findByAccountId(id);
@@ -55,7 +60,15 @@ public class RatingService {
         }
     }
 
-    private Integer recalculateRating(Integer oldValueOfDistribution, Integer newPages, Integer newAchievements) {
+    /*
+    * Метод перевычисления рейтинга
+    * @param oldValueOfDistribuion (Integer) - старое значение рейтинга
+    * @param newPages (Integer) - количество новых страниц за неделю
+    * @param newAchievements (Integer) - количество новых достижений
+    * @return значение нового рейтинга
+     */
+    @Override
+    public Integer recalculateRating(Integer oldValueOfDistribution, Integer newPages, Integer newAchievements) {
         Float x = mathDistribution.x(newAchievements, newPages, oldValueOfDistribution);
         oldValueOfDistribution += mathDistribution.newRating(x);
 

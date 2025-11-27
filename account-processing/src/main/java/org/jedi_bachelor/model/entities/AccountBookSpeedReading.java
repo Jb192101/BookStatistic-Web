@@ -11,7 +11,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name="account-book-speed")
+@Table(name="account_book_speed")
 @Data
 public class AccountBookSpeedReading {
     @Id

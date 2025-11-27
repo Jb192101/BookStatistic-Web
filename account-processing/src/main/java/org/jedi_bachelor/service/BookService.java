@@ -5,6 +5,7 @@ import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.jedi_bachelor.model.entities.Book;
 import org.jedi_bachelor.model.enums.GenreType;
 import org.jedi_bachelor.repository.BookRepository;
+import org.jedi_bachelor.service.interfaces.IBookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +15,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class BookService {
+public class BookService implements IBookService {
     @Autowired
     private final BookRepository bookRepository;
 
@@ -25,6 +26,7 @@ public class BookService {
     * Метод для добавления новой книги
     * @param book (Book) - книга, которую надо добавить
      */
+    @Override
     public void addNewBook(Book book) {
         bookRepository.save(book);
     }
@@ -33,6 +35,7 @@ public class BookService {
     * Метод для обновления книги
     * @param book (Book) - книга, которую надо обновить
      */
+    @Override
     public void updateBook(Book book) {
         if(bookRepository.existsById(book.getId())) {
             bookRepository.save(book);
@@ -44,6 +47,7 @@ public class BookService {
     * @param id (Long) - ID книги
     * @return book (Optional<Book>) - книга с таким ID, если есть
      */
+    @Override
     public Optional<Book> getBookById(Long id) {
         return bookRepository.findById(id);
     }
@@ -52,6 +56,7 @@ public class BookService {
     * Метод получения всех книг
     * @return books (List<Book>) - список всех книг из таблицы
      */
+    @Override
     public List<Book> getAllBooks() {
         return bookRepository.findAll();
     }
@@ -61,6 +66,7 @@ public class BookService {
     * @param genre (GenreType) - жанр
     * @return neededBooks (List<Book>) - список книг, удовлетворяющих условию
      */
+    @Override
     public List<Book> getBooksOfSuchGenre(GenreType genre) {
         List<Book> books = this.bookRepository.findAll();
 
@@ -79,6 +85,7 @@ public class BookService {
     * @param author (String) - часть имени или целое имя автора
     * @return neededBooks (List<Book>) - список книг, которые удовлетворяют условию
      */
+    @Override
     public List<Book> getBooksOfSuchAuthor(String author) {
         List<Book> books = this.bookRepository.findAll();
 
@@ -109,6 +116,7 @@ public class BookService {
     * @param title (String) - фрагмент или заголовок
     * @return neededBooks (List<Book>) - список книг, удовлетворяющих условию
      */
+    @Override
     public List<Book> getBooksOfSuchTitle(String title) {
         List<Book> books = this.bookRepository.findAll();
 

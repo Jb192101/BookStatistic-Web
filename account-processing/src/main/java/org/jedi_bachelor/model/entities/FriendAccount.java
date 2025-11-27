@@ -10,7 +10,7 @@ import lombok.Data;
 public class FriendAccount {
     private Long id;
     private String username;
-    private Float rating;
+    private Integer rating;
     private String url;
 
     public void updateUrl() {

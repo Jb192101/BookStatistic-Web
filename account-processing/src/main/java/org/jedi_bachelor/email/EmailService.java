@@ -31,4 +31,13 @@ public class EmailService {
 
         mailSender.send(message);
     }
+
+    /*
+    * Перегруженный метод отправки email-сообщения
+    * @param to (String) - email, на которой надо отправить сообщение
+    * @param idOfMessage (Long) - ID сообщения
+     */
+    public void sendEmail(String to, Long idOfMessage) {
+
+    }
 }

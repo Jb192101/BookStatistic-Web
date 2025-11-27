@@ -43,6 +43,6 @@ public class Book {
     @Column(name="stars_2_count")
     private Integer twoStartsCount;
 
-    @Column(name="stars_5_count")
+    @Column(name="stars_1_count")
     private Integer oneStartCount;
 }

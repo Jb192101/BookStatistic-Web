@@ -10,6 +10,7 @@ import org.jedi_bachelor.model.entities.Achievement;
 import org.jedi_bachelor.model.entities.AchievementAccountRelation;
 import org.jedi_bachelor.repository.AccountBookSpeedReadingRepository;
 import org.jedi_bachelor.repository.AchievementAccountRelationRepository;
+import org.jedi_bachelor.service.interfaces.IAchievemenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +20,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class AchievementService {
+public class AchievementService implements IAchievemenService {
     @Autowired
     private AchievementAccountRelationRepository achievementAccountRelationRepository;
     @Autowired
@@ -30,6 +31,7 @@ public class AchievementService {
     /*
     Метод для выдачи достижений пользователя
      */
+    @Override
     public List<Achievement> getAchievementsOfUser(Long id) {
         List<Achievement> achieved = getAchievedAchievementsOfUser(id);
         List<Achievement> notAchieved = getNotAchievedAchievementsOfUser(id);
@@ -45,7 +47,8 @@ public class AchievementService {
     /*
     Метод для выдачи полученных пользователем достижений
      */
-    private List<Achievement> getAchievedAchievementsOfUser(Long id) {
+    @Override
+    public List<Achievement> getAchievedAchievementsOfUser(Long id) {
         List<Achievement> result = new ArrayList<>();
 
         for(Achievement a : achievements) {
@@ -60,7 +63,8 @@ public class AchievementService {
     /*
     Метод для выдачи ещё не достигнутых пользователем достижений
      */
-    private List<Achievement> getNotAchievedAchievementsOfUser(Long id) {
+    @Override
+    public List<Achievement> getNotAchievedAchievementsOfUser(Long id) {
         List<Achievement> result = new ArrayList<>();
 
         for(Achievement a : achievements) {
@@ -75,6 +79,7 @@ public class AchievementService {
     /*
     Метод для проверки новых достижений у пользователя
      */
+    @Override
     public void checkNewAchievements(Account account) {
         List<AchievementAccountRelation> relations = achievementAccountRelationRepository.findByAccountId(account.getId());
 
