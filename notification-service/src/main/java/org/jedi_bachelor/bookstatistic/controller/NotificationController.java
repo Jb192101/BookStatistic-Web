@@ -20,13 +20,17 @@ public class NotificationController {
     private final NotificationService notificationService;
 
     @GetMapping
-    public ResponseEntity<List<NotificationDto>> getAllNotifications() {
+    public ResponseEntity<?> getAllNotifications() {
+        List<NotificationDto> dtos = this.notificationService.getAllNotifications();
 
+        return ResponseEntity.ok().body(new SuccessResponse());
     }
 
     @GetMapping
-    public ResponseEntity<NotificationDto> getNotification(@PathVariable UUID notificationId) {
+    public ResponseEntity<?> getNotification(@PathVariable UUID notificationId) {
+        NotificationDto dto = this.notificationService.getNotification(notificationId);
 
+        return ResponseEntity.ok().body(new SuccessResponse());
     }
 
     @GetMapping("/{userId}")
@@ -42,6 +46,32 @@ public class NotificationController {
     public ResponseEntity<?> addNewNotification(@RequestBody NotificationCreationDto dto) {
         this.notificationService.addNewNotification(dto);
 
-        return ResponseEntity.of(new SuccessResponse());
+        return ResponseEntity.ok().body(new SuccessResponse());
+    }
+
+    @DeleteMapping("/{notificationId}")
+    public ResponseEntity<?> deleteNotification(@PathVariable UUID notificationId) {
+        this.notificationService.deleteNotification(notificationId);
+
+        return ResponseEntity.ok().body(new SuccessResponse());
+    }
+
+    /**
+     * Эндпоинт ТОЛЬКО для создания новых настроек
+     * @param userId
+     * @return
+     */
+    @PostMapping("/settings/{userId}")
+    public ResponseEntity<?> addNewNotificationSettings(@PathVariable UUID userId) {
+        this.notificationService.addNotificationSettings(userId);
+
+        return ResponseEntity.ok().body(new SuccessResponse());
+    }
+
+    @DeleteMapping("/settings/{userId}")
+    public ResponseEntity<?> deleteNotificationSettings(@PathVariable UUID userId) {
+        this.notificationService.deleteNotificationSettings(userId);
+
+        return ResponseEntity.ok().body(new SuccessResponse());
     }
 }

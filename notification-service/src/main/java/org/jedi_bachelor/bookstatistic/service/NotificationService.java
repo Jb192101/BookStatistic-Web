@@ -6,8 +6,10 @@ import org.jedi_bachelor.bookstatistic.dto.request.notification.NotificationCrea
 import org.jedi_bachelor.bookstatistic.dto.mapentities.NotificationDto;
 import org.jedi_bachelor.bookstatistic.emal.AbstractEmailContext;
 import org.jedi_bachelor.bookstatistic.entity.Notification;
+import org.jedi_bachelor.bookstatistic.entity.NotificationSettings;
 import org.jedi_bachelor.bookstatistic.mapper.NotificationMapper;
 import org.jedi_bachelor.bookstatistic.repository.NotificationRepository;
+import org.jedi_bachelor.bookstatistic.repository.NotificationSettingsRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,11 +24,13 @@ public class NotificationService {
 
     private final NotificationMapper notificationMapper;
 
+    private final NotificationSettingsRepository notificationSettingsRepository;
+
     private final NotificationConverter converter;
 
     public void addNewNotification(NotificationCreationDto dto) {
         // Создание нового уведомления
-        Notification notification = this.converter.convertDtoToEntity(dto);
+        Notification notification = this.converter.convert(dto);
 
         // Сохранение
 
@@ -51,6 +55,30 @@ public class NotificationService {
         return this.notificationMapper.toDto(
                 this.notificationRepository.findByNotificationId(notificationId)
         );
+    }
+
+    public void deleteNotification(UUID notificationId) {
+        Notification notification = this.notificationRepository.findByNotificationId(notificationId);
+
+        this.notificationRepository.delete(notification);
+    }
+
+    public void addNotificationSettings(UUID userId) {
+        NotificationSettings settings = new NotificationSettings(userId);
+
+        this.notificationSettingsRepository.save(settings);
+    }
+
+    /**
+     * Метод удаления настроек уведомлений
+     * Используется при удалении пользователя из системы
+     *
+     * @param userId ID пользователя
+     */
+    public void deleteNotificationSettings(UUID userId) {
+        NotificationSettings settings = this.notificationSettingsRepository.findByUserId(userId);
+
+        this.notificationSettingsRepository.delete(settings);
     }
 
     private void sendEmailMessage() {
