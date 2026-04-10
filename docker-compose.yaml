@@ -1,16 +1,109 @@
 version: '3.8'
 
 services:
-  book-processing:
+  book-service:
     build:
       context: .
-      dockerfile: Dockerfile
-    container_name: bookstatistic-main-container
+      dockerfile: Dockerfile-book
+    container_name: bookstatistic-book-container
+    ports:
+      - "8082:8082"
+    networks:
+      - bookstatistic-network
+    restart: unless-stopped
+
+  account-service:
+    build:
+      context: .
+      dockerfile: Dockerfile-account
+    container_name: bookstatistic-account-container
+    ports:
+      - "8084:8084"
+    networks:
+      - bookstatistic-network
+    restart: unless-stopped
+
+  analyze-service:
+    build:
+      context: .
+      dockerfile: Dockerfile-analyze
+    container_name: bookstatistic-analyze-container
+    ports:
+      - "8083:8083"
+    networks:
+      - bookstatistic-network
+    restart: unless-stopped
+
+  notification-service:
+    build:
+      context: .
+      dockerfile: Dockerfile-notification
+    container_name: bookstatistic-notification-container
     ports:
       - "8081:8081"
     networks:
       - bookstatistic-network
     restart: unless-stopped
+
+  gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile-gateway
+    container_name: bookstatistic-gateway-container
+    ports:
+      - "8081:8081"
+    networks:
+      - bookstatistic-network
+    restart: unless-stopped
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.4.0
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: confluentinc/cp-kafka:7.4.0
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_DELETE_TOPIC_ENABLE: "true"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./prometheus:/etc/prometheus/
+    container_name: prometheus
+    hostname: prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+    ports:
+      - 9090:9090
+    restart: unless-stopped
+    environment:
+      TZ: "Europe/Moscow"
+    networks:
+      - default
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.11.0
+    volumes:
+      - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+    ports:
+      - "5000:5000"
+    depends_on:
+      - elasticsearch
 
 networks:
   bookstatistic-network:

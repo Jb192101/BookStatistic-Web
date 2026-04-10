@@ -1,0 +1,80 @@
+@startuml
+
+skinparam componentStyle rectangle
+skinparam shadowing false
+skinparam packageStyle rectangle
+
+actor "Пользователь" as user
+
+rectangle "BookStatistic Web System" {
+    queue "Kafka Cluster" as kafka
+
+    rectangle "API Gateway" as gateway
+
+    package "Analyze Service" as analyzeService {
+        component AnalyzeService
+        database "Postgres DB" as analyze_db
+        database redis_db
+        database s3_analyze_db
+    }
+
+    package "Book Service" as bookService {
+        component BookService
+        database "Postgres DB" as book_db
+        database s3_book_db
+    }
+
+    package "Account Service" as accountService {
+        component AccountService
+        database account_db
+    }
+
+    package "Notification Service" as notificationService {
+        component NotificationService
+        database notification_db
+    }
+
+    package "Observability" {
+        component "Logstash"
+        component "Prometheus"
+        component "Grafana"
+     }
+}
+
+' Внутреннее устройство
+NotificationService --> notification_db
+AccountService --> account_db
+BookService --> book_db
+AnalyzeService --> redis_db
+AnalyzeService --> analyze_db
+AnalyzeService --> s3_analyze_db
+BookService --> s3_book_db
+
+' Gateway
+user --> gateway : Отправка запроса в систему
+gateway --> accountService : Регистрация/аутентификация пользователя
+gateway --> bookService : Работа с книгами
+gateway --> analyzeService : Работа с аналитикой по пользователю
+
+' Kafka
+accountService --> kafka : Отправка запросов на создание уведомлений
+bookService --> kafka : Отправка запросов на создание уведомлений
+analyzeService --> kafka : Отправка запросов на создание уведомлений
+kafka --> notificationService : Чтение сообщений на создание уведомлений
+
+' Анализ
+analyzeService --> accountService : Запрос данных на обработку
+analyzeService --> bookService : Запрос данных на обработку
+
+' Остальное
+accountService --> Prometheus
+bookService --> Prometheus
+notificationService --> Prometheus
+
+Prometheus --> Grafana
+
+accountService --> Logstash
+bookService --> Logstash
+notificationService --> Logstash
+
+@enduml

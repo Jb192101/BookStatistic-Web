@@ -1,0 +1,27 @@
+name: Bookstatistic Java CI
+
+on:
+  push:
+    branches: [ "dev" ]
+  pull_request:
+    branches: [ "dev" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Клонируем код
+      - uses: actions/checkout@v4
+
+      # 2. Устанавливаем JDK (версию под свой проект)
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      # 3. Сборка и тесты
+      - name: Build with Maven
+        run: mvn clean verify

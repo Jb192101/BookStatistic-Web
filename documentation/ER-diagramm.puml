@@ -1,0 +1,105 @@
+@startuml
+
+title ER-диаграмма всех сущностей в BookStatistic-Web
+
+entity "Пользователь" as user {
+    *id : uuid
+    ---
+    name : varchar(50)
+    hash_password : varchar(255)
+    role : Role
+    notification_settings_id : uuid
+}
+
+entity "Настройки уведомлений" as notification_settings {
+    *id : uuid
+    ---
+    enable_email : boolean
+    email_address : varchar(255)
+}
+
+entity "Пользователь-Книга" as user_book {
+    *user_id : uuid
+    *book_id : uuid
+    ---
+    readed_pages : int
+}
+
+entity "Пользователь-Близость жанров" as user_genre {
+    *id : uuid
+    ---
+    user_id : uuid
+    classical_literature : float
+    *и так далее*
+}
+
+entity "Отзыв" as response {
+    *id : uuid
+    ---
+    book_id : uuid
+    user_id : uuid
+    message : text
+}
+
+entity "Книга-Автор" as book_author {
+    *book_id : uuid
+    *author_id : uuid
+}
+
+entity "Книга" as book {
+    *id : uuid
+    ---
+    title_of_book : varchar(255)
+    description_of_book : text
+    genre : Genre
+    path_to_cover_file : varchar
+}
+
+' Текст будет храниться в S3
+entity "Книга-Текст" as book_text {
+    *text_id : varchar(255)
+    *book_id : uuid
+}
+
+entity "Файл с текстом" as text_file {
+    *id : uuid
+    ---
+    file_path : varchar(255)
+    file_format : FileFormat
+}
+
+entity "Автор" as author {
+    *id : uuid
+    ---
+    first_name : varchar(128)
+    middle_name : varchar(255)
+    last_name : varchar(255)
+    birthday : date
+}
+
+entity "Уведомление" as notification {
+    *id : uuid
+    ---
+    user_id : uuid
+    type : NotificationType
+    notification_title : varchar(255)
+    message : text
+}
+
+entity "Логи ошибок" as error_logs {
+    *id : uuid
+    ---
+    time : timestamp
+    error_place : varchar(255)
+    error_message : text
+}
+
+' Типы данных
+Genre : STRING {'CLASSICAL_LITERATURE', 'FANTASTIC', 'ROMANTIC', 'FANTASY'}
+NotificationType : String {'SIMPLE_NOTIFICATION'}
+FileFormat : String {'txt', 'epub', 'fb2'}
+Role : String {'SIMPLE_USER', 'ADMIN'}
+
+' Связи
+
+@enduml

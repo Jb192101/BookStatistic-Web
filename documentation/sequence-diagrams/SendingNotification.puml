@@ -1,0 +1,18 @@
+@startuml
+title Отправка уведомления пользователю
+
+participant AnalyzeService as analyzeservice
+queue sending_notification_topic as notificationservicetopic
+queue sending_notification_result_topic as notificationserviceresulttopic
+participant NotificationService as notificationservice
+participant AccountService as accountservice
+
+analyzeservice -> notificationservicetopic : 1. Отправка данных в топик
+notificationservicetopic -> notificationservice : 2. Чтение данных из топика
+notificationservice -> accountservice : 3. Запрос на получение адреса email
+accountservice -> notificationservice : 4. Отправка ответа
+notificationservice -> notificationservice : 5. Формирование сообщения для пользователя
+notificationservice -> notificationserviceresulttopic : 6. Отправка ответа о результатах формирования сообщения
+notificationserviceresulttopic -> analyzeservice : 7. Чтение сообщения о результатах
+
+@enduml

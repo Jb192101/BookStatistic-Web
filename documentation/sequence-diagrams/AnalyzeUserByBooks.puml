@@ -1,0 +1,29 @@
+@startuml
+
+title Запрос на формирование анализа по читаемому пользователем
+
+actor Пользователь as user
+participant Gateway as gateway
+participant AnalyzeService as analyzeservice
+participant BookService as bookservice
+participant AccountService as accountservice
+queue sending_notification_topic as notificationservicetopic
+
+user -> gateway : 1. Отправка запроса на получение аналитики о себе
+gateway -> gateway : 2. Обрабатывает запрос
+
+alt Валидация данных не пройдена
+    gateway -> user : 3. Отправка сообщения о невалидных данных
+end
+
+gateway -> analyzeservice : 4. Данные переданы на analyze-service
+analyzeservice -> bookservice : 5. Получение данных о книгах пользователя
+bookservice -> analyzeservice : 6. Отдаёт данные о книгах пользователя
+analyzeservice -> accountservice : 7. Получение данных о пользователе
+accountservice -> analyzeservice : 8. Отдаёт данные о пользователе
+analyzeservice -> analyzeservice : 9. Формирование данных из полученного
+analyzeservice -> notificationservicetopic : 10. Передача данных на формирование уведомления
+analyzeservice -> gateway : 11. Передача данных на gateway
+gateway -> user : 12. Передача данных пользователю
+
+@enduml
