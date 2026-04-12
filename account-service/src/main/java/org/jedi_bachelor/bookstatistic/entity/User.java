@@ -1,7 +1,32 @@
 package org.jedi_bachelor.bookstatistic.entity;
 
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
+
+import java.util.UUID;
 
 @Entity
+@Table(name = "user")
 public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+
+    @Column(name = "name", nullable = false)
+    private String name;
+
+    @Column(name = "hash_password", nullable = false)
+    private String hashPassword;
+
+    @Column(name = "role")
+    @Enumerated(value = EnumType.STRING)
+    private UserRole role;
+
+    @Column(name = "enable_email", nullable = false, columnDefinition = "default FALSE")
+    private Boolean enableEmail;
+
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "telegram_address")
+    private String telegramAddress;
 }
