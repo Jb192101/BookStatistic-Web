@@ -6,6 +6,7 @@ import org.jedi_bachelor.bookstatistic.converter.UserConverter;
 import org.jedi_bachelor.bookstatistic.dto.mapentities.UserDto;
 import org.jedi_bachelor.bookstatistic.dto.request.account.UserCreationDto;
 import org.jedi_bachelor.bookstatistic.entity.User;
+import org.jedi_bachelor.bookstatistic.entity.UserRole;
 import org.jedi_bachelor.bookstatistic.exceptions.UserNotFoundException;
 import org.jedi_bachelor.bookstatistic.mapper.UserMapper;
 import org.jedi_bachelor.bookstatistic.repository.UserRepository;
@@ -66,15 +67,42 @@ public class UserService {
     }
 
     /**
+     * Метод обновления пользователя по DTO
+     * @param dto DTO обновления
+     * @return пользователя с новыми данными
+     */
+    public UserDto updateUser(UserDto dto) throws UserNotFoundException {
+        Optional<User> user = this.userRepository.findById(dto.id());
+
+        if(user.isEmpty()) {
+            throw new UserNotFoundException(dto.id());
+        }
+
+        // Изменения
+        user.get().setEmail(dto.email());
+        user.get().setRole(UserRole.valueOf(dto.role()));
+        user.get().setName(dto.name());
+        user.get().setEnableEmail(dto.enableEmail());
+        user.get().setHashPassword(dto.hashPassword());
+        user.get().setTelegramAddress(dto.telegramAddress());
+
+        this.userRepository.save(user.get());
+
+        return this.userMapper.toDto(user.get());
+    }
+
+    /**
      * Метод для удаления пользователя
      * Должен каскадно удалять следующие зависимости:
      * - в analyze-service
      * - в book-service
      *
      * @param id ID пользователя
+     * @return удалённый пользователь
+     * @throws UserNotFoundException если пользователя нет
      */
     @Transactional
-    public void deleteUser(UUID id) throws UserNotFoundException {
+    public UserDto deleteUser(UUID id) throws UserNotFoundException {
         // 1. Удаление самого пользователя
         Optional<User> user = this.userRepository.findById(id);
 
@@ -86,5 +114,8 @@ public class UserService {
         // 2. Удаление в analyze-service
 
         // 3. Удаление в book-service
+
+        // Возвращение удалённого пользователя
+        return this.userMapper.toDto(user.get());
     }
 }
