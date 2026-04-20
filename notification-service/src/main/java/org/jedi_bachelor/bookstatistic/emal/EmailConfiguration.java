@@ -1,4 +1,4 @@
-package org.jedi_bachelor.bookstatistic.configuration;
+package org.jedi_bachelor.bookstatistic.emal;
 
 import org.jedi_bachelor.bookstatistic.service.EmailService;
 import org.springframework.beans.factory.annotation.Value;

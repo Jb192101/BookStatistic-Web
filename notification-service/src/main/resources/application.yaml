@@ -15,3 +15,10 @@ spring:
     port: ${EMAIL_PORT}
     username: ${EMAIL_USERNAME}
     password: ${EMAIL_PASSWORD}
+
+kafka:
+  topics:
+    sending-notification-topic: "sending_notification_topic"
+    sending-notification-result-topic: "sending_notification_result_topic"
+  groups:
+    bs-group: "bs-kafka-group"
