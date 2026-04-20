@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Entity
 @Table(name = "users")
