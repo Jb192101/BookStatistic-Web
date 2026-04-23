@@ -1,0 +1,13 @@
+@startuml
+
+actor Пользователь as user
+participant Gateway as gateway
+participant AccountService as accountService
+
+user -> gateway : 1. Запрос на регистрацию
+gateway -> accountService : 2. Передача данных на регистрацию
+accountService -> accountService : 3. Сохранение данных / формирование access token-а
+accountService -> gateway : 4. Передача данных регистрации
+gateway -> user : 5. Передача данных регистрации
+
+@enduml

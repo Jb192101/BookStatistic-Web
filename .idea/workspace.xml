@@ -5,16 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9753a1e7-9738-471e-85b6-9d133f8e3b79" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/configuration/ClientConfiguration.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/service/AuthService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/account-service/src/main/resources/application.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons-lib/src/main/java/org/jedi_bachelor/bookstatistic/dto/request/account/LoginDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons-lib/src/main/java/org/jedi_bachelor/bookstatistic/dto/request/account/RegisterDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons-lib/src/main/java/org/jedi_bachelor/bookstatistic/internalinteraction/InteractionClient.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/controller/AuthController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/entity/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/entity/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/service/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/documentation/ER-diagramm.puml" beforeDir="false" afterPath="$PROJECT_DIR$/documentation/ER-diagramm.puml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,6 +27,11 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="dev" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProblemsViewState">

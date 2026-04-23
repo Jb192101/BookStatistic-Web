@@ -2,96 +2,100 @@
 
 title ER-диаграмма всех сущностей в BookStatistic-Web
 
-entity "Пользователь" as user {
-    *id : uuid
-    ---
-    name : varchar(50)
-    hash_password : varchar(255)
-    role : Role
-    notification_settings_id : uuid
+package "account-service" {
+    entity "Пользователь" as user {
+        *id : uuid
+        ---
+        name : varchar(50)
+        hash_password : varchar(255)
+        role : Role
+        enable_email : boolean
+        telegram_address: varchar(255)
+        email_address : varchar(255)
+    }
 }
 
-entity "Настройки уведомлений" as notification_settings {
-    *id : uuid
-    ---
-    enable_email : boolean
-    email_address : varchar(255)
+package "book-service" {
+    entity "Пользователь-Книга" as user_book {
+        *user_id : uuid
+        *book_id : uuid
+        ---
+        readed_pages : int
+    }
+
+    entity "Отзыв" as response {
+        *id : uuid
+        ---
+        book_id : uuid
+        user_id : uuid
+        message : text
+    }
+
+    entity "Книга-Автор" as book_author {
+        *book_id : uuid
+        *author_id : uuid
+    }
+
+    entity "Книга" as book {
+        *id : uuid
+        ---
+        title_of_book : varchar(255)
+        description_of_book : text
+        genre : Genre
+        path_to_cover_file : varchar
+    }
+
+    ' Текст будет храниться в S3
+    entity "Книга-Текст" as book_text {
+        *text_id : varchar(255)
+        *book_id : uuid
+    }
+
+    entity "Файл с текстом" as text_file {
+        *id : uuid
+        ---
+        file_path : varchar(255)
+        file_format : FileFormat
+    }
+
+    entity "Автор" as author {
+        *id : uuid
+        ---
+        first_name : varchar(128)
+        middle_name : varchar(255)
+        last_name : varchar(255)
+        birthday : date
+    }
 }
 
-entity "Пользователь-Книга" as user_book {
-    *user_id : uuid
-    *book_id : uuid
-    ---
-    readed_pages : int
+package "analyze-service" {
+    entity "Пользователь-Близость жанров" as user_genre_preferences {
+        *id : uuid
+        ---
+        user_id : uuid
+        genre : Genre
+    }
 }
 
-entity "Пользователь-Близость жанров" as user_genre {
-    *id : uuid
-    ---
-    user_id : uuid
-    classical_literature : float
-    *и так далее*
+package "notification-service" {
+    entity "Уведомление" as notification {
+        *id : uuid
+        ---
+        user_id : uuid
+        type : NotificationType
+        notification_title : varchar(255)
+        message : text
+    }
 }
 
-entity "Отзыв" as response {
-    *id : uuid
-    ---
-    book_id : uuid
-    user_id : uuid
-    message : text
-}
-
-entity "Книга-Автор" as book_author {
-    *book_id : uuid
-    *author_id : uuid
-}
-
-entity "Книга" as book {
-    *id : uuid
-    ---
-    title_of_book : varchar(255)
-    description_of_book : text
-    genre : Genre
-    path_to_cover_file : varchar
-}
-
-' Текст будет храниться в S3
-entity "Книга-Текст" as book_text {
-    *text_id : varchar(255)
-    *book_id : uuid
-}
-
-entity "Файл с текстом" as text_file {
-    *id : uuid
-    ---
-    file_path : varchar(255)
-    file_format : FileFormat
-}
-
-entity "Автор" as author {
-    *id : uuid
-    ---
-    first_name : varchar(128)
-    middle_name : varchar(255)
-    last_name : varchar(255)
-    birthday : date
-}
-
-entity "Уведомление" as notification {
-    *id : uuid
-    ---
-    user_id : uuid
-    type : NotificationType
-    notification_title : varchar(255)
-    message : text
-}
-
-entity "Логи ошибок" as error_logs {
-    *id : uuid
-    ---
-    time : timestamp
-    error_place : varchar(255)
-    error_message : text
+package "observability-service" {
+    entity "Логи ошибок" as error_logs {
+        *id : uuid
+        ---
+        time : timestamp
+        error_place : varchar(255)
+        error_message : text
+    }
 }
 
 ' Типы данных
@@ -101,5 +105,14 @@ FileFormat : String {'txt', 'epub', 'fb2'}
 Role : String {'SIMPLE_USER', 'ADMIN'}
 
 ' Связи
+user ||--o{ user_book : "имеют"
+book ||--o{ user_book : "находятся в"
+user ||--|| user_genre_preferences
+book ||--o{ book_author
+author ||--o{ book_author
+book ||--o{ book_text
+response ||--o{ user
+response ||--o{ book
+user ||--o{ notification
 
 @enduml
