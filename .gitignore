@@ -51,7 +51,6 @@ buildNumber.properties
 
 # Gradle
 .gradle/
-build/
 
 # Eclipse
 .classpath
@@ -66,21 +65,12 @@ build/
 /.nb-gradle/
 
 # VS Code
-.vscode/
 
 # IntelliJ IDEA
-.idea/
-*.iws
-*.iml
-*.ipr
-out/
 
 # Mac
-.DS_Store
 
 # Windows
-Thumbs.db
-ehthumbs.db
 
 # Linux
 *~

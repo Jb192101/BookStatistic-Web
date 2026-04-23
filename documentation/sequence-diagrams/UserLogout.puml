@@ -1,0 +1,16 @@
+@startuml
+
+actor User as user
+participant Gateway as gateway
+participant AccountService as accountService
+
+user -> gateway : 1. Запрос на выход из системы
+alt "Пользователь не существует в системе":
+    gateway -> user : 2. Передача сообщения о невалидных данных
+end
+gateway -> accountService : 3. Передача запроса
+accountService -> accountService : 4. Удаление пользователя
+accountService -> gateway : 5. Передача сообщения о выходе
+gateway -> user : 6. Передача сообщения о выходе
+
+@enduml

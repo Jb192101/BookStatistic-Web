@@ -1,0 +1,26 @@
+@startuml
+
+title Добавление новой книги в систему
+
+actor Администратор as admin
+participant Gateway as gateway
+participant BookService as bookService
+participant AnalyzeService as analyzeService
+
+admin -> gateway : 1. Отправка запроса на создание новой книги
+gateway -> bookService : 2. Добавление новой книги
+bookService -> analyzeService : 3. Добавление информации по книге
+analyzeService -> analyzeService : 3.0. Сохранение информации
+analyzeService -> bookService : 3.1. Возврат ответа
+bookService -> gateway : 3.2. Возврат ответа
+gateway -> admin : 3.3. Возврат ответа
+admin -> gateway : 4. Отправка текста для этой книги
+gateway -> bookService : 5. Добавление текстов
+bookService -> analyzeService : 6. Добавление текста
+analyzeService -> analyzeService : 7. Проведение анализа текста
+analyzeService -> analyzeService : 8. Сохранение статической информации по тексту по анализу
+analyzeService -> bookService : 9. Возвращение ответа по успешной добавке текста
+bookService -> gateway : 10. Возвращение ответа по добавлению книги
+gateway -> admin : Возврат ответа
+
+@enduml
