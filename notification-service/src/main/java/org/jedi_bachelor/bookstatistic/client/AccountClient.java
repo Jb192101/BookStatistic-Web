@@ -1,7 +1,7 @@
 package org.jedi_bachelor.bookstatistic.client;
 
+import jakarta.annotation.PostConstruct;
 import org.jedi_bachelor.bookstatistic.dto.response.SuccessResponse;
-import org.jedi_bachelor.bookstatistic.utils.EmailValidator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +12,7 @@ import java.util.List;
 
 @Component
 public class AccountClient {
-    private final RestClient restClient;
+    private RestClient restClient;
 
     @Value("${external-url.account.base-url}")
     private String baseUrl;
@@ -20,7 +20,8 @@ public class AccountClient {
     @Value("${external-url.account.emails}")
     private String emailsRequestAddress;
 
-    public AccountClient() {
+    @PostConstruct
+    public void postConstruct() {
         this.restClient = RestClient.builder()
                 .baseUrl(this.baseUrl)
                 .build();

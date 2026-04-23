@@ -114,5 +114,6 @@ book ||--o{ book_text
 response ||--o{ user
 response ||--o{ book
 user ||--o{ notification
+text_file ||--|| book_text
 
 @enduml
