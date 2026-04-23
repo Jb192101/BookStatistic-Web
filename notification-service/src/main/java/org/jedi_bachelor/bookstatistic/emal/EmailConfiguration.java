@@ -1,4 +1,4 @@
-package org.jedi_bachelor.bookstatistic.configuration;
+package org.jedi_bachelor.bookstatistic.emal;
 
 import org.jedi_bachelor.bookstatistic.service.EmailService;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,10 +28,10 @@ public class EmailConfiguration {
     @Primary
     public JavaMailSender javaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        mailSender.setHost(host);
-        mailSender.setPort(port);
-        mailSender.setUsername(username);
-        mailSender.setPassword(password);
+        mailSender.setHost(this.host);
+        mailSender.setPort(this.port);
+        mailSender.setUsername(this.username);
+        mailSender.setPassword(this.password);
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");

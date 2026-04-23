@@ -22,11 +22,11 @@
       <list>
         <option value="Dockerfile" />
         <option value="AnnotationType" />
-        <option value="Record" />
         <option value="Python Script" />
-        <option value="Interface" />
         <option value="Enum" />
+        <option value="Record" />
         <option value="Class" />
+        <option value="Interface" />
       </list>
     </option>
   </component>
