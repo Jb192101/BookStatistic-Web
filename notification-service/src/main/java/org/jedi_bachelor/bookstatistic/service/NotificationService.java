@@ -37,7 +37,7 @@ public class NotificationService {
      * @param dto DTO создания уведомления
      */
     @Transactional
-    public void addNewNotification(NotificationCreationDto dto) {
+    public NotificationDto addNewNotification(NotificationCreationDto dto) {
         // Создание нового уведомления
         Notification notification = this.converter.convert(dto);
 
@@ -51,12 +51,14 @@ public class NotificationService {
         // Если настройки удовлетворены, отправляем сообщение в email
         // (OutboxEmailMessage пока не сделан)
         if(notificationSettings.getEmailEnable()) {
-            this.outboxContextManager.addOutboxEmailMessage(new OutboxEmailMessage());
+            this.outboxContextManager.saveOutboxEmailMessage(new OutboxEmailMessage());
         }
 
         // Отправляем сообщение в Kafka (Outbox)
         // (OutboxKafkaMessage пока не сделан)
-        this.outboxContextManager.addOutboxKafkaMessage(new OutboxKafkaMessage());
+        this.outboxContextManager.saveOutboxKafkaMessage(new OutboxKafkaMessage());
+
+        return this.notificationMapper.toDto(notification);
     }
 
     @Transactional

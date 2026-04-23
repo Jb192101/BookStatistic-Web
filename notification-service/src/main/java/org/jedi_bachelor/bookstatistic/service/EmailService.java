@@ -18,7 +18,7 @@ import java.util.List;
 public class EmailService {
     private final JavaMailSender mailSender;
 
-    @Value("${email.address.from}")
+    @Value("${spring.mail.username}")
     private final String emailSenderAddress;
 
     private final AccountClient accountClient;
@@ -38,7 +38,21 @@ public class EmailService {
         mailSender.send(message);
     }
 
+    /**
+     * Метод на отправку сообщения на почту всем пользователям, у которых есть флаг
+     * true на отправку сообщений по этому каналу
+     *
+     * @param message сообщение на отправку
+     */
     public void sendBroadcastMessage(BroadcastMessage message) {
         List<String> addresses = this.accountClient.getEmailAddresses();
+
+        for(String address : addresses) {
+            sendEmail(new EmailContext(
+                    address,
+                    message.subject(),
+                    message.message()
+            ));
+        }
     }
 }

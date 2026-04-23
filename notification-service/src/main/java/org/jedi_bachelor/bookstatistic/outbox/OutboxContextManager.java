@@ -7,6 +7,8 @@ import org.jedi_bachelor.bookstatistic.outbox.repository.OutboxEmailMessageRepos
 import org.jedi_bachelor.bookstatistic.outbox.repository.OutboxKafkaMessageRepository;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * Класс для управления контекстом outbox-сообщений
  */
@@ -23,7 +25,7 @@ public class OutboxContextManager {
      *
      * @param message сообщение
      */
-    public void addOutboxEmailMessage(OutboxEmailMessage message) {
+    public void saveOutboxEmailMessage(OutboxEmailMessage message) {
         this.outboxEmailMessageRepository.save(message);
     }
 
@@ -32,7 +34,23 @@ public class OutboxContextManager {
      *
      * @param message сообщение
      */
-    public void addOutboxKafkaMessage(OutboxKafkaMessage message) {
+    public void saveOutboxKafkaMessage(OutboxKafkaMessage message) {
         this.outboxKafkaMessageRepository.save(message);
+    }
+
+    /**
+     * Поиск всех outbox сообщений для email со статусом false
+     * @return список outbox сообщений
+     */
+    public List<OutboxEmailMessage> findEmailMessageByStatusFalse() {
+        return this.outboxEmailMessageRepository.findByPublishedFalse();
+    }
+
+    /**
+     * Поиск всех outbox сообщений для kafka со статусом false
+     * @return список outbox сообщений
+     */
+    public List<OutboxKafkaMessage> findKafkaMessageByStatusFalse() {
+        return this.outboxKafkaMessageRepository.findByPublishedFalse();
     }
 }

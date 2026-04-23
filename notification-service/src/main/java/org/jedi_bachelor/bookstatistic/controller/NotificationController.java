@@ -5,11 +5,13 @@ import org.jedi_bachelor.bookstatistic.dto.request.notification.NotificationCrea
 import org.jedi_bachelor.bookstatistic.dto.mapentities.NotificationDto;
 import org.jedi_bachelor.bookstatistic.dto.response.SuccessResponse;
 import org.jedi_bachelor.bookstatistic.service.NotificationService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -23,14 +25,20 @@ public class NotificationController {
     public ResponseEntity<?> getAllNotifications() {
         List<NotificationDto> dtos = this.notificationService.getAllNotifications();
 
-        return ResponseEntity.ok().body(new SuccessResponse());
+        return ResponseEntity.ok().body(new SuccessResponse(
+                HttpStatus.OK.value(),
+                dtos
+        ));
     }
 
     @GetMapping
     public ResponseEntity<?> getNotification(@PathVariable UUID notificationId) {
         NotificationDto dto = this.notificationService.getNotification(notificationId);
 
-        return ResponseEntity.ok().body(new SuccessResponse());
+        return ResponseEntity.ok().body(new SuccessResponse(
+                HttpStatus.OK.value(),
+                dto
+        ));
     }
 
     @GetMapping("/{userId}")
@@ -44,16 +52,22 @@ public class NotificationController {
 
     @PostMapping
     public ResponseEntity<?> addNewNotification(@RequestBody NotificationCreationDto dto) {
-        this.notificationService.addNewNotification(dto);
+        NotificationDto notificationDto = this.notificationService.addNewNotification(dto);
 
-        return ResponseEntity.ok().body(new SuccessResponse());
+        return ResponseEntity.status(201).body(new SuccessResponse(
+                HttpStatus.CREATED.value(),
+                notificationDto
+        ));
     }
 
     @DeleteMapping("/{notificationId}")
     public ResponseEntity<?> deleteNotification(@PathVariable UUID notificationId) {
         this.notificationService.deleteNotification(notificationId);
 
-        return ResponseEntity.ok().body(new SuccessResponse());
+        return ResponseEntity.ok().body(new SuccessResponse(
+                HttpStatus.OK.value(),
+                Map.of("deleted", true)
+        ));
     }
 
     /**
@@ -65,13 +79,19 @@ public class NotificationController {
     public ResponseEntity<?> addNewNotificationSettings(@PathVariable UUID userId) {
         this.notificationService.addNotificationSettings(userId);
 
-        return ResponseEntity.ok().body(new SuccessResponse());
+        return ResponseEntity.status(201).body(new SuccessResponse(
+                HttpStatus.CREATED.value(),
+                Map.of("created", true)
+        ));
     }
 
     @DeleteMapping("/settings/{userId}")
     public ResponseEntity<?> deleteNotificationSettings(@PathVariable UUID userId) {
         this.notificationService.deleteNotificationSettings(userId);
 
-        return ResponseEntity.ok().body(new SuccessResponse());
+        return ResponseEntity.ok().body(new SuccessResponse(
+                HttpStatus.OK.value(),
+                Map.of("deleted", true)
+        ));
     }
 }
