@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 public class EmailService {
     private final JavaMailSender mailSender;
 
-    private final String emailSender;
+    private final String emailSenderAddress;
 
     /**
      * Метод отправки email
@@ -25,7 +25,7 @@ public class EmailService {
         //message.setTo(to);
         //message.setSubject(subject);
         //message.setText(text);
-        message.setFrom(this.emailSender);
+        message.setFrom(this.emailSenderAddress);
 
         mailSender.send(message);
     }
