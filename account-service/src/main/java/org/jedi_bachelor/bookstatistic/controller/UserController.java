@@ -54,4 +54,11 @@ public class UserController {
 
         return ResponseEntity.ok().body(new SuccessResponse(HttpStatus.CREATED.value(), user));
     }
+
+    @GetMapping("/emails")
+    public ResponseEntity<?> getEmailAddresses() {
+        List<String> addresses = this.userService.getEmailAddresses();
+
+        return ResponseEntity.ok(new SuccessResponse(HttpStatus.OK.value(), addresses));
+    }
 }

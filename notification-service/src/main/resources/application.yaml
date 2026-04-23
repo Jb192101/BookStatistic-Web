@@ -15,6 +15,13 @@ spring:
     port: ${EMAIL_PORT}
     username: ${EMAIL_USERNAME}
     password: ${EMAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+        ssl:
+          enable: true
+    default-encoding: UTF-8
 
 kafka:
   topics:
@@ -22,3 +29,8 @@ kafka:
     sending-notification-result-topic: "sending_notification_result_topic"
   groups:
     bs-group: "bs-kafka-group"
+
+external-urls:
+  account:
+    base-url: "http://localhost:8084/users"
+    emails: "/emails"

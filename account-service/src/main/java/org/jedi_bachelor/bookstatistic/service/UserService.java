@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -145,5 +146,27 @@ public class UserService {
 
         // Возвращение удалённого пользователя
         return this.userMapper.toDto(user.get());
+    }
+
+    /**
+     * Метод получения всех email-адресов
+     *
+     * @return список email-адресов
+     */
+    @Transactional
+    public List<String> getEmailAddresses() {
+        List<String> result = new ArrayList<>();
+
+        List<User> users = this.userRepository.findAll();
+
+        for(User user : users) {
+            if(user.getEnableEmail() == null || user.getEnableEmail() == false) {
+                continue;
+            }
+
+            result.add(user.getEmail());
+        }
+
+        return result;
     }
 }
