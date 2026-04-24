@@ -1,10 +1,10 @@
 package org.jedi_bachelor.bookstatistic.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.Data;
 
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Entity
 @Table(name = "users")
@@ -28,6 +28,7 @@ public class User {
     private Boolean enableEmail;
 
     @Column(name = "email")
+    @Email
     private String email;
 
     @Column(name = "telegram_address")

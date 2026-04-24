@@ -3,7 +3,7 @@ package org.jedi_bachelor.bookstatistic.service;
 import jakarta.transaction.Transactional;
 import org.jedi_bachelor.bookstatistic.converter.UserConverter;
 import org.jedi_bachelor.bookstatistic.dto.mapentities.UserDto;
-import org.jedi_bachelor.bookstatistic.dto.request.account.UserCreationDto;
+import org.jedi_bachelor.bookstatistic.dto.request.account.RegisterDto;
 import org.jedi_bachelor.bookstatistic.entity.User;
 import org.jedi_bachelor.bookstatistic.entity.UserRole;
 import org.jedi_bachelor.bookstatistic.exceptions.UserNotFoundException;
@@ -85,7 +85,7 @@ public class UserService {
      * @param dto DTO для добавления
      * @return DTO с данными созданного пользователя
      */
-    public UserDto addNewUser(UserCreationDto dto) {
+    public UserDto addNewUser(RegisterDto dto) {
         User user = this.userConverter.convert(dto);
 
         this.userRepository.save(user);
@@ -139,9 +139,11 @@ public class UserService {
         }
 
         // 2. Удаление в analyze-service
+        // Переписать на outbox
         this.analyzerInteractionClient.sendRequest(HttpMethod.DELETE, "/" + id);
 
         // 3. Удаление в book-service
+        // Переписать на outbox
         this.bookInteractionClient.sendRequest(HttpMethod.DELETE, "/" + id);
 
         // Возвращение удалённого пользователя

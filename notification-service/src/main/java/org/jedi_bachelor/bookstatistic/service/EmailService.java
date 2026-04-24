@@ -2,10 +2,13 @@ package org.jedi_bachelor.bookstatistic.service;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.jedi_bachelor.bookstatistic.client.AccountClient;
 import org.jedi_bachelor.bookstatistic.dto.request.notification.BroadcastMessage;
 import org.jedi_bachelor.bookstatistic.emal.EmailContext;
+import org.jedi_bachelor.bookstatistic.internalinteraction.InteractionClient;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -21,7 +24,8 @@ public class EmailService {
     @Value("${spring.mail.username}")
     private final String emailSenderAddress;
 
-    private final AccountClient accountClient;
+    @Qualifier("accountInteractionClient")
+    private final InteractionClient accountClient;
 
     /**
      * Метод отправки email (единичный)
@@ -45,7 +49,8 @@ public class EmailService {
      * @param message сообщение на отправку
      */
     public void sendBroadcastMessage(BroadcastMessage message) {
-        List<String> addresses = this.accountClient.getEmailAddresses();
+        ResponseEntity<?> responseEntity = this.accountClient.sendRequest(HttpMethod.GET, "/emails");
+        List<String> addresses = (List<String>) responseEntity.getBody();
 
         for(String address : addresses) {
             sendEmail(new EmailContext(

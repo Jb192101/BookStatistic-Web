@@ -2,7 +2,7 @@ package org.jedi_bachelor.bookstatistic.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.jedi_bachelor.bookstatistic.dto.mapentities.UserDto;
-import org.jedi_bachelor.bookstatistic.dto.request.account.UserCreationDto;
+import org.jedi_bachelor.bookstatistic.dto.request.account.RegisterDto;
 import org.jedi_bachelor.bookstatistic.dto.response.SuccessResponse;
 import org.jedi_bachelor.bookstatistic.exceptions.UserNotFoundException;
 import org.jedi_bachelor.bookstatistic.service.UserService;
@@ -49,7 +49,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<?> addNewUser(@RequestBody UserCreationDto dto) {
+    public ResponseEntity<?> addNewUser(@RequestBody RegisterDto dto) {
         UserDto user = this.userService.addNewUser(dto);
 
         return ResponseEntity.ok().body(new SuccessResponse(HttpStatus.CREATED.value(), user));

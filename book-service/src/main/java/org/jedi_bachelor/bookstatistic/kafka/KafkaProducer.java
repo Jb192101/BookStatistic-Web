@@ -8,4 +8,8 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class KafkaProducer {
     private final KafkaTemplate<String, Object> kafkaTemplate;
+
+    private void sendMessage(String topic, Object message) {
+
+    }
 }
