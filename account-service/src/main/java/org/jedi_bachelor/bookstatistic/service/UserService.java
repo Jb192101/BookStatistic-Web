@@ -1,6 +1,7 @@
 package org.jedi_bachelor.bookstatistic.service;
 
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.jedi_bachelor.bookstatistic.converter.UserConverter;
 import org.jedi_bachelor.bookstatistic.dto.mapentities.UserDto;
 import org.jedi_bachelor.bookstatistic.dto.request.account.RegisterDto;
@@ -9,6 +10,7 @@ import org.jedi_bachelor.bookstatistic.entity.UserRole;
 import org.jedi_bachelor.bookstatistic.exceptions.UserNotFoundException;
 import org.jedi_bachelor.bookstatistic.internalinteraction.InteractionClient;
 import org.jedi_bachelor.bookstatistic.mapper.UserMapper;
+import org.jedi_bachelor.bookstatistic.outbox.OutboxContextManager;
 import org.jedi_bachelor.bookstatistic.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpMethod;
@@ -27,9 +29,7 @@ public class UserService {
 
     private final UserConverter userConverter;
 
-    private final InteractionClient bookInteractionClient;
-
-    private final InteractionClient analyzerInteractionClient;
+    private final OutboxContextManager outboxContextManager;
 
     /**
      * Конструктор класса
@@ -37,19 +37,16 @@ public class UserService {
      * @param userRepository репозиторий JPA
      * @param userMapper маппер (mapstruct)
      * @param userConverter конвертер DTO в Entity
-     * @param bookInteractionClient клиент взаимодействия с book-service
-     * @param analyzerInteractionClient клиент взаимодействия с analyze-service
+     * @param outboxContextManager менеджер контекста outbox-сообщений
      */
     public UserService(UserRepository userRepository,
                        UserMapper userMapper,
                        UserConverter userConverter,
-                       @Qualifier("bookInteractionClient") InteractionClient bookInteractionClient,
-                       @Qualifier("analyzerInteractionClient") InteractionClient analyzerInteractionClient) {
+                       OutboxContextManager outboxContextManager) {
         this.userMapper = userMapper;
         this.userRepository = userRepository;
         this.userConverter = userConverter;
-        this.bookInteractionClient = bookInteractionClient;
-        this.analyzerInteractionClient = analyzerInteractionClient;
+        this.outboxContextManager = outboxContextManager;
     }
 
     /**
@@ -59,6 +56,7 @@ public class UserService {
      * @return пользователя, если он есть
      * @throws UserNotFoundException исключение, если пользователя нет
      */
+    @Transactional
     public UserDto findUserById(UUID id) throws UserNotFoundException {
         Optional<User> user = this.userRepository.findById(id);
 
@@ -74,6 +72,7 @@ public class UserService {
      *
      * @return список пользователей
      */
+    @Transactional
     public List<UserDto> findAll() {
         List<User> users = this.userRepository.findAll();
 
@@ -85,6 +84,7 @@ public class UserService {
      * @param dto DTO для добавления
      * @return DTO с данными созданного пользователя
      */
+    @Transactional
     public UserDto addNewUser(RegisterDto dto) {
         User user = this.userConverter.convert(dto);
 
@@ -96,8 +96,10 @@ public class UserService {
     /**
      * Метод обновления пользователя по DTO
      * @param dto DTO обновления
+     * @throws UserNotFoundException если пользователя с ID нет
      * @return пользователя с новыми данными
      */
+    @Transactional
     public UserDto updateUser(UserDto dto) throws UserNotFoundException {
         Optional<User> user = this.userRepository.findById(dto.id());
 
@@ -139,12 +141,10 @@ public class UserService {
         }
 
         // 2. Удаление в analyze-service
-        // Переписать на outbox
-        this.analyzerInteractionClient.sendRequest(HttpMethod.DELETE, "/" + id);
+        this.outboxContextManager.addAnalyzeMessageToDelete(id);
 
         // 3. Удаление в book-service
-        // Переписать на outbox
-        this.bookInteractionClient.sendRequest(HttpMethod.DELETE, "/" + id);
+        this.outboxContextManager.addBookMessageToDelete(id);
 
         // Возвращение удалённого пользователя
         return this.userMapper.toDto(user.get());
