@@ -10,6 +10,6 @@ public class KafkaProducer {
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
     private void sendMessage(String topic, Object message) {
-
+        this.kafkaTemplate.send(topic, message);
     }
 }

@@ -22,6 +22,10 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      # 3. Сборка и тесты
+      # 3. Сборка
       - name: Build with Maven
-        run: mvn clean verify
+        run: mvn clean build
+
+      # 4. Тестируем
+      - name: Test
+        run: mvn clean test

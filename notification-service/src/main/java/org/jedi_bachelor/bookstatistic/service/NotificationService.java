@@ -7,6 +7,8 @@ import org.jedi_bachelor.bookstatistic.dto.request.notification.NotificationCrea
 import org.jedi_bachelor.bookstatistic.dto.mapentities.NotificationDto;
 import org.jedi_bachelor.bookstatistic.entity.Notification;
 import org.jedi_bachelor.bookstatistic.entity.NotificationSettings;
+import org.jedi_bachelor.bookstatistic.exceptions.NotificationNotFoundException;
+import org.jedi_bachelor.bookstatistic.exceptions.UserNotFoundException;
 import org.jedi_bachelor.bookstatistic.mapper.NotificationMapper;
 import org.jedi_bachelor.bookstatistic.outbox.OutboxContextManager;
 import org.jedi_bachelor.bookstatistic.outbox.entity.OutboxEmailMessage;
@@ -16,6 +18,7 @@ import org.jedi_bachelor.bookstatistic.repository.NotificationSettingsRepository
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -69,24 +72,40 @@ public class NotificationService {
     }
 
     @Transactional
-    public List<NotificationDto> getUserNotifications(UUID userId) {
+    public List<NotificationDto> getUserNotifications(UUID userId) throws UserNotFoundException {
+        List<Notification> dtos = this.notificationRepository.findByUserId(userId);
+
+        if(dtos.isEmpty()) {
+            throw new UserNotFoundException(userId);
+        }
+
         return this.notificationMapper.toDtoList(
-                this.notificationRepository.findByUserId(userId)
+                dtos
         );
     }
 
     @Transactional
-    public NotificationDto getNotification(UUID notificationId) {
+    public NotificationDto getNotification(UUID notificationId) throws NotificationNotFoundException {
+        Optional<Notification> notification = this.notificationRepository.findByNotificationId(notificationId);
+
+        if(notification.isEmpty()) {
+            throw new NotificationNotFoundException(notificationId);
+        }
+
         return this.notificationMapper.toDto(
-                this.notificationRepository.findByNotificationId(notificationId)
+                notification.get()
         );
     }
 
     @Transactional
-    public void deleteNotification(UUID notificationId) {
-        Notification notification = this.notificationRepository.findByNotificationId(notificationId);
+    public void deleteNotification(UUID notificationId) throws NotificationNotFoundException {
+        Optional<Notification> notification = this.notificationRepository.findByNotificationId(notificationId);
 
-        this.notificationRepository.delete(notification);
+        if(notification.isEmpty()) {
+            throw new NotificationNotFoundException(notificationId);
+        }
+
+        this.notificationRepository.delete(notification.get());
     }
 
     @Transactional
@@ -103,9 +122,13 @@ public class NotificationService {
      * @param userId ID пользователя
      */
     @Transactional
-    public void deleteNotificationSettings(UUID userId) {
-        NotificationSettings settings = this.notificationSettingsRepository.findByUserId(userId);
+    public void deleteNotificationSettings(UUID userId) throws UserNotFoundException {
+        Optional<NotificationSettings> settings = this.notificationSettingsRepository.findByUserId(userId);
 
-        this.notificationSettingsRepository.delete(settings);
+        if(settings.isEmpty()) {
+            throw new UserNotFoundException(userId);
+        }
+
+        this.notificationSettingsRepository.delete(settings.get());
     }
 }

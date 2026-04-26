@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.jedi_bachelor.bookstatistic.emal.EmailContext;
 import org.jedi_bachelor.bookstatistic.kafka.KafkaProducer;
 import org.jedi_bachelor.bookstatistic.outbox.OutboxContextManager;
+import org.jedi_bachelor.bookstatistic.outbox.dto.OutboxKafkaDto;
 import org.jedi_bachelor.bookstatistic.outbox.entity.OutboxEmailMessage;
 import org.jedi_bachelor.bookstatistic.outbox.entity.OutboxKafkaMessage;
 import org.jedi_bachelor.bookstatistic.service.EmailService;
@@ -52,7 +53,13 @@ public class OutboxListener {
 
         for(OutboxKafkaMessage message : messages) {
             if(!message.getPublished()) {
-                this.kafkaProducer.sendMessageToSendingNotificationResultTopic(message);
+                OutboxKafkaDto dto = new OutboxKafkaDto(
+                        message.getId(),
+                        message.getTitle(),
+                        message.getMessageResult()
+                );
+
+                this.kafkaProducer.sendMessageToSendingNotificationResultTopic(dto);
 
                 message.setPublished(true);
                 this.outboxContextManager.saveOutboxKafkaMessage(message);
@@ -62,7 +69,8 @@ public class OutboxListener {
 
     /**
      * Метод формирования сообщения в email и его отправка
-     * @param message
+     *
+     * @param message сущность сообщения
      */
     private void formEmailMessageAndSending(OutboxEmailMessage message) {
         // Формирование EmailContext
