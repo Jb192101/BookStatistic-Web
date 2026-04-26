@@ -35,7 +35,7 @@ services:
       PGDATA: /var/lib/postgresql/data/pgdata
       TZ: UTC+3
     ports:
-      - "${NOTIFICATION_DB_PORT}:5432"
+      - "${BOOK_DB_PORT}:5432"
     tmpfs:
       - /var/lib/postgresql/data:rw,noexec,nosuid,size=256m
     volumes:
@@ -49,6 +49,13 @@ services:
       start_period: 5s
     restart: unless-stopped
 
+  book-redis:
+    image: redis:7-alpine
+    container_name: book-redis
+    ports:
+      - "${BOOK_DB_REDIS_PORT}:6379"
+    restart: unless-stopped
+
   account-postgres:
     image: postgres:16-alpine
     container_name: account-postgres
@@ -59,7 +66,7 @@ services:
       PGDATA: /var/lib/postgresql/data/pgdata
       TZ: UTC+3
     ports:
-      - "${NOTIFICATION_DB_PORT}:5432"
+      - "${ACCOUNT_DB_PORT}:5432"
     tmpfs:
       - /var/lib/postgresql/data:rw,noexec,nosuid,size=256m
     volumes:
@@ -83,7 +90,7 @@ services:
       PGDATA: /var/lib/postgresql/data/pgdata
       TZ: UTC+3
     ports:
-      - "${NOTIFICATION_DB_PORT}:5432"
+      - "${ANALYZE_DB_PORT}:5432"
     tmpfs:
       - /var/lib/postgresql/data:rw,noexec,nosuid,size=256m
     volumes:
@@ -95,6 +102,13 @@ services:
       timeout: 3s
       retries: 15
       start_period: 5s
+    restart: unless-stopped
+
+  analyze-redis:
+    image: redis:7-alpine
+    container_name: analyze-redis
+    ports:
+      - "${ANALYZE_REDIS_DB_PORT}:6379"
     restart: unless-stopped
 
   book-service:
@@ -147,7 +161,7 @@ services:
       dockerfile: Dockerfile-gateway
     container_name: bookstatistic-gateway-container
     ports:
-      - "8081:8081"
+      - "8085:8085"
     networks:
       - bookstatistic-network
     restart: unless-stopped
@@ -185,7 +199,7 @@ services:
     command:
       - --config.file=/etc/prometheus/prometheus.yml
     ports:
-      - 9090:9090
+      - "9090:9090"
     restart: unless-stopped
     environment:
       TZ: "Europe/Moscow"
