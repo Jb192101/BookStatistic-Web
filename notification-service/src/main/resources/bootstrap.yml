@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: notification-service
+  config:
+    import: configserver:http://localhost:8071
+  cloud:
+    config:
+      uri: http://localhost:8071
+      fail-fast: true
+      retry:
+        max-attempts: 6
+        initial-interval: 1000
+        multiplier: 1.1
+
+# Настройка Resilience4J для circuitBreaker-ов и bulkhead-ов
+resilience4j:
+  circuitbreaker:
+    instances:
+      notification-circuitbreaker:
+        registerHealthIndicator: true
+        ringBufferSizeInClosedState: 5
+        ringBufferSizeInHalfOpenState: 3
+        waitDurationInOpenState: 10s
+        failureRateThreshold: 50
+        recordExceptions:
+          - org.springframework.web.client.HttpServerErrorException
+          - java.io.IOException
+          - java.util.concurrent.TimeoutException
+          - org.springframework.web.client.ResourceAccessException
+
+  bulkhead:
+    instances:
+      notification-bulkhead:
+        maxWaitDuration: 2ms
+        maxConcurrentCalls: 20

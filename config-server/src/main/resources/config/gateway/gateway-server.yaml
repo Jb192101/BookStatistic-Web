@@ -1,0 +1,49 @@
+server:
+  port: 8072
+
+eureka:
+  instance:
+    preferIpAddress: true
+
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://localhost:8070/eureka/
+
+spring:
+  zipkin:
+    baseUrl: http://zipkin:9411
+  sleuth:
+    sampler:
+      percentage: 1
+  cloud:
+    discovery.locator:
+      enabled: true
+      lowerCaseServiceId: true
+    loadbalancer.ribbon.enabled: false
+    gateway:
+      routes:
+        - id: notification-service
+          uri: lb://notification-service
+          filters:
+            - RewritePath=/notification-service/(?<path>.*), /$\{path}
+            - RemoveRequestHeader= Cookie,Set-Cookie
+
+        - id: book-service
+          uri: lb://book-service
+          filters:
+            - RewritePath=/book-service/(?<path>.*), /$\{path}
+            - RemoveRequestHeader= Cookie,Set-Cookie
+
+        - id: account-service
+          uri: lb://notification-service
+          filters:
+            - RewritePath=/account-service/(?<path>.*), /$\{path}
+            - RemoveRequestHeader= Cookie,Set-Cookie
+
+        - id: analyze-service
+          uri: lb://analyze-service
+          filters:
+            - RewritePath=/analyze-service/(?<path>.*), /$\{path}
+            - RemoveRequestHeader= Cookie,Set-Cookie

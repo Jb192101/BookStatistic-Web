@@ -7,16 +7,18 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="config-server" />
         <module name="ift-module" />
+        <module name="analyze-service" />
         <module name="book-service" />
         <module name="account-service" />
-        <module name="notification-service" />
+        <module name="eureka-server" />
         <module name="gateway" />
+        <module name="notification-service" />
         <module name="commons-lib" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="analyze-service" target="21" />
       <module name="audit-service" target="21" />
       <module name="bookstatistic-starter" target="17" />
     </bytecodeTargetLevel>
@@ -28,7 +30,9 @@
       <module name="audit-service" options="-parameters" />
       <module name="book-service" options="-parameters" />
       <module name="bookstatistic-starter" options="-parameters" />
-      <module name="commons-lib" options="-parameters" />
+      <module name="commons-lib" options="" />
+      <module name="config-server" options="-parameters" />
+      <module name="eureka-server" options="-parameters" />
       <module name="gateway" options="-parameters" />
       <module name="notification-service" options="-parameters" />
     </option>

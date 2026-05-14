@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: account-service
+
+external-url:
+  book: "http://localhost:8082/books"
+  analyzer: "http://localhost:8083/analyze"
+
+keycloak:
+  realm: bookstatistic-realm
+  auth-server-url: http://keycloak:8090/auth
+  ssl-required: external
+  resource: bookstatistic # идентификатор клиента
+  credentials:
+    secret: # здесь должен быть secret key из панели keycloak
+  bearer-only: true
+  use-resource-role-mappings: true
+
+eureka:
+  instance:
+    preferIpAddress: true
+
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://localhost:8070/eureka/
+
+zipkin.baseUrl: zipkin:9411
+spring.sleuth.sampler.percentage: 1

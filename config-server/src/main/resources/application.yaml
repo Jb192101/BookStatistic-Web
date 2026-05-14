@@ -1,0 +1,8 @@
+spring:
+  security:
+    user:
+      name: admin
+      password: admin123
+
+server:
+  port: 8071

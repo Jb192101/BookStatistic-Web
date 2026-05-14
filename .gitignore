@@ -86,3 +86,4 @@ application-dev.properties
 #properties
 *.properties
 /.idea/
+/.env.docker

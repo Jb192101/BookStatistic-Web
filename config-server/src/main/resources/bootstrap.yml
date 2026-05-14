@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: config-server
+  profiles:
+    active: native
+  cloud:
+    config:
+      server:
+        encrypt:
+          enabled: true
+        native:
+          search-locations: classpath:/config/notification,classpath:/config/book,classpath:/config/gateway,classpath:/config/account,classpath:/config/eureka
+
+server:
+  port: 8071
+
+encrypt:
+  key: ${ENCRYPT_KEY}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
