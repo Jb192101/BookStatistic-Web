@@ -9,26 +9,25 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 @Component
 @RequiredArgsConstructor
 public class RedisContentManager {
     private final RedisTemplate<String, TextFile> redisTemplate;
 
-    private static final String REDIS_KEY_PREFIX = "file:";
+    private static final String REDIS_KEY_PREFIX = "text:document:";
 
     /**
      * Метод для сохранения нового текстового файла
      * Предусловие: уже ясно, что поданный файл является текстовым
      *
+     * @param bookId ID книги
      * @param file файл с текстом
      * @return ID новой записи в Redis
      */
-    public String saveTextFile(MultipartFile file) throws IOException {
-        String fileId = UUID.randomUUID().toString();
-        String redisKey = REDIS_KEY_PREFIX + fileId;
+    public String saveTextFile(UUID bookId, MultipartFile file) throws IOException {
+        String redisKey = REDIS_KEY_PREFIX + bookId;
 
         this.redisTemplate.opsForValue().set(redisKey, this.convertFileToEntity(file, redisKey));
 
@@ -36,19 +35,61 @@ public class RedisContentManager {
         this.redisTemplate.opsForHash().put(redisKey + ":meta", "size", String.valueOf(file.getSize()));
         this.redisTemplate.opsForHash().put(redisKey + ":meta", "contentType", Objects.requireNonNull(file.getContentType()));
 
-        return fileId;
+        return redisKey;
     }
 
     /**
      * Метод выдачи содержимого файла
      *
-     * @param fileId ID файла
+     * @param bookId ID файла
      * @return содержимое файла
      */
-    public TextFile getFileContent(String fileId) {
-        String redisKey = REDIS_KEY_PREFIX + fileId;
+    public TextFile getTextFile(UUID bookId) {
+        String redisKey = REDIS_KEY_PREFIX + bookId;
 
         return this.redisTemplate.opsForValue().get(redisKey);
+    }
+
+    /**
+     * Метод выдачи всех файлов с текстами
+     *
+     * @return список текстов
+     */
+    public List<TextFile> findAll() {
+        Set<String> keys = redisTemplate.keys(REDIS_KEY_PREFIX + "*");
+        List<TextFile> documents = new ArrayList<>();
+
+        if (keys != null) {
+            for (String key : keys) {
+                Object obj = redisTemplate.opsForValue().get(key);
+                if (obj instanceof TextFile) {
+                    documents.add((TextFile) obj);
+                }
+            }
+        }
+        return documents;
+    }
+
+    /**
+     * Существует ли текст с таким ID
+     *
+     * @param id ID текста
+     * @return true, если существует
+     */
+    public boolean exists(String id) {
+        String key = REDIS_KEY_PREFIX + id;
+        return Boolean.TRUE.equals(this.redisTemplate.hasKey(key));
+    }
+
+    /**
+     * Метод удаления текста по ID
+     *
+     * @param id ID текста
+     * @return true, если сущность удалена
+     */
+    public boolean deleteById(String id) {
+        String key = REDIS_KEY_PREFIX + id;
+        return Boolean.TRUE.equals(this.redisTemplate.delete(key));
     }
 
     /**

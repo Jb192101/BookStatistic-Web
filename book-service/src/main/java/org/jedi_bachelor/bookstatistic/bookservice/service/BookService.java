@@ -7,6 +7,7 @@ import org.jedi_bachelor.bookstatistic.bookservice.entity.Book;
 import org.jedi_bachelor.bookstatistic.bookservice.entity.BookTextRelation;
 import org.jedi_bachelor.bookstatistic.bookservice.mapper.BookMapper;
 import org.jedi_bachelor.bookstatistic.bookservice.redis.RedisContentManager;
+import org.jedi_bachelor.bookstatistic.bookservice.redis.entity.TextFile;
 import org.jedi_bachelor.bookstatistic.bookservice.repository.*;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.mapentities.BookDto;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.request.book.BookCreationDto;
@@ -101,7 +102,7 @@ public class BookService {
             throw new RuntimeException("Поддерживаются только текстовые файлы");
         }
 
-        String fileId = this.redisContentManager.saveTextFile(file);
+        this.redisContentManager.saveTextFile(bookId, file);
 
         Optional<Book> bookOptional = this.bookRepository.findById(bookId);
 
@@ -112,9 +113,24 @@ public class BookService {
         BookTextRelation relation = new BookTextRelation();
         relation.setBook(bookOptional.get());
         relation.setText(this.textEntityConverter.convert(
-                this.redisContentManager.getFileContent(fileId)
+                this.redisContentManager.getTextFile(bookId)
         ));
 
         this.bookTextRepository.save(relation);
+    }
+
+    /**
+     * Метод выдачи текста книги по ID книги
+     *
+     * @param bookId ID книги
+     * @return файл текста
+     * @throws BookNotFoundException если книги с таким ID не существует
+     */
+    public TextFile getBookTextById(UUID bookId) throws BookNotFoundException {
+        if(!this.redisContentManager.exists(bookId.toString())) {
+            throw new BookNotFoundException(bookId);
+        }
+
+        return this.redisContentManager.getTextFile(bookId);
     }
 }

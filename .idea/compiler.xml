@@ -10,9 +10,9 @@
         <module name="config-server" />
         <module name="ift-module" />
         <module name="analyze-service" />
+        <module name="discovery-server" />
         <module name="book-service" />
         <module name="account-service" />
-        <module name="eureka-server" />
         <module name="gateway" />
         <module name="notification-service" />
         <module name="commons-lib" />
@@ -32,7 +32,7 @@
       <module name="bookstatistic-starter" options="-parameters" />
       <module name="commons-lib" options="" />
       <module name="config-server" options="-parameters" />
-      <module name="eureka-server" options="-parameters" />
+      <module name="discovery-server" options="-parameters" />
       <module name="gateway" options="-parameters" />
       <module name="notification-service" options="-parameters" />
     </option>

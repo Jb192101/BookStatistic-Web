@@ -16,7 +16,7 @@
 		<module>notification-service</module>
 		<module>gateway</module>
 		<module>config-server</module>
-		<module>eureka-server</module>
+		<module>discovery-server</module>
 		<module>commons-lib</module>
 		<module>ift-module</module>
         <module>analyze-service</module>
