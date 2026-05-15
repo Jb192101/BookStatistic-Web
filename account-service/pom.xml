@@ -5,7 +5,7 @@
          http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.jedi_bachelor.bookstatistic</groupId>
+    <groupId>org.jedi_bachelor.bookstatistic.accountservice</groupId>
     <artifactId>account-service</artifactId>
     <version>1.0.0</version>
 
