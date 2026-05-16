@@ -1,9 +1,18 @@
-FROM python:3.11-slim
+FROM openjdk:21-jdk-slim as build
 
-WORKDIR /app
+ARG JAR_FILE
 
-COPY . .
+COPY ${JAR_FILE} app.jar
 
-EXPOSE 8083
+RUN mkdir -p target/dependency && (cd target/dependency; jar -xf /app.jar)
 
-CMD ["python", "-u", "main.py"]
+FROM openjdk:21-jdk-slim
+
+VOLUME /tmp
+
+ARG DEPENDENCY=/target/dependency
+COPY --from=build ${DEPENDENCY}/BOOT-INF/lib /app/lib
+COPY --from=build ${DEPENDENCY}/META-INF /app/META-INF
+COPY --from=build ${DEPENDENCY}/BOOT-INF/classes /app
+
+ENTRYPOINT ["java","-cp","app:app/lib/*","org.jedi_bachelor.bookstatistic.analyzeservice.AnalyzeServiceApplication"]

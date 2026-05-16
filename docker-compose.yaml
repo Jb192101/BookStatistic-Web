@@ -11,7 +11,7 @@ services:
       PGDATA: /var/lib/postgresql/data/pgdata
       TZ: UTC+3
     ports:
-      - "${NOTIFICATION_DB_PORT}:5432"
+      - ${NOTIFICATION_DB_PORT}:5432
     tmpfs:
       - /var/lib/postgresql/data:rw,noexec,nosuid,size=256m
     volumes:
@@ -35,11 +35,11 @@ services:
       PGDATA: /var/lib/postgresql/data/pgdata
       TZ: UTC+3
     ports:
-      - "${BOOK_DB_PORT}:5432"
+      - ${BOOK_PG_DB_PORT}:5431
     tmpfs:
       - /var/lib/postgresql/data:rw,noexec,nosuid,size=256m
     volumes:
-      - ./docker/init-book.sql
+      - ./docker/init-books.sql
     shm_size: "256m"
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB} -h 127.0.0.1 -p 5432" ]
@@ -53,7 +53,7 @@ services:
     image: redis:7-alpine
     container_name: book-redis
     ports:
-      - "${BOOK_DB_REDIS_PORT}:6379"
+      - ${BOOK_DB_REDIS_PORT}:6379
     restart: unless-stopped
 
   account-postgres:
@@ -66,7 +66,7 @@ services:
       PGDATA: /var/lib/postgresql/data/pgdata
       TZ: UTC+3
     ports:
-      - "${ACCOUNT_DB_PORT}:5432"
+      - ${ACCOUNT_DB_PORT}:5432
     tmpfs:
       - /var/lib/postgresql/data:rw,noexec,nosuid,size=256m
     volumes:
@@ -90,7 +90,7 @@ services:
       PGDATA: /var/lib/postgresql/data/pgdata
       TZ: UTC+3
     ports:
-      - "${ANALYZE_DB_PORT}:5432"
+      - ${ANALYZE_PG_DB_PORT}:5432
     tmpfs:
       - /var/lib/postgresql/data:rw,noexec,nosuid,size=256m
     volumes:
@@ -108,7 +108,7 @@ services:
     image: redis:7-alpine
     container_name: analyze-redis
     ports:
-      - "${ANALYZE_REDIS_DB_PORT}:6379"
+      - ${ANALYZE_REDIS_DB_PORT}:6378
     restart: unless-stopped
 
   book-service:
@@ -117,7 +117,7 @@ services:
       dockerfile: Dockerfile-book
     container_name: bookstatistic-book-container
     ports:
-      - "8082:8082"
+      - ${BOOK_SERVER_PORT}:8082
     networks:
       - bookstatistic-network
     restart: unless-stopped
@@ -128,7 +128,7 @@ services:
       dockerfile: Dockerfile-account
     container_name: bookstatistic-account-container
     ports:
-      - "8084:8084"
+      - ${ACCOUNT_SERVER_PORT}:8084
     networks:
       - bookstatistic-network
     restart: unless-stopped
@@ -139,7 +139,7 @@ services:
       dockerfile: Dockerfile-analyze
     container_name: bookstatistic-analyze-container
     ports:
-      - "8083:8083"
+      - ${ANALYZE_SERVER_PORT}:8085
     networks:
       - bookstatistic-network
     restart: unless-stopped
@@ -150,7 +150,7 @@ services:
       dockerfile: Dockerfile-notification
     container_name: bookstatistic-notification-container
     ports:
-      - "8081:8081"
+      - ${NOTIFICATION_SERVER_PORT}:8081
     networks:
       - bookstatistic-network
     restart: unless-stopped
@@ -161,7 +161,7 @@ services:
       dockerfile: Dockerfile-gateway
     container_name: bookstatistic-gateway-container
     ports:
-      - "8085:8085"
+      - ${GATEWAY_SERVER_PORT}:8083
     networks:
       - bookstatistic-network
     restart: unless-stopped
