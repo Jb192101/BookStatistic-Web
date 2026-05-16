@@ -1,4 +1,23 @@
 spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: bookstatistic-app
+            client-secret: ${KEYCLOAK_CLIENT_SECRET}
+            scope: openid,profile,email,roles
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/login/oauth2/code/keycloak"
+        provider:
+          keycloak:
+            issuer-uri: ${KEYCLOAK_ISSUER_URI:http://localhost:8080/realms/bookstatistic}
+            user-name-attribute: preferred_username
+
+      resourceserver:
+        jwt:
+          issuer-uri: ${KEYCLOAK_ISSUER_URI:http://localhost:8080/realms/bookstatistic}
+          jwk-set-uri: ${KEYCLOAK_ISSUER_URI:http://localhost:8080/realms/bookstatistic}/protocol/openid-connect/certs
   application:
     name: account-service
 
@@ -6,25 +25,17 @@ external-url:
   book: "http://localhost:8082/books"
   analyzer: "http://localhost:8083/analyze"
 
+jwt:
+  auth-converter:
+    principal-claim: preferred_username
+    resource-id: bookstatistic-app
+
 keycloak:
-  realm: bookstatistic-realm
-  auth-server-url: http://keycloak:8090/auth
-  ssl-required: external
-  resource: bookstatistic # идентификатор клиента
-  credentials:
-    secret: # здесь должен быть secret key из панели keycloak
-  bearer-only: true
-  use-resource-role-mappings: true
-
-eureka:
-  instance:
-    preferIpAddress: true
-
-  client:
-    registerWithEureka: true
-    fetchRegistry: true
-    serviceUrl:
-      defaultZone: http://localhost:8070/eureka/
+  admin:
+    server-url: ${KEYCLOAK_SERVER_URL:http://localhost:8080}
+    realm: bookstatistic
+    client-id: admin-cli
+    client-secret: ${KEYCLOAK_ADMIN_SECRET}
 
 zipkin.baseUrl: zipkin:9411
 spring.sleuth.sampler.percentage: 1

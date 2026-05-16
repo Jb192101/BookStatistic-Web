@@ -170,6 +170,12 @@ services:
     image: jboss/keycloak
     restart: always
     environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres-keycloak:5432/keycloak
+      KC_HOSTNAME: localhost
+      KC_HTTP_ENABLED: true
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin123
       KEYCLOAK_VERSION: 6.0.1
       KEYCLOAK_USER: ${KEYCLOAK_USER}
       KEYCLOAK_PASSWORD: ${KEYCLOAK_PASSWORD}
@@ -186,6 +192,13 @@ services:
       backend:
         aliases:
           - "keycloak"
+
+  postgres-keycloak:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: keycloak123
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.4.0

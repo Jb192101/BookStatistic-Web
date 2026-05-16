@@ -3,13 +3,13 @@ package org.jedi_bachelor.bookstatistic.accountservice.service;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.jedi_bachelor.bookstatistic.accountservice.converter.UserConverter;
-import org.jedi_bachelor.bookstatistic.dto.mapentities.UserDto;
-import org.jedi_bachelor.bookstatistic.dto.request.account.RegisterDto;
 import org.jedi_bachelor.bookstatistic.accountservice.entity.UserProfile;
-import org.jedi_bachelor.bookstatistic.exceptions.UserNotFoundException;
 import org.jedi_bachelor.bookstatistic.accountservice.mapper.UserMapper;
 import org.jedi_bachelor.bookstatistic.accountservice.outbox.OutboxContextManager;
 import org.jedi_bachelor.bookstatistic.accountservice.repository.UserRepository;
+import org.jedi_bachelor.bookstatistic.commonslib.dto.mapentities.UserDto;
+import org.jedi_bachelor.bookstatistic.commonslib.dto.request.account.RegisterDto;
+import org.jedi_bachelor.bookstatistic.commonslib.exceptions.UserNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -90,6 +90,8 @@ public class UserService {
         this.userRepository.save(userProfile);
 
         log.info("New user has created by DTO {}", dto);
+
+        // Отправить задачу в outbox на создание представления пользователя в других системах
 
         return this.userMapper.toDto(userProfile);
     }

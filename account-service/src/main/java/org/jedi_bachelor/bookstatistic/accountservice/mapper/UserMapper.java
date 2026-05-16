@@ -1,7 +1,7 @@
 package org.jedi_bachelor.bookstatistic.accountservice.mapper;
 
-import org.jedi_bachelor.bookstatistic.dto.mapentities.UserDto;
 import org.jedi_bachelor.bookstatistic.accountservice.entity.UserProfile;
+import org.jedi_bachelor.bookstatistic.commonslib.dto.mapentities.UserDto;
 import org.mapstruct.Mapper;
 
 import java.util.List;
