@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.jedi_bachelor.bookstatistic.accountservice.outbox.OutboxOperation;
 
 import java.util.UUID;
 
@@ -25,4 +26,11 @@ public class OutboxNotificationSettingsMessage {
 
     @Column(name = "email_address")
     private String emailAddress;
+
+    @Column(name = "published")
+    private Boolean published;
+
+    @Column(name = "operation")
+    @Enumerated(EnumType.STRING)
+    private OutboxOperation operation;
 }

@@ -2,6 +2,7 @@ package org.jedi_bachelor.bookstatistic.accountservice.outbox.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.jedi_bachelor.bookstatistic.accountservice.outbox.OutboxOperation;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -18,7 +19,8 @@ public class OutboxAnalyzeMessage {
     private UUID userId;
 
     @Column(name = "action")
-    private String action; // delete, add
+    @Enumerated(EnumType.STRING)
+    private OutboxOperation action; // delete, add
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

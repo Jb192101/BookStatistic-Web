@@ -9,6 +9,7 @@ import org.jedi_bachelor.bookstatistic.accountservice.outbox.repository.OutboxNo
 import org.jedi_bachelor.bookstatistic.accountservice.outbox.repository.OutboxBookMessageRepository;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,7 +28,7 @@ public class OutboxContextManager {
      * @param userId ID пользователя
      */
     public void addBookMessageToDelete(UUID userId) {
-        addBookMessage(userId, "delete");
+        this.addBookMessage(userId, OutboxOperation.DELETE_OPERATION);
     }
 
     public List<OutboxBookMessage> findBookMessageByStatusFalse() {
@@ -60,7 +61,7 @@ public class OutboxContextManager {
      * @param userId ID пользователя
      */
     public void addBookMessageToAdd(UUID userId) {
-        addBookMessage(userId, "add");
+        this.addBookMessage(userId, OutboxOperation.ADD_OPERATION);
     }
 
     /**
@@ -69,7 +70,7 @@ public class OutboxContextManager {
      * @param userId ID пользователя
      */
     public void addAnalyzeMessageToDelete(UUID userId) {
-        addAnalyzeMessage(userId, "delete");
+        this.addAnalyzeMessage(userId, OutboxOperation.DELETE_OPERATION);
     }
 
     /**
@@ -78,21 +79,23 @@ public class OutboxContextManager {
      * @param userId ID пользователя
      */
     public void addAnalyzeMessageToAdd(UUID userId) {
-        addAnalyzeMessage(userId, "add");
+        this.addAnalyzeMessage(userId, OutboxOperation.ADD_OPERATION);
     }
 
-    private void addAnalyzeMessage(UUID userId, String action) {
+    private void addAnalyzeMessage(UUID userId, OutboxOperation action) {
         OutboxAnalyzeMessage message = new OutboxAnalyzeMessage();
         message.setUserId(userId);
         message.setAction(action);
+        message.setCreatedAt(LocalDateTime.now());
 
         this.outboxAnalyzeMessageRepository.save(message);
     }
 
-    private void addBookMessage(UUID userId, String action) {
+    private void addBookMessage(UUID userId, OutboxOperation action) {
         OutboxBookMessage message = new OutboxBookMessage();
         message.setUserId(userId);
         message.setAction(action);
+        message.setCreatedAt(LocalDateTime.now());
 
         this.outboxBookMessageRepository.save(message);
     }

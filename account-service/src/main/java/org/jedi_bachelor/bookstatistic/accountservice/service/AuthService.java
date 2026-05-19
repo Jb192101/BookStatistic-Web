@@ -71,7 +71,7 @@ public class AuthService {
     public UserProfile register(RegisterDto registerDto) {
         UserRepresentation keycloakUser = this.createKeycloakUser(registerDto);
 
-        try (Response response = keycloakAdmin.realm(realm).users().create(keycloakUser)) {
+        try (Response response = this.keycloakAdmin.realm(this.realm).users().create(keycloakUser)) {
 
             if (response.getStatus() != 201) {
                 throw new RuntimeException("Failed to create user in Keycloak: " + response.getStatusInfo());
@@ -92,16 +92,17 @@ public class AuthService {
 
         } catch (Exception e) {
             log.error("Registration failed", e);
+
             throw new RuntimeException("Registration failed: " + e.getMessage());
         }
     }
 
     public void logout(String refreshToken) {
-        String logoutUrl = issuerUri + "/protocol/openid-connect/logout";
+        String logoutUrl = this.issuerUri + "/protocol/openid-connect/logout";
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("client_id", clientId);
-        params.add("client_secret", clientSecret);
+        params.add("client_id", this.clientId);
+        params.add("client_secret", this.clientSecret);
         params.add("refresh_token", refreshToken);
 
         HttpHeaders headers = new HttpHeaders();
@@ -110,7 +111,7 @@ public class AuthService {
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
 
         try {
-            restTemplate.postForEntity(logoutUrl, request, String.class);
+            this.restTemplate.postForEntity(logoutUrl, request, String.class);
         } catch (Exception e) {
             log.warn("Logout failed: {}", e.getMessage());
         }

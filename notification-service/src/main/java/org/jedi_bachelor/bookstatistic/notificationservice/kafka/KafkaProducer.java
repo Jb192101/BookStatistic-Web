@@ -15,7 +15,7 @@ public class KafkaProducer {
     private KafkaTemplate<String, Object> kafkaTemplate;
 
     // Названия топиков
-    @Value("${kafka.topics.sending-notification-result-topic}")
+    @Value("${kafka.topics.sendingNotificationResultTopic:sending-notification-result-topic}")
     private String sendingNotificationResultTopic;
 
     /**

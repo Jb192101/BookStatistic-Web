@@ -16,11 +16,11 @@ public class ClientConfiguration {
 
     @Bean
     public InteractionClient bookInteractionClient() {
-        return new InteractionClient(this.bookBaseUrl, HttpHeaders.EMPTY, "book-service");
+        return new InteractionClient(this.bookBaseUrl, HttpHeaders.EMPTY);
     }
 
     @Bean
     public InteractionClient analyzerInteractionClient() {
-        return new InteractionClient(this.analyzerBaseUrl, HttpHeaders.EMPTY, "analyze-service");
+        return new InteractionClient(this.analyzerBaseUrl, HttpHeaders.EMPTY);
     }
 }
