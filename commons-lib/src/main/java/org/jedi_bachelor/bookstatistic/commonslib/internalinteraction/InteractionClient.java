@@ -38,4 +38,20 @@ public class InteractionClient {
                     .retrieve()
                     .toEntity(ResponseEntity.class);
     }
+
+    /**
+     * Метод отправки запроса в микросервис (с телом)
+     *
+     * @param httpMethod метод HTTP (POST/GET/DELETE/PUT/PATCH)
+     * @param url url
+     * @param body тело запроса
+     * @return тело ответа
+     */
+    public ResponseEntity<?> sendRequest(HttpMethod httpMethod, String url, Object body) {
+        return this.restClient.method(httpMethod)
+                .uri(url)
+                .body(body)
+                .retrieve()
+                .toEntity(ResponseEntity.class);
+    }
 }

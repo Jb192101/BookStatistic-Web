@@ -11,6 +11,7 @@ import jakarta.annotation.security.RolesAllowed;
 import lombok.RequiredArgsConstructor;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.mapentities.NotificationDto;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.request.notification.NotificationCreationDto;
+import org.jedi_bachelor.bookstatistic.commonslib.dto.request.notification.NotificationSettingsCreatingDto;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.response.ErrorResponse;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.response.SuccessResponse;
 import org.jedi_bachelor.bookstatistic.commonslib.exceptions.NotificationNotFoundException;
@@ -242,8 +243,8 @@ public class NotificationController {
     }
 
     @PostMapping("/notification-settings/{userId}")
-    public ResponseEntity<?> addNotificationSettings(@PathVariable UUID userId) {
-        this.notificationService.addNotificationSettings(userId);
+    public ResponseEntity<?> addNotificationSettings(@PathVariable NotificationSettingsCreatingDto dto) {
+        this.notificationService.addNotificationSettings(dto);
 
         return ResponseEntity.ok(new SuccessResponse(200, null));
     }

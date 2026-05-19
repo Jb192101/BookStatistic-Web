@@ -2,6 +2,7 @@ package org.jedi_bachelor.bookstatistic.notificationservice.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.UUID;
@@ -9,6 +10,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "notification_settings")
 @Data
+@Builder
 public class NotificationSettings {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

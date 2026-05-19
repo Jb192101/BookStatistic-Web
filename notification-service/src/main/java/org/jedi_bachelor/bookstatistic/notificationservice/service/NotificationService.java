@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.mapentities.NotificationDto;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.request.notification.NotificationCreationDto;
+import org.jedi_bachelor.bookstatistic.commonslib.dto.request.notification.NotificationSettingsCreatingDto;
 import org.jedi_bachelor.bookstatistic.commonslib.exceptions.NotificationNotFoundException;
 import org.jedi_bachelor.bookstatistic.commonslib.exceptions.UserNotFoundException;
 import org.jedi_bachelor.bookstatistic.notificationservice.converter.NotificationConverter;
@@ -135,12 +136,16 @@ public class NotificationService {
     @CircuitBreaker(name = "notification-circuitbreaker")
     @Bulkhead(name = "notification-bulkhead", type = Bulkhead.Type.THREADPOOL)
     @Transactional
-    public void addNotificationSettings(UUID userId) {
-        NotificationSettings settings = new NotificationSettings(userId);
+    public void addNotificationSettings(NotificationSettingsCreatingDto dto) {
+        NotificationSettings settings = NotificationSettings.builder()
+                .userId(dto.userId())
+                .email(dto.emailAddress())
+                .enableEmail(dto.enableEmail())
+                .build();
 
         this.notificationSettingsRepository.save(settings);
 
-        log.info("Notification settings for user with id {} succesfully created", userId);
+        log.info("Notification settings for user with id {} succesfully created", dto.userId());
     }
 
     /**

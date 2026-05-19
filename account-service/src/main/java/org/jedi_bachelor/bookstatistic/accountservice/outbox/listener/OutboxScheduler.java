@@ -7,6 +7,7 @@ import org.jedi_bachelor.bookstatistic.accountservice.outbox.OutboxContextManage
 import org.jedi_bachelor.bookstatistic.accountservice.outbox.entity.OutboxAnalyzeMessage;
 import org.jedi_bachelor.bookstatistic.accountservice.outbox.entity.OutboxBookMessage;
 import org.jedi_bachelor.bookstatistic.accountservice.outbox.entity.OutboxNotificationSettingsMessage;
+import org.jedi_bachelor.bookstatistic.commonslib.dto.request.notification.NotificationSettingsCreatingDto;
 import org.jedi_bachelor.bookstatistic.commonslib.internalinteraction.InteractionClient;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpMethod;
@@ -78,27 +79,33 @@ public class OutboxScheduler {
 
         for(OutboxNotificationSettingsMessage message : messages) {
             if(!message.getPublished()) {
-                HttpMethod method = null;
                 switch (message.getOperation()) {
                     // Если добавляем настройки уведомлений
                     case ADD_OPERATION -> {
-                        method = HttpMethod.POST;
+                        NotificationSettingsCreatingDto dto = new NotificationSettingsCreatingDto(
+                                message.getUserId(),
+                                message.getEmailEnable(),
+                                message.getEmailAddress()
+                        );
+
+                        this.notificationClient.sendRequest(
+                                HttpMethod.POST,
+                                "/notification-settings/" + message.getUserId(),
+                                dto
+                        );
+
+                        message.setPublished(true);
+                        this.outboxContextManager.save(message);
                     }
 
                     // Если удаляем настройки уведомлений
                     case DELETE_OPERATION -> {
-                        method = HttpMethod.DELETE;
+                        this.notificationClient.sendRequest(HttpMethod.DELETE, "/notification-settings/" + message.getUserId());
+
+                        message.setPublished(true);
+                        this.outboxContextManager.save(message);
                     }
                 }
-
-                if(method == null) {
-                    continue;
-                }
-
-                this.notificationClient.sendRequest(method, "/notification-settings/" + message.getUserId());
-
-                message.setPublished(true);
-                this.outboxContextManager.save(message);
             }
         }
     }
