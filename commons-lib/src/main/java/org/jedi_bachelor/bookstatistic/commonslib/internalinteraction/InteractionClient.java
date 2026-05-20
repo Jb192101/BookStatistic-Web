@@ -1,5 +1,7 @@
 package org.jedi_bachelor.bookstatistic.commonslib.internalinteraction;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +34,7 @@ public class InteractionClient {
      * @param url url
      * @return тело ответа
      */
+    @Retry(name = "commonslib-retry")
     public ResponseEntity<?> sendRequest(HttpMethod httpMethod, String url) {
        return this.restClient.method(httpMethod)
                     .uri(url)
@@ -47,6 +50,7 @@ public class InteractionClient {
      * @param body тело запроса
      * @return тело ответа
      */
+    @Retry(name = "commonslib-retry")
     public ResponseEntity<?> sendRequest(HttpMethod httpMethod, String url, Object body) {
         return this.restClient.method(httpMethod)
                 .uri(url)

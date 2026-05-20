@@ -5,13 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9753a1e7-9738-471e-85b6-9d133f8e3b79" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/commons-lib/src/main/java/org/jedi_bachelor/bookstatistic/commonslib/dto/request/notification/NotificationSettingsCreatingDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/analyze-service/src/main/java/org/jedi_bachelor/bookstatistic/analyzeservice/jsonmap/PreferencesEntity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/analyze-service/src/main/resources/examplefiles/user-literature-report.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/commons-lib/src/main/resources/bootstrap.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/accountservice/outbox/listener/OutboxScheduler.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/accountservice/outbox/listener/OutboxScheduler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/analyze-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/analyze-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/analyze-service/src/main/java/org/jedi_bachelor/bookstatistic/analyzeservice/controller/AnalyzeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/analyze-service/src/main/java/org/jedi_bachelor/bookstatistic/analyzeservice/controller/AnalyzeController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/analyze-service/src/main/java/org/jedi_bachelor/bookstatistic/analyzeservice/service/AnalyzeService.java" beforeDir="false" afterPath="$PROJECT_DIR$/analyze-service/src/main/java/org/jedi_bachelor/bookstatistic/analyzeservice/service/AnalyzeService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/commons-lib/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/commons-lib/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/commons-lib/src/main/java/org/jedi_bachelor/bookstatistic/commonslib/internalinteraction/InteractionClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/commons-lib/src/main/java/org/jedi_bachelor/bookstatistic/commonslib/internalinteraction/InteractionClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/controller/NotificationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/controller/NotificationController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/entity/NotificationSettings.java" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/entity/NotificationSettings.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/service/NotificationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/service/NotificationService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,8 +29,8 @@
         <option value="Python Script" />
         <option value="Interface" />
         <option value="Interface" />
-        <option value="Class" />
         <option value="Record" />
+        <option value="Class" />
       </list>
     </option>
   </component>

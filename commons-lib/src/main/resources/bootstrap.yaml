@@ -1,0 +1,8 @@
+resilience4j:
+  retry:
+    instances:
+      commonslib-retry:
+        maxRetryAttempts: 5
+        waitDuration: 1000
+        retry-exceptions:
+          - java.util.concurrent.TimeoutException
