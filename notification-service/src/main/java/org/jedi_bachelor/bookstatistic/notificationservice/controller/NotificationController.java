@@ -65,7 +65,7 @@ public class NotificationController {
     }
 
     @RolesAllowed({ "ADMIN", "USER" })
-    @GetMapping
+    @GetMapping("/{notificationId}")
     @Operation(summary = "Получение уведомления",
             description = "Получение конкретного уведомления по его ID")
     @ApiResponses(value = {

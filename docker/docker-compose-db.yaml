@@ -1,0 +1,140 @@
+version: '3.8'
+
+services:
+  notification-postgres:
+    image: postgres:16-alpine
+    container_name: notification-postgres
+    environment:
+      POSTGRES_DB: ${NOTIFICATION_DB_NAME}
+      POSTGRES_USER: ${NOTIFICATION_DB_USER}
+      POSTGRES_PASSWORD: ${NOTIFICATION_DB_PASSWORD}
+      PGDATA: /var/lib/postgresql/data/pgdata
+      TZ: UTC+3
+    ports:
+      - ${NOTIFICATION_DB_PORT}:5432
+    tmpfs:
+      - /var/lib/postgresql/data:rw,noexec,nosuid,size=256m
+    #volumes:
+    #  - ./config/init-notification.sql
+    shm_size: "256m"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB} -h 127.0.0.1 -p 5432" ]
+      interval: 5s
+      timeout: 3s
+      retries: 15
+      start_period: 5s
+    restart: unless-stopped
+
+  book-postgres:
+    image: postgres:16-alpine
+    container_name: book-postgres
+    environment:
+      POSTGRES_DB: ${BOOK_DB_NAME}
+      POSTGRES_USER: ${BOOK_DB_USER}
+      POSTGRES_PASSWORD: ${BOOK_DB_PASSWORD}
+      PGDATA: /var/lib/postgresql/data/pgdata
+      TZ: UTC+3
+    ports:
+      - ${BOOK_PG_DB_PORT}:5431
+    tmpfs:
+      - /var/lib/postgresql/data:rw,noexec,nosuid,size=256m
+    #volumes:
+    #  - ./config/init-books.sql
+    shm_size: "256m"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB} -h 127.0.0.1 -p 5432" ]
+      interval: 5s
+      timeout: 3s
+      retries: 15
+      start_period: 5s
+    restart: unless-stopped
+
+  book-redis:
+    image: redis:7-alpine
+    container_name: book-redis
+    ports:
+      - ${BOOK_DB_REDIS_PORT}:6379
+    restart: unless-stopped
+
+  account-postgres:
+    image: postgres:16-alpine
+    container_name: account-postgres
+    environment:
+      POSTGRES_DB: ${ACCOUNT_DB_NAME}
+      POSTGRES_USER: ${ACCOUNT_DB_USER}
+      POSTGRES_PASSWORD: ${ACCOUNT_DB_PASSWORD}
+      PGDATA: /var/lib/postgresql/data/pgdata
+      TZ: UTC+3
+    ports:
+      - ${ACCOUNT_DB_PORT}:5432
+    tmpfs:
+      - /var/lib/postgresql/data:rw,noexec,nosuid,size=256m
+    #volumes:
+    #  - ./config/init-account.sql
+    shm_size: "256m"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB} -h 127.0.0.1 -p 5432" ]
+      interval: 5s
+      timeout: 3s
+      retries: 15
+      start_period: 5s
+    restart: unless-stopped
+
+  analyze-postgres:
+    image: postgres:16-alpine
+    container_name: analyze-postgres
+    environment:
+      POSTGRES_DB: ${ANALYZE_PG_DB_NAME}
+      POSTGRES_USER: ${ANALYZE_PG_DB_USER}
+      POSTGRES_PASSWORD: ${ANALYZE_PG_DB_PASSWORD}
+      PGDATA: /var/lib/postgresql/data/pgdata
+      TZ: UTC+3
+    ports:
+      - ${ANALYZE_PG_DB_PORT}:5432
+    tmpfs:
+      - /var/lib/postgresql/data:rw,noexec,nosuid,size=256m
+    #volumes:
+      #- ./config/init-analyze.sql
+    shm_size: "256m"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB} -h 127.0.0.1 -p 5432" ]
+      interval: 5s
+      timeout: 3s
+      retries: 15
+      start_period: 5s
+    restart: unless-stopped
+
+  analyze-redis:
+    image: redis:7-alpine
+    container_name: analyze-redis
+    ports:
+      - ${ANALYZE_REDIS_DB_PORT}:6378
+    restart: unless-stopped
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.4.0
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: confluentinc/cp-kafka:7.4.0
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_DELETE_TOPIC_ENABLE: "true"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+networks:
+  bookstatistic-network:
+    driver: bridge

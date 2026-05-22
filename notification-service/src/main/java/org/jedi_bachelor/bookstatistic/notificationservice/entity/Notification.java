@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
 import org.jedi_bachelor.bookstatistic.notificationservice.entity.enums.NotificationType;
-import org.springframework.data.annotation.Id;
 
 import java.util.UUID;
 

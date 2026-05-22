@@ -15,6 +15,7 @@ public class FilterUtils {
     public static final String PRE_FILTER_TYPE = "pre";
     public static final String POST_FILTER_TYPE = "post";
     public static final String ROUTE_FILTER_TYPE = "route";
+    public static final String ACCEPT_LANGUAGE = "Accept-Language";
 
     public String getCorrelationId(HttpHeaders requestHeaders) {
         if (requestHeaders.get(CORRELATION_ID) != null) {
@@ -27,6 +28,19 @@ public class FilterUtils {
 
     public ServerWebExchange setCorrelationId(ServerWebExchange exchange, String correlationId) {
         return this.setRequestHeader(exchange, CORRELATION_ID, correlationId);
+    }
+
+    public String getAcceptLanguage(HttpHeaders requestHeaders) {
+        if(requestHeaders.get(ACCEPT_LANGUAGE) != null) {
+            List<String> header = requestHeaders.get(ACCEPT_LANGUAGE);
+            return header.stream().findFirst().get();
+        } else {
+            return "EN";
+        }
+    }
+
+    public ServerWebExchange setAcceptLanguage(ServerWebExchange exchange, String language) {
+        return this.setRequestHeader(exchange, ACCEPT_LANGUAGE, language);
     }
 
     private ServerWebExchange setRequestHeader(ServerWebExchange exchange, String name, String value) {

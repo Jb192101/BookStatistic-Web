@@ -7,7 +7,7 @@ import org.jedi_bachelor.bookstatistic.notificationservice.outbox.listener.Outbo
 
 @Entity
 @EntityListeners(OutboxListener.class)
-@Table(name = "outbox-kafka")
+@Table(name = "outbox_kafka")
 @Data
 public class OutboxKafkaMessage implements OutboxEnable {
     @Id

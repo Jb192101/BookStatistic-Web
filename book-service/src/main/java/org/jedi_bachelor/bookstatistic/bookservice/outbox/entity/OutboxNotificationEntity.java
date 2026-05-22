@@ -6,7 +6,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "outbox-notification")
+@Table(name = "outbox_notifications")
 @Data
 public class OutboxNotificationEntity {
     @Id

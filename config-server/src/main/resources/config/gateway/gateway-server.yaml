@@ -26,24 +26,32 @@ spring:
       routes:
         - id: notification-service
           uri: lb://notification-service
+          predicates:
+            - Path=/api/v1/notifications/**
           filters:
             - RewritePath=/notification-service/(?<path>.*), /$\{path}
             - RemoveRequestHeader= Cookie,Set-Cookie
 
         - id: book-service
           uri: lb://book-service
+          predicates:
+            - Path=/api/v1/books/**
           filters:
             - RewritePath=/book-service/(?<path>.*), /$\{path}
             - RemoveRequestHeader= Cookie,Set-Cookie
 
         - id: account-service
           uri: lb://notification-service
+          predicates:
+            - Path=/api/v1/accounts/**
           filters:
             - RewritePath=/account-service/(?<path>.*), /$\{path}
             - RemoveRequestHeader= Cookie,Set-Cookie
 
         - id: analyze-service
           uri: lb://analyze-service
+          predicates:
+            - Path=/api/v1/analyze/**
           filters:
             - RewritePath=/analyze-service/(?<path>.*), /$\{path}
             - RemoveRequestHeader= Cookie,Set-Cookie

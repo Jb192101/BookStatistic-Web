@@ -1,11 +1,14 @@
 package org.jedi_bachelor.bookstatistic.notificationservice.emal;
 
+import org.jedi_bachelor.bookstatistic.commonslib.internalinteraction.InteractionClient;
 import org.jedi_bachelor.bookstatistic.notificationservice.repository.NotificationSettingsRepository;
 import org.jedi_bachelor.bookstatistic.notificationservice.service.EmailService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.core.annotation.Order;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
@@ -44,9 +47,15 @@ public class EmailConfiguration {
         return mailSender;
     }
 
-    //@Bean
-    //public EmailService emailService(JavaMailSender javaMailSender,
-    //                                 NotificationSettingsRepository notificationSettingsRepository) {
-    //    return new EmailService(javaMailSender, notificationSettingsRepository);
-    //}
+    @Bean
+    @Order(3)
+    public EmailService emailService(JavaMailSender javaMailSender,
+                                     NotificationSettingsRepository notificationSettingsRepository,
+                                     @Qualifier("accountClient") InteractionClient accountClient) {
+        return EmailService.builder()
+                .mailSender(javaMailSender)
+                .notificationSettingsRepository(notificationSettingsRepository)
+                .accountClient(accountClient)
+                .build();
+    }
 }

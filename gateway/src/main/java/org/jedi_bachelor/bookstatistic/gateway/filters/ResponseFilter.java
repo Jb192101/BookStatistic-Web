@@ -24,16 +24,22 @@ public class ResponseFilter {
             return chain.filter(exchange).then(Mono.fromRunnable(() -> {
                 String traceId = this.tracer.currentSpan().context().traceId();
 
-                log.info("Добавлен correlation-id к заголовкам. trace id : {}", traceId);
+                log.info("Adding correlation-id into headers. trace id : {}", traceId);
 
                 HttpHeaders requestHeaders = exchange.getRequest().getHeaders();
-                String correlationId = filterUtils.getCorrelationId(requestHeaders);
+                String correlationId = this.filterUtils.getCorrelationId(requestHeaders);
 
                 log.info("Adding the correlation id to the outbound headers. {}", correlationId);
 
-                exchange.getResponse().getHeaders().add(FilterUtils.CORRELATION_ID, correlationId);
+                this.filterUtils.setCorrelationId(exchange, correlationId);
 
                 log.info("Completing outgoing request for {}.", exchange.getRequest().getURI());
+
+                String language = this.filterUtils.getAcceptLanguage(requestHeaders);
+
+                log.info("Adding the ACCEPT-LANGUAGE to the outbound headers. {}", correlationId);
+
+                this.filterUtils.setAcceptLanguage(exchange, language);
             }));
         };
     }

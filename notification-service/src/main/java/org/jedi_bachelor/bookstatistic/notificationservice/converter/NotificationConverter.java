@@ -4,7 +4,9 @@ package org.jedi_bachelor.bookstatistic.notificationservice.converter;
 import org.jedi_bachelor.bookstatistic.commonslib.converter.Converter;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.request.notification.NotificationCreationDto;
 import org.jedi_bachelor.bookstatistic.notificationservice.entity.Notification;
+import org.springframework.stereotype.Component;
 
+@Component
 public class NotificationConverter
         implements Converter<Notification, NotificationCreationDto> {
     /**

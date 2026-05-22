@@ -18,14 +18,13 @@ import java.util.List;
 
 @Service
 @Data
-@RequiredArgsConstructor
 @Slf4j
 @Builder
 public class EmailService {
     private final JavaMailSender mailSender;
 
     @Value("${spring.mail.username}")
-    private final String emailSenderAddress;
+    private String emailSenderAddress;
 
     @Qualifier("accountInteractionClient")
     private final InteractionClient accountClient;

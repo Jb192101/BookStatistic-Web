@@ -1,7 +1,6 @@
 package org.jedi_bachelor.bookstatistic.accountservice.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -21,7 +20,7 @@ public class UserProfile {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "hash_password", nullable = false)
+    @Column(name = "password_hash", nullable = false)
     private String hashPassword;
 
     @Column(name = "language", nullable = false, columnDefinition = "DEFAULT 'EN'")

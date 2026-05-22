@@ -105,7 +105,7 @@ public class NotificationService {
     @Bulkhead(name = "notification-bulkhead", type = Bulkhead.Type.THREADPOOL)
     @Transactional
     public NotificationDto getNotification(UUID notificationId) throws NotificationNotFoundException {
-        Optional<Notification> notification = this.notificationRepository.findByNotificationId(notificationId);
+        Optional<Notification> notification = this.notificationRepository.findById(notificationId);
 
         if(notification.isEmpty()) {
             log.error("Notification with id {} did not found", notificationId);
@@ -122,7 +122,7 @@ public class NotificationService {
     @Bulkhead(name = "notification-bulkhead", type = Bulkhead.Type.THREADPOOL)
     @Transactional
     public void deleteNotification(UUID notificationId) throws NotificationNotFoundException {
-        Optional<Notification> notification = this.notificationRepository.findByNotificationId(notificationId);
+        Optional<Notification> notification = this.notificationRepository.findById(notificationId);
 
         if(notification.isEmpty()) {
             log.error("Notification with id {} did not found", notificationId);
@@ -137,11 +137,10 @@ public class NotificationService {
     @Bulkhead(name = "notification-bulkhead", type = Bulkhead.Type.THREADPOOL)
     @Transactional
     public void addNotificationSettings(NotificationSettingsCreatingDto dto) {
-        NotificationSettings settings = NotificationSettings.builder()
-                .userId(dto.userId())
-                .email(dto.emailAddress())
-                .enableEmail(dto.enableEmail())
-                .build();
+        NotificationSettings settings = new NotificationSettings();
+        settings.setUserId(dto.userId());
+        settings.setEmail(dto.emailAddress());
+        settings.setEnableEmail(dto.enableEmail());
 
         this.notificationSettingsRepository.save(settings);
 

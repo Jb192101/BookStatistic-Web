@@ -5,15 +5,50 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9753a1e7-9738-471e-85b6-9d133f8e3b79" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/analyze-service/src/main/java/org/jedi_bachelor/bookstatistic/analyzeservice/jsonmap/PreferencesEntity.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/analyze-service/src/main/resources/examplefiles/user-literature-report.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons-lib/src/main/resources/bootstrap.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/entity/UserBookRelation.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docker/docker-compose-db.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gateway/src/main/java/org/jedi_bachelor/bookstatistic/gateway/utils/JwtAuthenticationGlobalFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.env.example" beforeDir="false" afterPath="$PROJECT_DIR$/docker/.env.example" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyze-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/analyze-service/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyze-service/src/main/java/org/jedi_bachelor/bookstatistic/analyzeservice/controller/AnalyzeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/analyze-service/src/main/java/org/jedi_bachelor/bookstatistic/analyzeservice/controller/AnalyzeController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyze-service/src/main/java/org/jedi_bachelor/bookstatistic/analyzeservice/service/AnalyzeService.java" beforeDir="false" afterPath="$PROJECT_DIR$/analyze-service/src/main/java/org/jedi_bachelor/bookstatistic/analyzeservice/service/AnalyzeService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/commons-lib/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/commons-lib/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/commons-lib/src/main/java/org/jedi_bachelor/bookstatistic/commonslib/internalinteraction/InteractionClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/commons-lib/src/main/java/org/jedi_bachelor/bookstatistic/commonslib/internalinteraction/InteractionClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dockerfile-account" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dockerfile-analyze" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dockerfile-book" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dockerfile-configserver" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dockerfile-discovery" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dockerfile-gateway" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dockerfile-notification" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/accountservice/entity/UserProfile.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/accountservice/entity/UserProfile.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/entity/Author.java" beforeDir="false" afterPath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/entity/Author.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/entity/BookAuthorRelation.java" beforeDir="false" afterPath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/entity/BookAuthorRelation.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/entity/Text.java" beforeDir="false" afterPath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/entity/Text.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/outbox/entity/OutboxNotificationEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/outbox/entity/OutboxNotificationEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config-server/src/main/resources/config/gateway/gateway-server.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config-server/src/main/resources/config/gateway/gateway-server.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker/conf/logstach.conf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker/init-account.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker/init-analyze.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker/init-books.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker/init-notification.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/gateway/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway/src/main/java/org/jedi_bachelor/bookstatistic/gateway/configuration/InternationalizationConfiguration.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway/src/main/java/org/jedi_bachelor/bookstatistic/gateway/configuration/SecurityConfiguration.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway/src/main/java/org/jedi_bachelor/bookstatistic/gateway/filters/FilterUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/gateway/src/main/java/org/jedi_bachelor/bookstatistic/gateway/filters/FilterUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway/src/main/java/org/jedi_bachelor/bookstatistic/gateway/filters/ResponseFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/gateway/src/main/java/org/jedi_bachelor/bookstatistic/gateway/filters/ResponseFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway/src/main/java/org/jedi_bachelor/bookstatistic/gateway/utils/JwtAuthenticationFilter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway/src/main/resources/bootstrap.yml" beforeDir="false" afterPath="$PROJECT_DIR$/gateway/src/main/resources/bootstrap.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notification-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/configuration/ClientConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/configuration/ClientConfiguration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/controller/NotificationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/controller/NotificationController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/converter/NotificationConverter.java" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/converter/NotificationConverter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/emal/EmailConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/emal/EmailConfiguration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/entity/Notification.java" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/entity/Notification.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/entity/NotificationSettings.java" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/entity/NotificationSettings.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/outbox/entity/OutboxEmailMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/outbox/entity/OutboxEmailMessage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/outbox/entity/OutboxKafkaMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/outbox/entity/OutboxKafkaMessage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/repository/NotificationRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/repository/NotificationRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/service/EmailService.java" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/service/EmailService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/service/NotificationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/service/NotificationService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,35 +88,40 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.AccountServiceApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Application.ConfigApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
-    &quot;Application.NotificationServiceApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Maven.commons-lib [clean].executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;dev&quot;,
-    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;corretto-21&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/gogat/Git/BookStatistic-Web/analyze-service/src/main/java/org/jedi_bachelor/bookstatistic/analyzeservice/utils&quot;,
-    &quot;onboarding.tips.debug.path&quot;: &quot;C:/Users/gogat/Git/BookStatistic-Web/analyze-service/src/main/java/org/jedi_bachelor/bookstatistic/analyzeservice/Main.java&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Artifacts&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.24252874&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.AccountServiceApplication.executor": "Run",
+    "Application.Config-server.executor": "Run",
+    "Application.ConfigApplication.executor": "Run",
+    "Application.Gateway-server.executor": "Run",
+    "Application.Main.executor": "Run",
+    "Application.Notification-server.executor": "Run",
+    "Application.NotificationServiceApplication.executor": "Run",
+    "Maven.commons-lib [clean].executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "dev",
+    "jdk.selected.JAVA_MODULE": "corretto-21",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/gogat/Git/BookStatistic-Web/gateway/src/main/resources",
+    "onboarding.tips.debug.path": "C:/Users/gogat/Git/BookStatistic-Web/analyze-service/src/main/java/org/jedi_bachelor/bookstatistic/analyzeservice/Main.java",
+    "project.structure.last.edited": "Artifacts",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.24252874",
+    "settings.editor.selected.configurable": "preferences.pluginManager"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\gogat\Git\BookStatistic-Web\gateway\src\main\resources" />
+      <recent name="C:\Users\gogat\Git\BookStatistic-Web\notification-service\src\main\resources" />
       <recent name="C:\Users\gogat\Git\BookStatistic-Web\analyze-service\src\main\java\org\jedi_bachelor\bookstatistic\analyzeservice\utils" />
       <recent name="C:\Users\gogat\Git\BookStatistic-Web\analyze-service\src\main\resources" />
       <recent name="C:\Users\gogat\Git\BookStatistic-Web\account-service\src\main\java\org\jedi_bachelor\bookstatistic\utils" />
-      <recent name="C:\Users\gogat\Git\BookStatistic-Web\book-service\src\main\java\org\jedi_bachelor\bookstatistic\utils" />
-      <recent name="C:\Users\gogat\Git\BookStatistic-Web\gateway\src\main\java\org\jedi_bachelor\bookstatistic\utils" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\gogat\Git\BookStatistic-Web\docker" />
+      <recent name="C:\Users\gogat\Git\BookStatistic-Web\docker\dockerfiles" />
       <recent name="C:\Users\gogat\Git\BookStatistic-Web\docker\conf" />
       <recent name="C:\Users\gogat\Git\BookStatistic-Web\account-processing\src\main\resources" />
     </key>
@@ -90,6 +130,43 @@
       <recent name="org.jedi_bachelor.bookstatistic.utils" />
       <recent name="org.jedi_bachelor.bookstatistic.configuration" />
     </key>
+  </component>
+  <component name="RunManager" selected="Application.Gateway-server">
+    <configuration name="Config-server" type="Application" factoryName="Application">
+      <option name="envFilePaths">
+        <option value="$PROJECT_DIR$/docker/.env" />
+      </option>
+      <option name="MAIN_CLASS_NAME" value="org.jedi_bachelor.bookstatistic.configserver.ConfigApplication" />
+      <module name="config-server" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Gateway-server" type="Application" factoryName="Application">
+      <option name="envFilePaths">
+        <option value="$PROJECT_DIR$/docker/.env" />
+      </option>
+      <option name="MAIN_CLASS_NAME" value="org.jedi_bachelor.bookstatistic.gateway.GatewayApplication" />
+      <module name="gateway" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Notification-server" type="Application" factoryName="Application">
+      <option name="envFilePaths">
+        <option value="$PROJECT_DIR$/docker/.env" />
+      </option>
+      <option name="MAIN_CLASS_NAME" value="org.jedi_bachelor.bookstatistic.notificationservice.NotificationServiceApplication" />
+      <module name="notification-service" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Application.Config-server" />
+      <item itemvalue="Application.Notification-server" />
+      <item itemvalue="Application.Gateway-server" />
+    </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">

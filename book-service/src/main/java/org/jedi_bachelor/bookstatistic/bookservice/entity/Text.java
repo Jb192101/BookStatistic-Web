@@ -14,7 +14,7 @@ import java.util.UUID;
 
 @Entity
 @Data
-@Table(name = "text_file")
+@Table(name = "text_files")
 public class Text {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

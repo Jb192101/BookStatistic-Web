@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @EntityListeners(OutboxListener.class)
-@Table(name = "outbox-email")
+@Table(name = "outbox_email")
 @Data
 public class OutboxEmailMessage implements OutboxEnable {
     @Id
