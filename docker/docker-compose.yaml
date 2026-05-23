@@ -9,6 +9,7 @@ services:
       POSTGRES_USER: ${NOTIFICATION_DB_USER}
       POSTGRES_PASSWORD: ${NOTIFICATION_DB_PASSWORD}
       PGDATA: /var/lib/postgresql/data/pgdata
+      POSTGRES_HOST_AUTH_METHOD: trust
       TZ: UTC+3
     ports:
       - ${NOTIFICATION_DB_PORT}:5432
@@ -33,6 +34,7 @@ services:
       POSTGRES_USER: ${BOOK_DB_USER}
       POSTGRES_PASSWORD: ${BOOK_DB_PASSWORD}
       PGDATA: /var/lib/postgresql/data/pgdata
+      POSTGRES_HOST_AUTH_METHOD: trust
       TZ: UTC+3
     ports:
       - ${BOOK_PG_DB_PORT}:5431
@@ -64,6 +66,7 @@ services:
       POSTGRES_USER: ${ACCOUNT_DB_USER}
       POSTGRES_PASSWORD: ${ACCOUNT_DB_PASSWORD}
       PGDATA: /var/lib/postgresql/data/pgdata
+      POSTGRES_HOST_AUTH_METHOD: trust
       TZ: UTC+3
     ports:
       - ${ACCOUNT_DB_PORT}:5432
@@ -88,6 +91,7 @@ services:
       POSTGRES_USER: ${ANALYZE_PG_DB_USER}
       POSTGRES_PASSWORD: ${ANALYZE_PG_DB_PASSWORD}
       PGDATA: /var/lib/postgresql/data/pgdata
+      POSTGRES_HOST_AUTH_METHOD: trust
       TZ: UTC+3
     ports:
       - ${ANALYZE_PG_DB_PORT}:5432
@@ -199,6 +203,7 @@ services:
       POSTGRES_DB: keycloak
       POSTGRES_USER: keycloak
       POSTGRES_PASSWORD: keycloak123
+      POSTGRES_HOST_AUTH_METHOD: trust
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.4.0

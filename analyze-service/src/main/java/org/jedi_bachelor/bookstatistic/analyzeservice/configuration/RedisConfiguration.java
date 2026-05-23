@@ -7,13 +7,14 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.jedi_bachelor.bookstatistic.analyzeservice.redis.entity.TextFile;
 
 @Configuration
 public class RedisConfiguration {
-    @Value("${spring.redis.hostname:localhost}")
+    @Value("${spring.data.redis.host:localhost}")
     private String host;
 
-    @Value("${spring.redis.port:6379}")
+    @Value("${spring.data.redis.port:6379}")
     private Integer port;
 
     @Bean
@@ -25,9 +26,9 @@ public class RedisConfiguration {
     }
 
     @Bean
-    public RedisTemplate<String, String> redisTemplate() {
-        RedisTemplate<String, String> template = new RedisTemplate<>();
-        template.setConnectionFactory(redisConnectionFactory());
+    public RedisTemplate<String, TextFile> redisTemplate(RedisConnectionFactory connectionFactory) {
+        RedisTemplate<String, TextFile> template = new RedisTemplate<>();
+        template.setConnectionFactory(connectionFactory);
         template.setKeySerializer(new StringRedisSerializer());
         template.setValueSerializer(new StringRedisSerializer());
         return template;

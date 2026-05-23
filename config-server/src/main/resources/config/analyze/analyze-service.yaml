@@ -1,0 +1,64 @@
+server:
+  port: ${ANALYZE_SERVER_PORT:8085}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+      base-path: /actuator
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    tags:
+      application: ${spring.application.name}
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+
+spring:
+  zipkin.baseUrl: zipkin:9411
+  spring.sleuth.sampler.percentage: 1
+
+  application:
+    name: analyze-service
+
+  datasource:
+    url: ${ANALYZE_PG_DB_URL:jdbc:postgresql://localhost:5452/analyze_pgsql_db}
+    username: ${ANALYZE_PG_DB_USER}
+    password: ${ANALYZE_PG_DB_PASSWORD}
+
+  redis:
+    host: localhost
+    port: 6378
+    password:
+    database: 0
+    timeout: 2000ms
+    jedis:
+      pool:
+        max-active: 8
+        max-idle: 8
+        min-idle: 0
+    lettuce:
+      pool:
+        max-active: 8
+        max-idle: 8
+        min-idle: 0
+        max-wait: -1ms
+
+servlet:
+  multipart:
+    max-file-size: 30MB
+    max-request-size: 30MB
+    enabled: true
+
+keycloak:
+  realm: bookstatistic-realm
+  auth-server-url: http://keycloak:8090/auth
+  ssl-required: external
+  resource: bookstatistic # идентификатор клиента
+  credentials:
+    secret: # здесь должен быть secret key из панели keycloak
+  bearer-only: true
+  use-resource-role-mappings: true

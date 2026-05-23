@@ -9,7 +9,7 @@ spring:
         encrypt:
           enabled: true
         native:
-          search-locations: classpath:/config/notification,classpath:/config/book,classpath:/config/gateway,classpath:/config/account,classpath:/config/eureka
+          search-locations: classpath:/config/notification,classpath:/config/analyze,classpath:/config/book,classpath:/config/gateway,classpath:/config/account,classpath:/config/eureka
 
 server:
   port: 8071

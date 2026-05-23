@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.security.RolesAllowed;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jedi_bachelor.bookstatistic.analyzeservice.service.AnalyzeService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,7 @@ import java.util.UUID;
 @Controller
 @RequestMapping("/analyze")
 @RequiredArgsConstructor
+@Slf4j
 @Tag(name = "Контроллер сервиса анализа", description = "Для анализа литературных предпочтений пользователей")
 public class AnalyzeController {
     private final AnalyzeService analyzeService;
