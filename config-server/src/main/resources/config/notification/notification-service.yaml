@@ -12,6 +12,8 @@ server:
   port: ${NOTIFICATION_SERVER_PORT:8081}
 
 spring:
+  kafka:
+    bootstrap-servers: localhost:9092
   zipkin:
     baseUrl: http://zipkin:9411
   sleuth:

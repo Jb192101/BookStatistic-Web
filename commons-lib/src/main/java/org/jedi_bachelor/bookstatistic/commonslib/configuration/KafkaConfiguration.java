@@ -1,5 +1,6 @@
 package org.jedi_bachelor.bookstatistic.commonslib.configuration;
 
+import com.fasterxml.jackson.databind.JsonSerializer;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -10,7 +11,6 @@ import org.springframework.kafka.config.TopicBuilder;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
-import org.springframework.kafka.support.serializer.JacksonJsonDeserializer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,7 +25,7 @@ public class KafkaConfiguration {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, this.bootstrapServers);
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JacksonJsonDeserializer.class);
+        configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
         return new DefaultKafkaProducerFactory<>(configProps);
     }
 
@@ -39,6 +39,7 @@ public class KafkaConfiguration {
         return TopicBuilder
                 .name("sending-notification-topic")
                 .partitions(3)
+                .replicas(1)
                 .build();
     }
 
@@ -47,6 +48,7 @@ public class KafkaConfiguration {
         return TopicBuilder
                 .name("sending-notification-result-topic")
                 .partitions(3)
+                .replicas(1)
                 .build();
     }
 
@@ -55,6 +57,7 @@ public class KafkaConfiguration {
         return TopicBuilder
                 .name("sending-audit-topic")
                 .partitions(3)
+                .replicas(1)
                 .build();
     }
 
@@ -63,6 +66,7 @@ public class KafkaConfiguration {
         return TopicBuilder
                 .name("sending-audit-result-topic")
                 .partitions(3)
+                .replicas(1)
                 .build();
     }
 }

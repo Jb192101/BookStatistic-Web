@@ -6,3 +6,7 @@ resilience4j:
         waitDuration: 1000
         retry-exceptions:
           - java.util.concurrent.TimeoutException
+
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
