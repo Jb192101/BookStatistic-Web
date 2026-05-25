@@ -3,6 +3,7 @@ package org.jedi_bachelor.bookstatistic.accountservice.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -28,4 +29,7 @@ public class UserProfile {
 
     @Column(name = "created_at", columnDefinition = "DEFAULT DATE()")
     private LocalDateTime createdAt;
+
+    @Column(name = "birthday")
+    private LocalDate birthDay;
 }

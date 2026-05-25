@@ -35,7 +35,7 @@ services:
       PGDATA: /var/lib/postgresql/data/pgdata
       TZ: UTC+3
     ports:
-      - ${BOOK_PG_DB_PORT}:5431
+      - ${BOOK_PG_DB_PORT}:5432
     tmpfs:
       - /var/lib/postgresql/data:rw,noexec,nosuid,size=256m
     #volumes:

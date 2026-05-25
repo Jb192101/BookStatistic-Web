@@ -11,10 +11,12 @@ import java.util.UUID;
 @IdClass(BookTextRelation.BookTextRelationId.class)
 @Data
 public class BookTextRelation {
+    @Id
     @ManyToOne
     @JoinColumn(name = "book_id", nullable = false)
     private Book book;
 
+    @Id
     @ManyToOne
     @JoinColumn(name = "text_id", nullable = false)
     private Text text;

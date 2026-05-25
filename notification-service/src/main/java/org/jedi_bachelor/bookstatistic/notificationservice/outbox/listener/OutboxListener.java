@@ -41,7 +41,7 @@ public class OutboxListener {
                 message.setPublished(true);
                 this.outboxContextManager.saveOutboxEmailMessage(message);
 
-                log.info("Message {} has published", message);
+                log.info("Message {} has published in Email", message);
             }
         }
     }
@@ -68,7 +68,7 @@ public class OutboxListener {
                 message.setPublished(true);
                 this.outboxContextManager.saveOutboxKafkaMessage(message);
 
-                log.info("Message {} has published", message);
+                log.info("Message {} has published in Kafka", message);
             }
         }
     }

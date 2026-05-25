@@ -11,12 +11,14 @@ import java.util.UUID;
 @Data
 @IdClass(BookAuthorRelation.BookAuthorRelationId.class)
 public class BookAuthorRelation {
+    @Id
     @ManyToOne
-    @Column(name = "book_id")
+    @JoinColumn(name = "book_id", nullable = false)
     private Book book;
 
+    @Id
     @ManyToOne
-    @Column(name = "author_id")
+    @JoinColumn(name = "author_id", nullable = false)
     private Author author;
 
     @Column(name = "author_position")
