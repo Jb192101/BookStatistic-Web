@@ -5,16 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9753a1e7-9738-471e-85b6-9d133f8e3b79" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/docker/logstash/pipeline/logstash.conf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/account-service/src/main/resources/logback-spring.xml" beforeDir="false" afterPath="$PROJECT_DIR$/account-service/src/main/resources/logback-spring.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyze-service/src/main/resources/logback-spring.xml" beforeDir="false" afterPath="$PROJECT_DIR$/analyze-service/src/main/resources/logback-spring.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/book-service/src/main/resources/logback-spring.xml" beforeDir="false" afterPath="$PROJECT_DIR$/book-service/src/main/resources/logback-spring.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config-server/src/main/resources/logback-spring.xml" beforeDir="false" afterPath="$PROJECT_DIR$/config-server/src/main/resources/logback-spring.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker/config/conf/logstash.conf" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/docker/docker-compose-db.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/docker/docker-compose-db.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gateway/src/main/resources/logback-spring.xml" beforeDir="false" afterPath="$PROJECT_DIR$/gateway/src/main/resources/logback-spring.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/notification-service/src/main/resources/logback-spring.xml" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/src/main/resources/logback-spring.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -104,7 +96,7 @@
       <recent name="org.jedi_bachelor.bookstatistic.configuration" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.Config-server">
+  <component name="RunManager" selected="Application.Analyze-server">
     <configuration name="Analyze-server" type="Application" factoryName="Application">
       <option name="envFilePaths">
         <option value="$PROJECT_DIR$/docker/.env" />
