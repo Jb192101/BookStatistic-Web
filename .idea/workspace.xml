@@ -5,19 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9753a1e7-9738-471e-85b6-9d133f8e3b79" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/JdbcTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docker/logstash/pipeline/logstash.conf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/accountservice/entity/UserProfile.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/accountservice/entity/UserProfile.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/book-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/book-service/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/configuration/RedisConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/configuration/RedisConfiguration.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/entity/BookAuthorRelation.java" beforeDir="false" afterPath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/entity/BookAuthorRelation.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/entity/BookTextRelation.java" beforeDir="false" afterPath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/entity/BookTextRelation.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/entity/UserBookRelation.java" beforeDir="false" afterPath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/entity/UserBookRelation.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/kafka/KafkaConsumer.java" beforeDir="false" afterPath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/kafka/KafkaConsumer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/book-service/src/main/resources/bootstrap.yml" beforeDir="false" afterPath="$PROJECT_DIR$/book-service/src/main/resources/bootstrap.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config-server/src/main/resources/config/book/book-service.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config-server/src/main/resources/config/book/book-service.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/account-service/src/main/resources/logback-spring.xml" beforeDir="false" afterPath="$PROJECT_DIR$/account-service/src/main/resources/logback-spring.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/analyze-service/src/main/resources/logback-spring.xml" beforeDir="false" afterPath="$PROJECT_DIR$/analyze-service/src/main/resources/logback-spring.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/book-service/src/main/resources/logback-spring.xml" beforeDir="false" afterPath="$PROJECT_DIR$/book-service/src/main/resources/logback-spring.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config-server/src/main/resources/logback-spring.xml" beforeDir="false" afterPath="$PROJECT_DIR$/config-server/src/main/resources/logback-spring.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker/config/conf/logstash.conf" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/docker/docker-compose-db.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/docker/docker-compose-db.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/outbox/listener/OutboxListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/outbox/listener/OutboxListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway/src/main/resources/logback-spring.xml" beforeDir="false" afterPath="$PROJECT_DIR$/gateway/src/main/resources/logback-spring.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notification-service/src/main/resources/logback-spring.xml" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/src/main/resources/logback-spring.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -80,7 +77,7 @@
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/gogat/Git/BookStatistic-Web/notification-service/src/main/resources",
     "onboarding.tips.debug.path": "C:/Users/gogat/Git/BookStatistic-Web/analyze-service/src/main/java/org/jedi_bachelor/bookstatistic/analyzeservice/Main.java",
-    "project.structure.last.edited": "Artifacts",
+    "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.24252874",
     "settings.editor.selected.configurable": "preferences.pluginManager"
@@ -95,6 +92,7 @@
       <recent name="C:\Users\gogat\Git\BookStatistic-Web\analyze-service\src\main\java\org\jedi_bachelor\bookstatistic\analyzeservice\utils" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\gogat\Git\BookStatistic-Web\docker\logstash\pipeline" />
       <recent name="C:\Users\gogat\Git\BookStatistic-Web\docker" />
       <recent name="C:\Users\gogat\Git\BookStatistic-Web\docker\dockerfiles" />
       <recent name="C:\Users\gogat\Git\BookStatistic-Web\docker\conf" />
@@ -106,7 +104,7 @@
       <recent name="org.jedi_bachelor.bookstatistic.configuration" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.Book-server">
+  <component name="RunManager" selected="Application.Config-server">
     <configuration name="Analyze-server" type="Application" factoryName="Application">
       <option name="envFilePaths">
         <option value="$PROJECT_DIR$/docker/.env" />
