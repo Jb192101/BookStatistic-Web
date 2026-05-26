@@ -14,6 +14,9 @@ public class ClientConfiguration {
     @Value("${external-url:analyze}")
     private String analyzerBaseUrl;
 
+    @Value("${external-url:notification}")
+    private String notificationBaseUrl;
+
     @Bean
     public InteractionClient bookInteractionClient() {
         return new InteractionClient(this.bookBaseUrl, HttpHeaders.EMPTY);
@@ -22,5 +25,10 @@ public class ClientConfiguration {
     @Bean
     public InteractionClient analyzerInteractionClient() {
         return new InteractionClient(this.analyzerBaseUrl, HttpHeaders.EMPTY);
+    }
+
+    @Bean
+    public InteractionClient notificationInteractionClient() {
+        return new InteractionClient(this.notificationBaseUrl, HttpHeaders.EMPTY);
     }
 }

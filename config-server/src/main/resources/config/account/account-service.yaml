@@ -21,9 +21,17 @@ spring:
   application:
     name: account-service
 
+  datasource:
+    url: ${ACCOUNT_DB_URL}
+    username: ${ACCOUNT_DB_USER}
+    password: ${ACCOUNT_DB_PASSWORD}
+
 external-url:
   book: "http://localhost:8082/books"
   analyzer: "http://localhost:8083/analyze"
+
+server:
+  port: ${ACCOUNT_SERVER_PORT}
 
 jwt:
   auth-converter:

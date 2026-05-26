@@ -17,20 +17,28 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-@RequiredArgsConstructor
 public class OutboxScheduler {
     private final KafkaProducer kafkaProducer;
 
     private final OutboxContextManager outboxContextManager;
 
-    @Qualifier("bookInteractionClient")
     private final InteractionClient bookClient;
 
-    @Qualifier("analyzerInteractionClient")
     private final InteractionClient analyzerClient;
 
-    @Qualifier("notificationInteractionClient")
     private final InteractionClient notificationClient;
+
+    public OutboxScheduler(KafkaProducer kafkaProducer,
+                           OutboxContextManager outboxContextManager,
+                           @Qualifier("bookInteractionClient") InteractionClient bookClient,
+                           @Qualifier("analyzerInteractionClient") InteractionClient analyzerClient,
+                           @Qualifier("notificationInteractionClient") InteractionClient notificationClient) {
+        this.kafkaProducer = kafkaProducer;
+        this.outboxContextManager = outboxContextManager;
+        this.bookClient = bookClient;
+        this.analyzerClient = analyzerClient;
+        this.notificationClient = notificationClient;
+    }
 
     /**
      * Метод отправки сообщения в book-service

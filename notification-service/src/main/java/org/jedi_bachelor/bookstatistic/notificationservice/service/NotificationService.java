@@ -45,7 +45,7 @@ public class NotificationService {
      * @param dto DTO создания уведомления
      */
     @CircuitBreaker(name = "notification-circuitbreaker")
-    @Bulkhead(name = "notification-bulkhead", type = Bulkhead.Type.THREADPOOL)
+    @Bulkhead(name = "notification-bulkhead")
     @Transactional
     public NotificationDto addNewNotification(NotificationCreationDto dto) {
         // Создание нового уведомления
@@ -76,7 +76,7 @@ public class NotificationService {
     }
 
     @CircuitBreaker(name = "notification-circuitbreaker")
-    @Bulkhead(name = "notification-bulkhead", type = Bulkhead.Type.THREADPOOL)
+    @Bulkhead(name = "notification-bulkhead")
     @Transactional
     public List<NotificationDto> getAllNotifications() {
         return this.notificationMapper.toDtoList(

@@ -13,7 +13,19 @@ server:
 
 spring:
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: localhost:9093
+    consumer:
+      group-id: bs-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+        spring.json.value.default.type: org.jedi_bachelor.bookstatistic.commonslib.dto.request.notification.NotificationCreationDto
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
   zipkin:
     baseUrl: http://zipkin:9411
   sleuth:
@@ -52,7 +64,7 @@ kafka:
     sending-notification-topic: "sending_notification_topic"
     sending-notification-result-topic: "sending_notification_result_topic"
   groups:
-    bs-group: "bs-kafka-group"
+    bs-group: "bs-group"
 
 external-urls:
   account:
