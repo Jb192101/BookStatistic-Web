@@ -6,17 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="9753a1e7-9738-471e-85b6-9d133f8e3b79" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/account-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/account-service/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/accountservice/configuration/ClientConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/accountservice/configuration/ClientConfiguration.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/accountservice/configuration/ServiceConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/accountservice/configuration/ServiceConfiguration.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/accountservice/outbox/listener/OutboxScheduler.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/accountservice/outbox/listener/OutboxScheduler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/account-service/src/main/resources/bootstrap.yml" beforeDir="false" afterPath="$PROJECT_DIR$/account-service/src/main/resources/bootstrap.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config-server/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/config-server/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config-server/src/main/resources/config/account/account-service.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config-server/src/main/resources/config/account/account-service.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config-server/src/main/resources/config/notification/notification-service.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config-server/src/main/resources/config/notification/notification-service.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/converter/NotificationConverter.java" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/converter/NotificationConverter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/kafka/KafkaConsumer.java" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/kafka/KafkaConsumer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/service/NotificationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/service/NotificationService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker/config/init-notification.sql" beforeDir="false" afterPath="$PROJECT_DIR$/docker/config/init-notification.sql" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
