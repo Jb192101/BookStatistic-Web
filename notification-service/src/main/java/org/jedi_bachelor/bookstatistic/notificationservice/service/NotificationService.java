@@ -9,6 +9,7 @@ import org.jedi_bachelor.bookstatistic.commonslib.dto.mapentities.NotificationDt
 import org.jedi_bachelor.bookstatistic.commonslib.dto.request.notification.NotificationCreationDto;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.request.notification.NotificationSettingsCreatingDto;
 import org.jedi_bachelor.bookstatistic.commonslib.exceptions.NotificationNotFoundException;
+import org.jedi_bachelor.bookstatistic.commonslib.exceptions.NotificationSettingsNotExistsException;
 import org.jedi_bachelor.bookstatistic.commonslib.exceptions.UserNotFoundException;
 import org.jedi_bachelor.bookstatistic.notificationservice.converter.NotificationConverter;
 import org.jedi_bachelor.bookstatistic.notificationservice.entity.Notification;
@@ -47,24 +48,26 @@ public class NotificationService {
     @CircuitBreaker(name = "notification-circuitbreaker")
     @Bulkhead(name = "notification-bulkhead")
     @Transactional
-    public NotificationDto addNewNotification(NotificationCreationDto dto) {
+    public NotificationDto addNewNotification(NotificationCreationDto dto) throws NotificationSettingsNotExistsException {
         // Создание нового уведомления
         Notification notification = this.converter.convert(dto);
 
         // Сохранение
-        this.notificationRepository.save(notification);
+        if(notification.getType().isSystem()) {
+            this.notificationRepository.save(notification);
+        }
 
         // Получение настроек у пользователя
         Optional<NotificationSettings> notificationSettings
                 = this.notificationSettingsRepository.findByUserId(notification.getUserId());
 
         if(notificationSettings.isEmpty()) {
-            return null;
+            throw new NotificationSettingsNotExistsException(notification.getUserId());
         }
 
         // Если настройки удовлетворены, отправляем сообщение в email
         // (OutboxEmailMessage пока не сделан)
-        if(notificationSettings.get().getEnableEmail()) {
+        if(notificationSettings.get().getEnableEmail() && notification.getType().isEmail()) {
             this.outboxContextManager.saveOutboxEmailMessage(new OutboxEmailMessage());
         }
 

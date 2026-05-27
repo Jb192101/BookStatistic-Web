@@ -36,7 +36,7 @@ public class OutboxListener {
 
         for(OutboxEmailMessage message : messages) {
             if(!message.getPublished()) {
-                this.formEmailMessageAndSending(message);
+                this.formEmailMessageAndPublishing(message);
 
                 message.setPublished(true);
                 this.outboxContextManager.saveOutboxEmailMessage(message);
@@ -57,13 +57,7 @@ public class OutboxListener {
 
         for(OutboxKafkaMessage message : messages) {
             if(!message.getPublished()) {
-                OutboxKafkaDto dto = new OutboxKafkaDto(
-                        message.getId(),
-                        message.getTitle(),
-                        message.getMessageResult()
-                );
-
-                this.kafkaProducer.sendMessageToSendingNotificationResultTopic(dto);
+                this.formKafkaMessageAndPublishing(message);
 
                 message.setPublished(true);
                 this.outboxContextManager.saveOutboxKafkaMessage(message);
@@ -78,7 +72,7 @@ public class OutboxListener {
      *
      * @param message сущность сообщения
      */
-    private void formEmailMessageAndSending(OutboxEmailMessage message) {
+    private void formEmailMessageAndPublishing(OutboxEmailMessage message) {
         // Формирование EmailContext
         EmailContext emailContext = new EmailContext();
         emailContext.setMessage(message.getMessage());
@@ -87,5 +81,21 @@ public class OutboxListener {
 
         // Отправка сообщения
         this.emailService.sendEmail(emailContext);
+    }
+
+    /**
+     * Метод формирование outbox-сообщений в Kafka
+     *
+     * @param message данные для создания DTO в Kafka
+     */
+    private void formKafkaMessageAndPublishing(OutboxKafkaMessage message) {
+        OutboxKafkaDto dto = new OutboxKafkaDto(
+                message.getId(),
+                message.getNotiicationId(),
+                message.getTitle(),
+                message.getMessageResult()
+        );
+
+        this.kafkaProducer.sendMessageToSendingNotificationResultTopic(dto);
     }
 }

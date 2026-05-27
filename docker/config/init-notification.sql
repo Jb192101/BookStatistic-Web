@@ -12,7 +12,7 @@ CREATE TABLE notification_settings(
 
 CREATE TABLE notifications(
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    user_id UUID,
+    user_id UUID NOT NULL,
     type VARCHAR(255) NOT NULL CHECK(type IN ('SYSTEM_ONLY', 'EMAIL_ONLY', 'EMAIL_AND_SYSTEM')),
     notification_title VARCHAR(255) NOT NULL,
     message TEXT NOT NULL
@@ -20,6 +20,7 @@ CREATE TABLE notifications(
 
 CREATE TABLE outbox_email(
     id INTEGER PRIMARY KEY,
+    notification_id UUID NOT NULL,
     subject VARCHAR(255),
     message TEXT,
     email_address VARCHAR(255),
@@ -30,6 +31,7 @@ CREATE TABLE outbox_email(
 
 CREATE TABLE outbox_kafka(
     id INTEGER PRIMARY KEY,
+    notification_id UUID NOT NULL,
     title VARCHAR(255),
     message_result TEXT,
     published BOOLEAN DEFAULT FALSE

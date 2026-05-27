@@ -1,10 +1,7 @@
 package org.jedi_bachelor.bookstatistic.commonslib.exceptions.handler;
 
 import org.jedi_bachelor.bookstatistic.commonslib.dto.response.ErrorResponse;
-import org.jedi_bachelor.bookstatistic.commonslib.exceptions.BookNotFoundException;
-import org.jedi_bachelor.bookstatistic.commonslib.exceptions.NotificationNotFoundException;
-import org.jedi_bachelor.bookstatistic.commonslib.exceptions.TextNotFoundException;
-import org.jedi_bachelor.bookstatistic.commonslib.exceptions.UserNotFoundException;
+import org.jedi_bachelor.bookstatistic.commonslib.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -55,6 +52,17 @@ public class GlobalExceptionHandler {
         return new ErrorResponse(
                 "User not found",
                 "User not found by userId: " + e.getId(),
+                HttpStatus.NOT_FOUND.value(),
+                Timestamp.from(Instant.now())
+        );
+    }
+
+    @ExceptionHandler(NotificationSettingsNotExistsException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleNotiicationSettingsNotFoundException(NotificationSettingsNotExistsException e) {
+        return new ErrorResponse(
+                "Notification settings not found",
+                "Notification settings not found by id: " + e.getId(),
                 HttpStatus.NOT_FOUND.value(),
                 Timestamp.from(Instant.now())
         );

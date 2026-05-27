@@ -6,6 +6,7 @@ import org.jedi_bachelor.bookstatistic.notificationservice.outbox.interfaces.Out
 import org.jedi_bachelor.bookstatistic.notificationservice.outbox.listener.OutboxListener;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @EntityListeners(OutboxListener.class)
@@ -15,6 +16,9 @@ public class OutboxEmailMessage implements OutboxEnable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "notification_id")
+    private UUID notificationId;
 
     @Column(name = "subject")
     private String subject;
