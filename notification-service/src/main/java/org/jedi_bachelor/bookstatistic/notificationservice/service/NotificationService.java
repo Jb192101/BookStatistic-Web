@@ -54,9 +54,7 @@ public class NotificationService {
         Notification notification = this.converter.convert(dto);
 
         // Сохранение
-        if(notification.getType().isSystem()) {
-            this.notificationRepository.save(notification);
-        }
+        this.notificationRepository.save(notification);
 
         // Получение настроек у пользователя
         Optional<NotificationSettings> notificationSettings
