@@ -14,6 +14,7 @@ import org.jedi_bachelor.bookstatistic.commonslib.exceptions.UserNotFoundExcepti
 import org.jedi_bachelor.bookstatistic.notificationservice.converter.NotificationConverter;
 import org.jedi_bachelor.bookstatistic.notificationservice.entity.Notification;
 import org.jedi_bachelor.bookstatistic.notificationservice.entity.NotificationSettings;
+import org.jedi_bachelor.bookstatistic.notificationservice.entity.enums.NotificationType;
 import org.jedi_bachelor.bookstatistic.notificationservice.mapper.NotificationMapper;
 import org.jedi_bachelor.bookstatistic.notificationservice.outbox.OutboxContextManager;
 import org.jedi_bachelor.bookstatistic.notificationservice.outbox.entity.OutboxEmailMessage;
@@ -88,12 +89,24 @@ public class NotificationService {
     }
 
     @CircuitBreaker(name = "notification-circuitbreaker")
-    @Bulkhead(name = "getNotificationOfUser", type = Bulkhead.Type.THREADPOOL)
+    @Bulkhead(name = "getNotificationOfUser")
+    @Transactional
+    public List<NotificationDto> getUserNotificationsInSystem(UUID userId) throws UserNotFoundException {
+        List<NotificationDto> notifications = this.getUserNotifications(userId);
+
+        return notifications
+                .stream()
+                .filter(n -> NotificationType.valueOf(n.type()).isSystem())
+                .toList();
+    }
+
+    @CircuitBreaker(name = "notification-circuitbreaker")
+    @Bulkhead(name = "getNotificationOfUser")
     @Transactional
     public List<NotificationDto> getUserNotifications(UUID userId) throws UserNotFoundException {
         List<Notification> dtos = this.notificationRepository.findByUserId(userId);
 
-        if(dtos.isEmpty()) {
+        if (dtos.isEmpty()) {
             log.error("User with id {} did not found", userId);
 
             throw new UserNotFoundException(userId);

@@ -15,6 +15,7 @@ import org.jedi_bachelor.bookstatistic.commonslib.dto.request.notification.Notif
 import org.jedi_bachelor.bookstatistic.commonslib.dto.response.ErrorResponse;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.response.SuccessResponse;
 import org.jedi_bachelor.bookstatistic.commonslib.exceptions.NotificationNotFoundException;
+import org.jedi_bachelor.bookstatistic.commonslib.exceptions.NotificationSettingsNotExistsException;
 import org.jedi_bachelor.bookstatistic.commonslib.exceptions.UserNotFoundException;
 import org.jedi_bachelor.bookstatistic.notificationservice.service.NotificationService;
 import org.springframework.http.HttpStatus;
@@ -114,12 +115,57 @@ public class NotificationController {
 
     @RolesAllowed({ "ADMIN", "USER" })
     @GetMapping("/{userId}")
+    @Operation(summary = "Получение системных уведомлений пользователя",
+            description = "Получение всех системных уведомлений пользователя по его ID")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Уведомления успешно получены",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Пользователь не найден",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_PROBLEM_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Внутренняя ошибка сервера",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_PROBLEM_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    )
+            )
+    })
+    public ResponseEntity<?> getUserNotificationsInSystem(
+            @Parameter(
+                    description = "Уникальный идентификатор пользователя в формате UUID",
+                    required = true,
+                    example = "550e8400-e29b-41d4-a716-446655440001",
+                    schema = @Schema(
+                            type = "string",
+                            format = "uuid",
+                            description = "UUID пользователя"
+                    )
+            ) @PathVariable UUID userId) throws UserNotFoundException {
+        List<NotificationDto> dtos = this.notificationService.getUserNotificationsInSystem(userId);
+
+        return ResponseEntity.ok(new SuccessResponse(200, dtos));
+    }
+
+    @RolesAllowed({ "ADMIN" })
+    @GetMapping("/{userId}")
     @Operation(summary = "Получение уведомлений пользователя",
             description = "Получение всех уведомлений пользователя по его ID")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
-                    description = "Уведомление успешно получено",
+                    description = "Уведомления успешно получены",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE
                     )
@@ -189,7 +235,7 @@ public class NotificationController {
                     )
             )
     })
-    public ResponseEntity<?> addNewNotification(@RequestBody NotificationCreationDto dto) {
+    public ResponseEntity<?> addNewNotification(@RequestBody NotificationCreationDto dto) throws NotificationSettingsNotExistsException {
         NotificationDto notificationDto = this.notificationService.addNewNotification(dto);
 
         return ResponseEntity.status(201).body(new SuccessResponse(

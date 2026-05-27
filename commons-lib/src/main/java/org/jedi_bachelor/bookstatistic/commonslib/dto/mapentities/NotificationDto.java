@@ -1,6 +1,12 @@
 package org.jedi_bachelor.bookstatistic.commonslib.dto.mapentities;
 
-public record NotificationDto(
+import java.util.UUID;
 
+public record NotificationDto(
+    UUID id,
+    UUID userId,
+    String type,
+    String notificationTitle,
+    String message
 ) {
 }
