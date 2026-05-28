@@ -5,31 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9753a1e7-9738-471e-85b6-9d133f8e3b79" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/analyze-service/k8s/deployment.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/analyze-service/k8s/service.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/analyze-service/src/main/java/org/jedi_bachelor/bookstatistic/analyzeservice/converter/BookAnalysisConverter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/analyze-service/src/main/java/org/jedi_bachelor/bookstatistic/analyzeservice/entity/BookAnalysis.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/book-service/k8s/deployment.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/book-service/k8s/service.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons-lib/src/main/java/org/jedi_bachelor/bookstatistic/commonslib/dto/mapentities/BookAnalysisResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/config-server/k8s/deployment.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/config-server/k8s/service.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/discovery-server/k8s/deployment.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/discovery-server/k8s/service.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gateway/k8s/deployment.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gateway/k8s/service.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/notification-service/k8s/deployment.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/notification-service/k8s/service.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyze-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/analyze-service/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyze-service/src/main/java/org/jedi_bachelor/bookstatistic/analyzeservice/jsonmap/PreferencesEntity.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyze-service/src/main/resources/examplefiles/user-literature-report.json" beforeDir="false" afterPath="$PROJECT_DIR$/analyze-service/src/main/resources/examplefiles/user-literature-report.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/entity/Text.java" beforeDir="false" afterPath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/entity/Text.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker/config/init-analyze.sql" beforeDir="false" afterPath="$PROJECT_DIR$/docker/config/init-analyze.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker/config/init-books.sql" beforeDir="false" afterPath="$PROJECT_DIR$/docker/config/init-books.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/k8s/config-secrets.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/account-service/k8s/deployment.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/k8s/config-server-deployment.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/account-service/k8s/service.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/converter/NotificationConverter.java" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/converter/NotificationConverter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
