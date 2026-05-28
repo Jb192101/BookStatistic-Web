@@ -39,4 +39,8 @@ CREATE TABLE books_authors (
 );
 
 CREATE TABLE text_files (
+    id UUID PRIMARY KEY,
+    book_id UUID NOT NULL,
+    language VARCHAR(255) NOT NULL,
+    text_id VARCHAR(255) NOT NULL
 );

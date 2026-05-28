@@ -5,11 +5,31 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9753a1e7-9738-471e-85b6-9d133f8e3b79" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/analyze-service/k8s/deployment.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/analyze-service/k8s/service.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/analyze-service/src/main/java/org/jedi_bachelor/bookstatistic/analyzeservice/converter/BookAnalysisConverter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/analyze-service/src/main/java/org/jedi_bachelor/bookstatistic/analyzeservice/entity/BookAnalysis.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/book-service/k8s/deployment.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/book-service/k8s/service.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/commons-lib/src/main/java/org/jedi_bachelor/bookstatistic/commonslib/dto/mapentities/BookAnalysisResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config-server/k8s/deployment.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config-server/k8s/service.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/discovery-server/k8s/deployment.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/discovery-server/k8s/service.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gateway/k8s/deployment.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gateway/k8s/service.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/notification-service/k8s/deployment.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/notification-service/k8s/service.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/JdbcTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/entity/BookTextRelation.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/repository/BookTextRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/service/BookService.java" beforeDir="false" afterPath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/service/BookService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/analyze-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/analyze-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/analyze-service/src/main/java/org/jedi_bachelor/bookstatistic/analyzeservice/jsonmap/PreferencesEntity.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analyze-service/src/main/resources/examplefiles/user-literature-report.json" beforeDir="false" afterPath="$PROJECT_DIR$/analyze-service/src/main/resources/examplefiles/user-literature-report.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/entity/Text.java" beforeDir="false" afterPath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/entity/Text.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker/config/init-analyze.sql" beforeDir="false" afterPath="$PROJECT_DIR$/docker/config/init-analyze.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker/config/init-books.sql" beforeDir="false" afterPath="$PROJECT_DIR$/docker/config/init-books.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/k8s/config-secrets.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/account-service/k8s/deployment.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/k8s/config-server-deployment.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/account-service/k8s/service.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/converter/NotificationConverter.java" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/converter/NotificationConverter.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,9 +44,9 @@
         <option value="Enum" />
         <option value="Python Script" />
         <option value="Interface" />
-        <option value="Record" />
-        <option value="Class" />
         <option value="Interface" />
+        <option value="Class" />
+        <option value="Record" />
       </list>
     </option>
   </component>
@@ -49,43 +69,43 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.Account-server.executor&quot;: &quot;Run&quot;,
-    &quot;Application.AccountServiceApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Analyze-server.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Book-server.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Config-server.executor&quot;: &quot;Run&quot;,
-    &quot;Application.ConfigApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Gateway-server.executor&quot;: &quot;Run&quot;,
-    &quot;Application.JdbcTest.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Notification-server.executor&quot;: &quot;Run&quot;,
-    &quot;Application.NotificationServiceApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Maven.commons-lib [clean].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.commons-lib [install].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.notification-service [clean].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.notification-service [install].executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;dev&quot;,
-    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;corretto-21&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/gogat/Git/BookStatistic-Web/notification-service/src/main/resources&quot;,
-    &quot;onboarding.tips.debug.path&quot;: &quot;C:/Users/gogat/Git/BookStatistic-Web/analyze-service/src/main/java/org/jedi_bachelor/bookstatistic/analyzeservice/Main.java&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.24252874&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.Account-server.executor": "Run",
+    "Application.AccountServiceApplication.executor": "Run",
+    "Application.Analyze-server.executor": "Run",
+    "Application.Book-server.executor": "Run",
+    "Application.Config-server.executor": "Run",
+    "Application.ConfigApplication.executor": "Run",
+    "Application.Gateway-server.executor": "Run",
+    "Application.JdbcTest.executor": "Run",
+    "Application.Main.executor": "Run",
+    "Application.Notification-server.executor": "Run",
+    "Application.NotificationServiceApplication.executor": "Run",
+    "Maven.commons-lib [clean].executor": "Run",
+    "Maven.commons-lib [install].executor": "Run",
+    "Maven.notification-service [clean].executor": "Run",
+    "Maven.notification-service [install].executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "dev",
+    "jdk.selected.JAVA_MODULE": "corretto-21",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/gogat/Git/BookStatistic-Web/notification-service",
+    "onboarding.tips.debug.path": "C:/Users/gogat/Git/BookStatistic-Web/analyze-service/src/main/java/org/jedi_bachelor/bookstatistic/analyzeservice/Main.java",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.24252874",
+    "settings.editor.selected.configurable": "preferences.pluginManager"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\gogat\Git\BookStatistic-Web\notification-service\src\main\resources" />
-      <recent name="C:\Users\gogat\Git\BookStatistic-Web\book-service\src\main\resources" />
-      <recent name="C:\Users\gogat\Git\BookStatistic-Web\account-service\src\main\resources" />
-      <recent name="C:\Users\gogat\Git\BookStatistic-Web\gateway\src\main\resources" />
-      <recent name="C:\Users\gogat\Git\BookStatistic-Web\analyze-service\src\main\java\org\jedi_bachelor\bookstatistic\analyzeservice\utils" />
+      <recent name="C:\Users\gogat\Git\BookStatistic-Web\notification-service" />
+      <recent name="C:\Users\gogat\Git\BookStatistic-Web\account-service" />
+      <recent name="C:\Users\gogat\Git\BookStatistic-Web\analyze-service" />
+      <recent name="C:\Users\gogat\Git\BookStatistic-Web\book-service" />
+      <recent name="C:\Users\gogat\Git\BookStatistic-Web\config-server" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\gogat\Git\BookStatistic-Web\docker\logstash\pipeline" />

@@ -20,6 +20,12 @@ public class Text {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "text_id")
+    @Column(name = "book_id", nullable = false)
+    private UUID bookId;
+
+    @Column(name = "language", nullable = false)
+    private String language;
+
+    @Column(name = "text_id", nullable = false)
     private String textFileRedisId;
 }

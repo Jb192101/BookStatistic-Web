@@ -1,6 +1,5 @@
 package org.jedi_bachelor.bookstatistic.notificationservice.converter;
 
-
 import org.jedi_bachelor.bookstatistic.commonslib.converter.Converter;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.request.notification.NotificationCreationDto;
 import org.jedi_bachelor.bookstatistic.notificationservice.entity.Notification;
