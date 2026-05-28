@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.jedi_bachelor.bookstatistic.bookservice.converter.BookConverter;
 import org.jedi_bachelor.bookstatistic.bookservice.converter.TextEntityConverter;
 import org.jedi_bachelor.bookstatistic.bookservice.entity.Book;
-import org.jedi_bachelor.bookstatistic.bookservice.entity.BookTextRelation;
 import org.jedi_bachelor.bookstatistic.bookservice.entity.UserBookRelation;
 import org.jedi_bachelor.bookstatistic.bookservice.mapper.BookMapper;
 import org.jedi_bachelor.bookstatistic.bookservice.redis.RedisContentManager;
@@ -29,8 +28,6 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class BookService {
-    private final BookTextRepository bookTextRepository;
-
     private final BookAuthorRepository bookAuthorRepository;
 
     private final BookRepository bookRepository;
@@ -87,8 +84,6 @@ public class BookService {
         int gotAndNotReadedBooksCount = 0;
 
         for(UserBookRelation relation : userBookRelations) {
-            Optional<Book> book = this.bookRepository.findById(relation.getBookId());
-
             // 1. Блок с вычислением числа полностью прочитанных страниц
 
             // 2. Блок с вычислением числа частично прочитанными книгами
@@ -166,14 +161,6 @@ public class BookService {
         if(bookOptional.isEmpty()) {
             throw new BookNotFoundException(bookId);
         }
-
-        BookTextRelation relation = new BookTextRelation();
-        relation.setBook(bookOptional.get());
-        relation.setText(this.textEntityConverter.convert(
-                this.redisContentManager.getTextFile(bookId)
-        ));
-
-        this.bookTextRepository.save(relation);
     }
 
     /**
@@ -199,5 +186,16 @@ public class BookService {
      */
     private long daysBetweenNowAndData(LocalDateTime date) {
         return ChronoUnit.DAYS.between(date, LocalDateTime.now());
+    }
+
+    /**
+     * Метод для подсчёта числа страниц на основе числа символов в тексте
+     * (при подсчёте числа страниц используется метрика 1700)
+     *
+     * @param text сущность текста
+     * @return кол-во символов
+     */
+    private int getCountOfPagesBySymbols(TextFile text) {
+        return (int) text.getSize() / 1700;
     }
 }
