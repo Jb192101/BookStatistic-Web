@@ -5,18 +5,23 @@ import org.jedi_bachelor.bookstatistic.bookservice.converter.BookConverter;
 import org.jedi_bachelor.bookstatistic.bookservice.converter.TextEntityConverter;
 import org.jedi_bachelor.bookstatistic.bookservice.entity.Book;
 import org.jedi_bachelor.bookstatistic.bookservice.entity.BookTextRelation;
+import org.jedi_bachelor.bookstatistic.bookservice.entity.UserBookRelation;
 import org.jedi_bachelor.bookstatistic.bookservice.mapper.BookMapper;
 import org.jedi_bachelor.bookstatistic.bookservice.redis.RedisContentManager;
 import org.jedi_bachelor.bookstatistic.bookservice.redis.entity.TextFile;
 import org.jedi_bachelor.bookstatistic.bookservice.repository.*;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.mapentities.BookDto;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.request.book.BookCreationDto;
+import org.jedi_bachelor.bookstatistic.commonslib.dto.response.book.UserReadingStat;
 import org.jedi_bachelor.bookstatistic.commonslib.exceptions.BookNotFoundException;
+import org.jedi_bachelor.bookstatistic.commonslib.exceptions.UserNotFoundException;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -42,6 +47,8 @@ public class BookService {
 
     private final TextEntityConverter textEntityConverter;
 
+    private final UserBookRelationRepository userBookRelationRepository;
+
     // Пример использования: this.messageSource.getMessage(*код сообщения*);
     private final MessageSource messageSource;
 
@@ -57,6 +64,56 @@ public class BookService {
         this.bookRepository.save(newBook);
 
         return this.bookMapper.toDto(newBook);
+    }
+
+    /**
+     * Метод возврата статистики книг по пользователю
+     *
+     * @param userId ID пользователя
+     * @return статистику по кол-ву книг каждой категории
+     * @throws UserNotFoundException если пользователя с таким ID нет в системе
+     */
+    public UserReadingStat getReadingStatsByUserId(UUID userId) throws UserNotFoundException {
+        List<UserBookRelation> userBookRelations = this.userBookRelationRepository.findById_UserId(userId);
+
+        if(userBookRelations.isEmpty()) {
+            throw new UserNotFoundException(userId);
+        }
+
+        int allAmount = this.userBookRelationRepository.findById_UserId(userId).size();
+        int fullReadedBooksCount = 0;
+        int partialReadedBookCount = 0;
+        int abandonedBooksCount = 0;
+        int gotAndNotReadedBooksCount = 0;
+
+        for(UserBookRelation relation : userBookRelations) {
+            Optional<Book> book = this.bookRepository.findById(relation.getBookId());
+
+            // 1. Блок с вычислением числа полностью прочитанных страниц
+
+            // 2. Блок с вычислением числа частично прочитанными книгами
+
+            // 3. Блок с числом взятых но не открытых книг
+            long daysBetween = this.daysBetweenNowAndData(relation.getLastOpeningBookTime());
+
+            if(relation.getReadedPages() == 0 && daysBetween > 31) {
+                gotAndNotReadedBooksCount++;
+            }
+
+            // 4. Блок с заброшенными книгами
+            if(daysBetween > 31 && relation.getReadedPages() != 0) {
+                abandonedBooksCount++;
+            }
+        }
+
+        return new UserReadingStat(
+                userId,
+                allAmount,
+                fullReadedBooksCount,
+                partialReadedBookCount,
+                abandonedBooksCount,
+                gotAndNotReadedBooksCount
+        );
     }
 
     /**
@@ -132,5 +189,15 @@ public class BookService {
         }
 
         return this.redisContentManager.getTextFile(bookId);
+    }
+
+    /**
+     * Метод вычисления разницы между нынешней датой и введённой датой в днях
+     *
+     * @param date дата
+     * @return разницу в днях
+     */
+    private long daysBetweenNowAndData(LocalDateTime date) {
+        return ChronoUnit.DAYS.between(date, LocalDateTime.now());
     }
 }

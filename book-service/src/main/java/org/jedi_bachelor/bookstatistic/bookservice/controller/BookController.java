@@ -15,7 +15,9 @@ import org.jedi_bachelor.bookstatistic.commonslib.dto.mapentities.BookDto;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.request.book.BookCreationDto;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.response.ErrorResponse;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.response.SuccessResponse;
+import org.jedi_bachelor.bookstatistic.commonslib.dto.response.book.UserReadingStat;
 import org.jedi_bachelor.bookstatistic.commonslib.exceptions.BookNotFoundException;
+import org.jedi_bachelor.bookstatistic.commonslib.exceptions.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -66,6 +68,44 @@ public class BookController {
         return ResponseEntity.status(HttpStatus.CREATED.value()).body(
                 new SuccessResponse(201, bookDto)
         );
+    }
+
+    @RolesAllowed({"ADMIN", "USER"})
+    @GetMapping("/stats/{userId}")
+    @Operation(summary = "Статистика по числу книг",
+            description = "Выдаёт кол-во полностью прочитанных книг, частично прочитанных, брошенных книг и взятых, но не открытых книг")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Успешное получение всей статистики",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Пользователя с таким ID не найдена",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_PROBLEM_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Внутренняя ошибка сервера",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_PROBLEM_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    )
+            )
+    })
+    public ResponseEntity<?> getReadingStatsByUserId(
+            @PathVariable UUID userId
+    ) throws UserNotFoundException {
+        UserReadingStat stat = this.bookService.getReadingStatsByUserId(userId);
+
+        return ResponseEntity.ok(
+                new SuccessResponse(200, stat));
     }
 
     @RolesAllowed("ADMIN")
