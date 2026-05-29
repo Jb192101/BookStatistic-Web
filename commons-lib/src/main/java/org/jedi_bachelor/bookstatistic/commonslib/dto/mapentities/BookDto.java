@@ -1,6 +1,10 @@
 package org.jedi_bachelor.bookstatistic.commonslib.dto.mapentities;
 
-public record BookDto(
+import java.util.UUID;
 
+public record BookDto(
+    UUID id,
+    String title,
+    String description
 ) {
 }

@@ -1,6 +1,14 @@
 server:
   port: ${ANALYZE_SERVER_PORT:8085}
 
+ml:
+  model:
+    path: models/sbert_base.onnx
+  vocab:
+    path: models/vocab.txt
+  classifier:
+    path: models/genre_classifier_dl4j.zip
+
 management:
   endpoints:
     web:
