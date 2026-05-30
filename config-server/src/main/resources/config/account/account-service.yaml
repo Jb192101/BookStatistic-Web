@@ -1,4 +1,15 @@
 spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+  sleuth:
+    sampler:
+      probability: 1.0
   security:
     oauth2:
       client:
@@ -6,44 +17,69 @@ spring:
           keycloak:
             client-id: bookstatistic-app
             client-secret: ${KEYCLOAK_CLIENT_SECRET}
-            scope: openid,profile,email,roles
+            scope: openid,profile,email
             authorization-grant-type: authorization_code
             redirect-uri: "{baseUrl}/login/oauth2/code/keycloak"
         provider:
           keycloak:
-            issuer-uri: ${KEYCLOAK_ISSUER_URI:http://localhost:8080/realms/bookstatistic}
+            issuer-uri: ${KEYCLOAK_ISSUER_URI:http://localhost:8080/realms/bookstatistic-realm}
             user-name-attribute: preferred_username
-
       resourceserver:
         jwt:
-          issuer-uri: ${KEYCLOAK_ISSUER_URI:http://localhost:8080/realms/bookstatistic}
-          jwk-set-uri: ${KEYCLOAK_ISSUER_URI:http://localhost:8080/realms/bookstatistic}/protocol/openid-connect/certs
+          issuer-uri: ${KEYCLOAK_ISSUER_URI:http://localhost:8080/realms/bookstatistic-realm}
+
   application:
     name: account-service
 
   datasource:
-    url: ${ACCOUNT_DB_URL}
-    username: ${ACCOUNT_DB_USER}
-    password: ${ACCOUNT_DB_PASSWORD}
+    url: ${ACCOUNT_DB_URL:jdbc:postgresql://localhost:5432/account_db}
+    username: ${ACCOUNT_DB_USER:postgres}
+    password: ${ACCOUNT_DB_PASSWORD:postgres}
 
-external-url:
-  book: "http://localhost:8082/books"
-  analyzer: "http://localhost:8083/analyze"
+external-urls:
+  book: ${BOOK_SERVICE_URL:http://localhost:8082}
+  analyze: ${ANALYZE_SERVICE_URL:http://localhost:8083}
+  notification: ${NOTIFICATION_SERVICE_URL:http://localhost:8081}
 
 server:
-  port: ${ACCOUNT_SERVER_PORT}
+  port: ${ACCOUNT_SERVER_PORT:8084}
 
-jwt:
-  auth-converter:
-    principal-claim: preferred_username
-    resource-id: bookstatistic-app
+eureka:
+  instance:
+    preferIpAddress: true
+    instance-id: ${spring.application.name}:${random.value}
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://localhost:8070/eureka/
 
 keycloak:
   admin:
     server-url: ${KEYCLOAK_SERVER_URL:http://localhost:8080}
-    realm: bookstatistic
+    realm: master
     client-id: admin-cli
-    client-secret: ${KEYCLOAK_ADMIN_SECRET}
+    client-secret: ${KEYCLOAK_ADMIN_SECRET:}
+    username: ${KEYCLOAK_ADMIN_USERNAME:admin}
+    password: ${KEYCLOAK_ADMIN_PASSWORD:admin}
+  realm: bookstatistic-realm
+  auth-server-url: ${KEYCLOAK_AUTH_URL:http://localhost:8080}
+  resource: bookstatistic-app
+  credentials:
+    secret: ${KEYCLOAK_CLIENT_SECRET}
+  bearer-only: true
+  use-resource-role-mappings: true
+  init:
+    enabled: ${KEYCLOAK_INIT_ENABLED:true}
 
-zipkin.baseUrl: zipkin:9411
-spring.sleuth.sampler.percentage: 1
+zipkin:
+  baseUrl: ${ZIPKIN_URL:http://zipkin:9411}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      show-details: always

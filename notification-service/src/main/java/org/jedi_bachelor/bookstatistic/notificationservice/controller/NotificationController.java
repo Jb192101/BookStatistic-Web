@@ -114,7 +114,7 @@ public class NotificationController {
     }
 
     @RolesAllowed({ "ADMIN", "USER" })
-    @GetMapping("/{userId}")
+    @GetMapping("/system/user/{userId}")
     @Operation(summary = "Получение системных уведомлений пользователя",
             description = "Получение всех системных уведомлений пользователя по его ID")
     @ApiResponses(value = {
@@ -159,7 +159,7 @@ public class NotificationController {
     }
 
     @RolesAllowed({ "ADMIN" })
-    @GetMapping("/{userId}")
+    @GetMapping("/user/{userId}")
     @Operation(summary = "Получение уведомлений пользователя",
             description = "Получение всех уведомлений пользователя по его ID")
     @ApiResponses(value = {

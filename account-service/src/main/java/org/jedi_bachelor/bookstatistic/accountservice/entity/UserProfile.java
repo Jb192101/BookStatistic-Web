@@ -2,6 +2,7 @@ package org.jedi_bachelor.bookstatistic.accountservice.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -24,10 +25,11 @@ public class UserProfile {
     @Column(name = "password_hash", nullable = false)
     private String hashPassword;
 
-    @Column(name = "language", nullable = false, columnDefinition = "DEFAULT 'EN'")
-    private String language;
+    @Column(name = "language", nullable = false)
+    private String language = "EN";
 
-    @Column(name = "created_at", columnDefinition = "DEFAULT DATE()")
+    @CreationTimestamp
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @Column(name = "birthday")

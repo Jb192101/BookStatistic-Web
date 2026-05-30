@@ -60,20 +60,18 @@ public class KeycloakInitializer {
     }
 
     private void createRoles() {
-        RolesRepresentation roles = new RolesRepresentation();
+        RoleRepresentation userRole = new RoleRepresentation();
+        userRole.setName("USER");
+        userRole.setDescription("Regular user role");
 
         RoleRepresentation adminRole = new RoleRepresentation();
         adminRole.setName("ADMIN");
         adminRole.setDescription("Administrator role");
 
-        RoleRepresentation userRole = new RoleRepresentation();
-        userRole.setName("USER");
-        userRole.setDescription("Regular user role");
+        keycloakAdmin.realm(realm).roles().create(userRole);
+        keycloakAdmin.realm(realm).roles().create(adminRole);
 
-        roles.setRealm(List.of(adminRole, userRole));
-
-        this.keycloakAdmin.realm(this.realm).roles().create((RoleRepresentation) roles.getRealm());
-        log.info("Roles created in realm '{}'", this.realm);
+        log.info("Roles 'USER' and 'ADMIN' created in realm '{}'", realm);
     }
 
     private void createClient() {

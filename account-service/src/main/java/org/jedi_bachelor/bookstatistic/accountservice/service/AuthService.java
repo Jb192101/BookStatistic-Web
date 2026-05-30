@@ -1,5 +1,8 @@
 package org.jedi_bachelor.bookstatistic.accountservice.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +24,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,6 +40,8 @@ public class AuthService {
 
     private final RestTemplate restTemplate;
 
+    private final ObjectMapper objectMapper;
+
     @Value("${spring.security.oauth2.client.provider.keycloak.issuer-uri}")
     private String issuerUri;
 
@@ -45,41 +51,43 @@ public class AuthService {
     @Value("${spring.security.oauth2.client.registration.keycloak.client-secret}")
     private String clientSecret;
 
-    @Value("${keycloak.admin.realm}")
+    @Value("${keycloak.realm}")
     private String realm;
 
     public JwtResponse login(LoginDto loginDto) {
         try {
-            String tokenResponse = this.getKeycloakTokens(
-                    loginDto.username(),
-                    loginDto.password()
-            );
-
-            return JwtResponse.builder()
-                    .accessToken(this.extractAccessToken(tokenResponse))
-                    .refreshToken(this.extractRefreshToken(tokenResponse))
-                    .tokenType("Bearer")
-                    .expiresIn(this.extractExpiresIn(tokenResponse))
-                    .build();
-
+            String tokenResponse = getKeycloakTokens(loginDto.username(), loginDto.password());
+            return parseTokenResponse(tokenResponse);
         } catch (Exception e) {
             log.error("Login failed for user: {}", loginDto.username(), e);
             throw new RuntimeException("Invalid credentials");
         }
     }
 
+    @Transactional
     public UserProfile register(RegisterDto registerDto) {
-        UserRepresentation keycloakUser = this.createKeycloakUser(registerDto);
+        try {
+            List<UserRepresentation> existingUsers = keycloakAdmin.realm(realm)
+                    .users()
+                    .search(registerDto.username());
 
-        try (Response response = this.keycloakAdmin.realm(this.realm).users().create(keycloakUser)) {
+            if (!existingUsers.isEmpty()) {
+                throw new RuntimeException("User already exists");
+            }
+        } catch (Exception e) {
+            log.warn("Error checking existing user: {}", e.getMessage());
+        }
+
+        UserRepresentation keycloakUser = createKeycloakUser(registerDto);
+
+        try (Response response = keycloakAdmin.realm(realm).users().create(keycloakUser)) {
 
             if (response.getStatus() != 201) {
                 throw new RuntimeException("Failed to create user in Keycloak: " + response.getStatusInfo());
             }
 
-            String userId = this.extractUserIdFromResponse(response);
-
-            this.assignDefaultRole(userId);
+            String userId = extractUserIdFromResponse(response);
+            assignDefaultRole(userId);
 
             UserProfile userProfile = new UserProfile();
             userProfile.setId(UUID.randomUUID());
@@ -87,12 +95,12 @@ public class AuthService {
             userProfile.setName(registerDto.username());
             userProfile.setHashPassword(passwordEncoder.encode(registerDto.password()));
             userProfile.setLanguage("EN");
+            userProfile.setCreatedAt(LocalDateTime.now());
 
             return userRepository.save(userProfile);
 
         } catch (Exception e) {
             log.error("Registration failed", e);
-
             throw new RuntimeException("Registration failed: " + e.getMessage());
         }
     }
@@ -111,18 +119,19 @@ public class AuthService {
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
 
         try {
-            this.restTemplate.postForEntity(logoutUrl, request, String.class);
+            restTemplate.postForEntity(logoutUrl, request, String.class);
+            log.info("User logged out successfully");
         } catch (Exception e) {
             log.warn("Logout failed: {}", e.getMessage());
         }
     }
 
     public JwtResponse refreshToken(String refreshToken) {
-        String tokenUrl = this.issuerUri + "/protocol/openid-connect/token";
+        String tokenUrl = issuerUri + "/protocol/openid-connect/token";
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("client_id", this.clientId);
-        params.add("client_secret", this.clientSecret);
+        params.add("client_id", clientId);
+        params.add("client_secret", clientSecret);
         params.add("refresh_token", refreshToken);
         params.add("grant_type", "refresh_token");
 
@@ -133,43 +142,11 @@ public class AuthService {
 
         ResponseEntity<String> response = this.restTemplate.postForEntity(tokenUrl, request, String.class);
 
-        return this.parseTokenResponse(response.getBody());
-    }
+        if (response.getStatusCode() == HttpStatus.OK) {
+            return parseTokenResponse(response.getBody());
+        }
 
-    private void assignDefaultRole(String userId) {
-        UsersResource usersResource = this.keycloakAdmin.realm(this.realm).users();
-
-        RoleRepresentation userRole = keycloakAdmin.realm(realm)
-                .roles()
-                .get("USER")
-                .toRepresentation();
-
-        usersResource.get(userId).roles().realmLevel()
-                .add(List.of(userRole));
-    }
-
-    private String extractUserIdFromResponse(Response response) {
-        String location = response.getLocation().toString();
-        return location.substring(location.lastIndexOf("/") + 1);
-    }
-
-    private String extractAccessToken(String tokenResponse) {
-        return tokenResponse.split("\"access_token\":\"")[1].split("\"")[0];
-    }
-
-    private String extractRefreshToken(String tokenResponse) {
-        return tokenResponse.split("\"refresh_token\":\"")[1].split("\"")[0];
-    }
-
-    private long extractExpiresIn(String tokenResponse) {
-        String expiresStr = tokenResponse.split("\"expires_in\":")[1].split(",")[0];
-        return Long.parseLong(expiresStr);
-    }
-
-    private JwtResponse parseTokenResponse(String response) {
-        // Реализуйте парсинг JSON через ObjectMapper
-        // Временно заглушка
-        return JwtResponse.builder().build();
+        throw new RuntimeException("Failed to refresh token");
     }
 
     private String getKeycloakTokens(String username, String password) {
@@ -194,6 +171,40 @@ public class AuthService {
         } else {
             throw new RuntimeException("Failed to get tokens from Keycloak");
         }
+    }
+
+    private JwtResponse parseTokenResponse(String responseBody) {
+        try {
+            JsonNode json = objectMapper.readTree(responseBody);
+
+            return JwtResponse.builder()
+                    .accessToken(json.get("access_token").asText())
+                    .refreshToken(json.get("refresh_token").asText())
+                    .tokenType(json.get("token_type").asText())
+                    .expiresIn(json.get("expires_in").asLong())
+                    .scope(json.has("scope") ? json.get("scope").asText() : null)
+                    .build();
+        } catch (Exception e) {
+            log.error("Failed to parse token response", e);
+            throw new RuntimeException("Failed to parse token response");
+        }
+    }
+
+    private void assignDefaultRole(String userId) {
+        UsersResource usersResource = keycloakAdmin.realm(realm).users();
+
+        RoleRepresentation userRole = keycloakAdmin.realm(realm)
+                .roles()
+                .get("USER")
+                .toRepresentation();
+
+        usersResource.get(userId).roles().realmLevel().add(List.of(userRole));
+        log.info("Assigned USER role to user with ID: {}", userId);
+    }
+
+    private String extractUserIdFromResponse(Response response) {
+        String location = response.getLocation().toString();
+        return location.substring(location.lastIndexOf("/") + 1);
     }
 
     private UserRepresentation createKeycloakUser(RegisterDto registerDto) {

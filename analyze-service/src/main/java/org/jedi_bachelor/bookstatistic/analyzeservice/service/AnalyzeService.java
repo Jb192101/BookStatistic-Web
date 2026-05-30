@@ -398,8 +398,7 @@ public class AnalyzeService {
                 userId, throwable.getMessage());
 
         // Возвращаем кэшированные данные, если есть
-        List<BookAnalysisResponse> cached = bookAnalysisRepository
-                .findByUserId(userId);
+        List<BookAnalysisResponse> cached = this.bookAnalysisRepository.findByUserId(userId);
 
         if (!cached.isEmpty()) {
             log.info("Returning cached analysis for user: {}", userId);

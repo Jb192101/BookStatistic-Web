@@ -1,10 +1,10 @@
 server:
-  port: 8072
+  port: ${GATEWAY_SERVER_PORT:8083}
 
 eureka:
   instance:
     preferIpAddress: true
-
+    instance-id: ${spring.application.name}:${server.port}
   client:
     registerWithEureka: true
     fetchRegistry: true
@@ -12,6 +12,12 @@ eureka:
       defaultZone: http://localhost:8070/eureka/
 
 spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${KEYCLOAK_ISSUER_URI:http://localhost:8080/realms/bookstatistic-realm}
+          jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
   zipkin:
     baseUrl: http://zipkin:9411
   sleuth:
@@ -41,9 +47,9 @@ spring:
             - RemoveRequestHeader= Cookie,Set-Cookie
 
         - id: account-service
-          uri: lb://notification-service
+          uri: lb://account-service
           predicates:
-            - Path=/api/v1/accounts/**
+            - Path=/v1/users/**, /v1/auth/**
           filters:
             - RewritePath=/account-service/(?<path>.*), /$\{path}
             - RemoveRequestHeader= Cookie,Set-Cookie

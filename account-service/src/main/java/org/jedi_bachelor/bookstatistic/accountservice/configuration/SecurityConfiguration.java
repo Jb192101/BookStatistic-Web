@@ -1,8 +1,5 @@
 package org.jedi_bachelor.bookstatistic.accountservice.configuration;
 
-import org.jedi_bachelor.bookstatistic.accountservice.utils.JwtAuthenticationFilter;
-import org.jedi_bachelor.bookstatistic.accountservice.utils.JwtUtil;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
@@ -18,7 +15,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -30,13 +26,8 @@ import java.util.stream.Collectors;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity(jsr250Enabled = true, securedEnabled = true)
+@EnableMethodSecurity(jsr250Enabled = true, securedEnabled = true, prePostEnabled = true)
 public class SecurityConfiguration {
-    private final JwtUtil jwtUtil;
-
-    public SecurityConfiguration(JwtUtil jwtUtil) {
-        this.jwtUtil = jwtUtil;
-    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -104,15 +95,25 @@ public class SecurityConfiguration {
         public Collection<GrantedAuthority> convert(Jwt jwt) {
             Map<String, Object> realmAccess = jwt.getClaim("realm_access");
 
-            if (realmAccess == null || !realmAccess.containsKey("roles")) {
-                return List.of();
+            if (realmAccess != null && realmAccess.containsKey("roles")) {
+                List<String> roles = (List<String>) realmAccess.get("roles");
+                return roles.stream()
+                        .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+                        .collect(Collectors.toList());
             }
 
-            List<String> roles = (List<String>) realmAccess.get("roles");
+            Map<String, Object> resourceAccess = jwt.getClaim("resource_access");
+            if (resourceAccess != null && resourceAccess.containsKey("bookstatistic")) {
+                Map<String, Object> clientAccess = (Map<String, Object>) resourceAccess.get("bookstatistic");
+                List<String> roles = (List<String>) clientAccess.get("roles");
+                if (roles != null) {
+                    return roles.stream()
+                            .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+                            .collect(Collectors.toList());
+                }
+            }
 
-            return roles.stream()
-                    .map(role -> new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()))
-                    .collect(Collectors.toList());
+            return List.of();
         }
     }
 }

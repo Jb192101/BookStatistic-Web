@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.request.notification.NotificationCreationDto;
+import org.jedi_bachelor.bookstatistic.commonslib.exceptions.NotificationSettingsNotExistsException;
 import org.jedi_bachelor.bookstatistic.notificationservice.service.NotificationService;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -22,7 +23,7 @@ public class KafkaConsumer {
             groupId = "bs-group",
             containerFactory = "kafkaListenerContainerFactory"
     )
-    public void handleNotification(NotificationCreationDto message) {
+    public void handleNotification(NotificationCreationDto message) throws NotificationSettingsNotExistsException {
         log.info("DTO for creating notification {} has got", message);
 
         this.notificationService.addNewNotification(message);
