@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.jedi_bachelor.bookstatistic.accountservice.dto.JwtResponse;
 import org.jedi_bachelor.bookstatistic.accountservice.entity.UserProfile;
 import org.jedi_bachelor.bookstatistic.accountservice.service.AuthService;
+import org.jedi_bachelor.bookstatistic.commonslib.dto.mapentities.UserDto;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.request.account.LoginDto;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.request.account.RegisterDto;
 import org.springframework.http.ResponseEntity;
@@ -29,8 +30,8 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserProfile> register(@Valid @RequestBody RegisterDto registerDto) {
-        UserProfile newUser = this.authService.register(registerDto);
+    public ResponseEntity<UserDto> register(@Valid @RequestBody RegisterDto registerDto) {
+        UserDto newUser = this.authService.register(registerDto);
 
         return ResponseEntity.status(201).body(newUser);
     }

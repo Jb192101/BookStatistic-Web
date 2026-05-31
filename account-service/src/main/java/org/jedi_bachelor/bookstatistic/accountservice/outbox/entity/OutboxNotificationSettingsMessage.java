@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.jedi_bachelor.bookstatistic.accountservice.outbox.OutboxOperation;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -28,9 +29,12 @@ public class OutboxNotificationSettingsMessage {
     private String emailAddress;
 
     @Column(name = "published")
-    private Boolean published;
+    private Boolean published = false;
 
     @Column(name = "operation")
     @Enumerated(EnumType.STRING)
     private OutboxOperation operation;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt = LocalDateTime.now();
 }

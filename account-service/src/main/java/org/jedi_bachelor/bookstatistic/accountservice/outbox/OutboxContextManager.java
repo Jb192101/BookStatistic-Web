@@ -2,11 +2,9 @@ package org.jedi_bachelor.bookstatistic.accountservice.outbox;
 
 import lombok.RequiredArgsConstructor;
 import org.jedi_bachelor.bookstatistic.accountservice.outbox.entity.OutboxAnalyzeMessage;
-import org.jedi_bachelor.bookstatistic.accountservice.outbox.entity.OutboxBookMessage;
 import org.jedi_bachelor.bookstatistic.accountservice.outbox.entity.OutboxNotificationSettingsMessage;
 import org.jedi_bachelor.bookstatistic.accountservice.outbox.repository.OutboxAnalyzeMessageRepository;
 import org.jedi_bachelor.bookstatistic.accountservice.outbox.repository.OutboxNotificationSettingsMessageRepository;
-import org.jedi_bachelor.bookstatistic.accountservice.outbox.repository.OutboxBookMessageRepository;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;

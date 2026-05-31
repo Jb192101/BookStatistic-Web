@@ -23,8 +23,8 @@ public class OutboxAnalyzeMessage {
     private OutboxOperation action; // delete, add
 
     @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @Column(name = "published")
-    private Boolean published;
+    private Boolean published = false;
 }

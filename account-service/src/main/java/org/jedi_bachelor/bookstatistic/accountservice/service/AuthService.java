@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jedi_bachelor.bookstatistic.accountservice.dto.JwtResponse;
 import org.jedi_bachelor.bookstatistic.accountservice.entity.UserProfile;
-import org.jedi_bachelor.bookstatistic.accountservice.repository.UserRepository;
+import org.jedi_bachelor.bookstatistic.commonslib.dto.mapentities.UserDto;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.request.account.LoginDto;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.request.account.RegisterDto;
 import org.keycloak.admin.client.Keycloak;
@@ -32,7 +32,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class AuthService {
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -65,9 +65,9 @@ public class AuthService {
     }
 
     @Transactional
-    public UserProfile register(RegisterDto registerDto) {
+    public UserDto register(RegisterDto registerDto) {
         try {
-            List<UserRepresentation> existingUsers = keycloakAdmin.realm(realm)
+            List<UserRepresentation> existingUsers = this.keycloakAdmin.realm(this.realm)
                     .users()
                     .search(registerDto.username());
 
@@ -78,9 +78,9 @@ public class AuthService {
             log.warn("Error checking existing user: {}", e.getMessage());
         }
 
-        UserRepresentation keycloakUser = createKeycloakUser(registerDto);
+        UserRepresentation keycloakUser = this.createKeycloakUser(registerDto);
 
-        try (Response response = keycloakAdmin.realm(realm).users().create(keycloakUser)) {
+        try (Response response = this.keycloakAdmin.realm(this.realm).users().create(keycloakUser)) {
 
             if (response.getStatus() != 201) {
                 throw new RuntimeException("Failed to create user in Keycloak: " + response.getStatusInfo());
@@ -93,12 +93,12 @@ public class AuthService {
             userProfile.setId(UUID.randomUUID());
             userProfile.setKeycloakSub(userId);
             userProfile.setName(registerDto.username());
-            userProfile.setHashPassword(passwordEncoder.encode(registerDto.password()));
+            userProfile.setHashPassword(this.passwordEncoder.encode(registerDto.password()));
             userProfile.setLanguage("EN");
             userProfile.setCreatedAt(LocalDateTime.now());
+            userProfile.setBirthDay(registerDto.birthDay());
 
-            return userRepository.save(userProfile);
-
+            return this.userService.addNewUser(userProfile);
         } catch (Exception e) {
             log.error("Registration failed", e);
             throw new RuntimeException("Registration failed: " + e.getMessage());

@@ -10,18 +10,17 @@ import jakarta.annotation.security.RolesAllowed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jedi_bachelor.bookstatistic.analyzeservice.service.AnalyzeService;
+import org.jedi_bachelor.bookstatistic.commonslib.dto.request.analyze.UserBookReportCreateDto;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.ErrorResponse;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
 @Controller
-@RequestMapping("/analyze")
+@RequestMapping("/v1/analyze")
 @RequiredArgsConstructor
 @Slf4j
 @Tag(name = "Контроллер сервиса анализа", description = "Для анализа литературных предпочтений пользователей")
@@ -75,6 +74,56 @@ public class AnalyzeController {
             )
     })
     public ResponseEntity<?> analyzeRandomNUsers(@PathVariable Integer countOfUsers) {
+        return null;
+    }
+
+    @RolesAllowed({"ADMIN", "USER"})
+    @PostMapping("/report")
+    @Operation(summary = "Добавление инициализированного UserBookReport",
+            description = "Создаёт сущность UserBookReport для пользователя")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "Успешное добавление инициализированного UserBookReport",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Внутренняя ошибка сервера",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_PROBLEM_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    )
+            )
+    })
+    public ResponseEntity<?> addUserBookReport(@RequestBody UserBookReportCreateDto dto) {
+        return null;
+    }
+
+    @RolesAllowed({"ADMIN", "USER"})
+    @GetMapping("/report/{userId}")
+    @Operation(summary = "Выдача отчёта по пользователю",
+            description = "Отправляется запрос на эндпоинт, после чего сервис начинает сбор информации по N случайным пользователям и прогоняет данные через нейросеть")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Успешное добавление инициализированного UserBookReport",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Внутренняя ошибка сервера",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_PROBLEM_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    )
+            )
+    })
+    public ResponseEntity<?> getUserBookReport(@PathVariable UUID userId) {
         return null;
     }
 }

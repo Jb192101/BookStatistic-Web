@@ -6,6 +6,9 @@ import org.jedi_bachelor.bookstatistic.accountservice.converter.UserConverter;
 import org.jedi_bachelor.bookstatistic.accountservice.entity.UserProfile;
 import org.jedi_bachelor.bookstatistic.accountservice.mapper.UserMapper;
 import org.jedi_bachelor.bookstatistic.accountservice.outbox.OutboxContextManager;
+import org.jedi_bachelor.bookstatistic.accountservice.outbox.OutboxOperation;
+import org.jedi_bachelor.bookstatistic.accountservice.outbox.entity.OutboxAnalyzeMessage;
+import org.jedi_bachelor.bookstatistic.accountservice.outbox.entity.OutboxNotificationSettingsMessage;
 import org.jedi_bachelor.bookstatistic.accountservice.repository.UserRepository;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.mapentities.UserDto;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.request.account.RegisterDto;
@@ -87,13 +90,43 @@ public class UserService {
     public UserDto addNewUser(RegisterDto dto) {
         UserProfile userProfile = this.userConverter.convert(dto);
 
-        this.userRepository.save(userProfile);
-
         log.info("New user has created by DTO {}", dto);
 
         // Отправить задачу в outbox на создание представления пользователя в других системах
+        // Предоставление в notification-service
+        OutboxNotificationSettingsMessage notificationSettingsMessage =
+                new OutboxNotificationSettingsMessage();
+        notificationSettingsMessage.setUserId(userProfile.getId());
+        notificationSettingsMessage.setOperation(OutboxOperation.ADD_OPERATION);
+        notificationSettingsMessage.setEmailAddress(dto.email());
+        notificationSettingsMessage.setEmailEnable(dto.enableEmail());
 
-        return this.userMapper.toDto(userProfile);
+        this.outboxContextManager.save(notificationSettingsMessage);
+
+        // Представление в book-service
+        OutboxBookMessage bookMessage = new OutboxBookMessage();
+        bookMessage.setAction(OutboxOperation.ADD_OPERATION);
+        bookMessage.setUserId(userProfile.getId());
+
+        this.outboxContextManager.save(bookMessage);
+
+        // Представление в analyze-service
+        OutboxAnalyzeMessage analyzeMessage = new OutboxAnalyzeMessage();
+        analyzeMessage.setUserId(userProfile.getId());
+        analyzeMessage.setAction(OutboxOperation.ADD_OPERATION);
+
+        this.outboxContextManager.save(analyzeMessage);
+
+        return this.addNewUser(userProfile);
+    }
+
+    @Transactional
+    public UserDto addNewUser(UserProfile profile) {
+        this.userRepository.save(profile);
+
+        log.info("New user has created by {}", profile);
+
+        return this.userMapper.toDto(profile);
     }
 
     /**

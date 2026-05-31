@@ -1,11 +1,9 @@
 package org.jedi_bachelor.bookstatistic.accountservice.outbox.listener;
 
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 import org.jedi_bachelor.bookstatistic.accountservice.kafka.KafkaProducer;
 import org.jedi_bachelor.bookstatistic.accountservice.outbox.OutboxContextManager;
 import org.jedi_bachelor.bookstatistic.accountservice.outbox.entity.OutboxAnalyzeMessage;
-import org.jedi_bachelor.bookstatistic.accountservice.outbox.entity.OutboxBookMessage;
 import org.jedi_bachelor.bookstatistic.accountservice.outbox.entity.OutboxNotificationSettingsMessage;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.request.notification.NotificationSettingsCreatingDto;
 import org.jedi_bachelor.bookstatistic.commonslib.internalinteraction.InteractionClient;
