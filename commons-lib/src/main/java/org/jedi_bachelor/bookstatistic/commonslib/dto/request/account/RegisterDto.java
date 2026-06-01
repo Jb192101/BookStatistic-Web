@@ -9,6 +9,7 @@ public record RegisterDto(
     String email,
     Boolean enableEmail,
     String telegram,
-    LocalDate birthDay
+    LocalDate birthDay,
+    String language
 ) {
 }

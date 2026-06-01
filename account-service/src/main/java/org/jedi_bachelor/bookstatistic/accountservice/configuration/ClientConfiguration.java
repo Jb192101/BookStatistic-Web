@@ -5,30 +5,29 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 
 @Configuration
 public class ClientConfiguration {
-    @Value("${external-url:book}")
-    private String bookBaseUrl;
-
-    @Value("${external-url:analyze}")
+    @Value("${external-urls.analyze}")
     private String analyzerBaseUrl;
 
-    @Value("${external-url:notification}")
+    @Value("${external-urls.notification}")
     private String notificationBaseUrl;
 
     @Bean
-    public InteractionClient bookInteractionClient() {
-        return new InteractionClient(this.bookBaseUrl, HttpHeaders.EMPTY);
-    }
-
-    @Bean
     public InteractionClient analyzerInteractionClient() {
-        return new InteractionClient(this.analyzerBaseUrl, HttpHeaders.EMPTY);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        return new InteractionClient(analyzerBaseUrl, headers);
     }
 
     @Bean
     public InteractionClient notificationInteractionClient() {
-        return new InteractionClient(this.notificationBaseUrl, HttpHeaders.EMPTY);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        return new InteractionClient(notificationBaseUrl, headers);
     }
 }

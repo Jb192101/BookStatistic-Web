@@ -1,14 +1,16 @@
 package org.jedi_bachelor.bookstatistic.commonslib.dto.mapentities;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public record UserDto(
     UUID id,
+    String keycloakSub,
     String name,
     String hashPassword,
-    String role,
-    Boolean enableEmail,
-    String email,
-    String telegramAddress
+    String language,
+    LocalDateTime createdAt,
+    LocalDate birthDay
 ) {
 }

@@ -86,8 +86,8 @@ public class AuthService {
                 throw new RuntimeException("Failed to create user in Keycloak: " + response.getStatusInfo());
             }
 
-            String userId = extractUserIdFromResponse(response);
-            assignDefaultRole(userId);
+            String userId = this.extractUserIdFromResponse(response);
+            this.assignDefaultRole(userId);
 
             UserProfile userProfile = new UserProfile();
             userProfile.setId(UUID.randomUUID());
@@ -98,7 +98,7 @@ public class AuthService {
             userProfile.setCreatedAt(LocalDateTime.now());
             userProfile.setBirthDay(registerDto.birthDay());
 
-            return this.userService.addNewUser(userProfile);
+            return this.userService.addNewUser(userProfile, registerDto);
         } catch (Exception e) {
             log.error("Registration failed", e);
             throw new RuntimeException("Registration failed: " + e.getMessage());

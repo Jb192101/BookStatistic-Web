@@ -9,7 +9,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.security.RolesAllowed;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.mapentities.NotificationDto;
+import org.jedi_bachelor.bookstatistic.commonslib.dto.mapentities.NotificationSettingsDto;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.request.notification.NotificationCreationDto;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.request.notification.NotificationSettingsCreatingDto;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.response.ErrorResponse;
@@ -29,6 +31,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @Controller
+@Slf4j
 @RequestMapping("/v1/notifications")
 @RequiredArgsConstructor
 @Tag(name = "Контроллер уведомлений", description = "Для работы с уведомления")
@@ -288,13 +291,23 @@ public class NotificationController {
         ));
     }
 
-    @PostMapping("/notification-settings/{userId}")
-    public ResponseEntity<?> addNotificationSettings(@PathVariable NotificationSettingsCreatingDto dto) {
+    @RolesAllowed({ "ADMIN", "USER" })
+    @PostMapping("/notification-settings")
+    public ResponseEntity<?> addNotificationSettings(@RequestBody NotificationSettingsCreatingDto dto) {
         this.notificationService.addNotificationSettings(dto);
 
-        return ResponseEntity.ok(new SuccessResponse(200, null));
+        return ResponseEntity.ok(new SuccessResponse(201, null));
     }
 
+    @RolesAllowed({ "ADMIN", "USER" })
+    @GetMapping("/notification-settings/{userId}")
+    public ResponseEntity<?> getNotificationSettings(@PathVariable UUID userId) throws UserNotFoundException {
+        NotificationSettingsDto dto = this.notificationService.getNotificationSettings(userId);
+
+        return ResponseEntity.ok(new SuccessResponse(200, dto));
+    }
+
+    @RolesAllowed({ "ADMIN", "USER" })
     @DeleteMapping("/notification-settings/{userId}")
     public ResponseEntity<?> deleteNotificationSettings(@PathVariable UUID userId) throws UserNotFoundException {
         this.notificationService.deleteNotificationSettings(userId);

@@ -87,8 +87,8 @@ public class UserService {
      * @return DTO с данными созданного пользователя
      */
     @Transactional
-    public UserDto addNewUser(RegisterDto dto) {
-        UserProfile userProfile = this.userConverter.convert(dto);
+    public UserDto addNewUser(UserProfile profile, RegisterDto dto) {
+        this.userRepository.save(profile);
 
         log.info("New user has created by DTO {}", dto);
 
@@ -96,35 +96,23 @@ public class UserService {
         // Предоставление в notification-service
         OutboxNotificationSettingsMessage notificationSettingsMessage =
                 new OutboxNotificationSettingsMessage();
-        notificationSettingsMessage.setUserId(userProfile.getId());
+        notificationSettingsMessage.setUserId(profile.getId());
         notificationSettingsMessage.setOperation(OutboxOperation.ADD_OPERATION);
         notificationSettingsMessage.setEmailAddress(dto.email());
         notificationSettingsMessage.setEmailEnable(dto.enableEmail());
 
         this.outboxContextManager.save(notificationSettingsMessage);
 
-        // Представление в book-service
-        OutboxBookMessage bookMessage = new OutboxBookMessage();
-        bookMessage.setAction(OutboxOperation.ADD_OPERATION);
-        bookMessage.setUserId(userProfile.getId());
-
-        this.outboxContextManager.save(bookMessage);
+        log.info("Added message to outbox in notification-service: {}", notificationSettingsMessage);
 
         // Представление в analyze-service
         OutboxAnalyzeMessage analyzeMessage = new OutboxAnalyzeMessage();
-        analyzeMessage.setUserId(userProfile.getId());
+        analyzeMessage.setUserId(profile.getId());
         analyzeMessage.setAction(OutboxOperation.ADD_OPERATION);
 
         this.outboxContextManager.save(analyzeMessage);
 
-        return this.addNewUser(userProfile);
-    }
-
-    @Transactional
-    public UserDto addNewUser(UserProfile profile) {
-        this.userRepository.save(profile);
-
-        log.info("New user has created by {}", profile);
+        log.info("Added message to outbox in analyze-service: {}", analyzeMessage);
 
         return this.userMapper.toDto(profile);
     }
@@ -184,11 +172,6 @@ public class UserService {
         this.outboxContextManager.addAnalyzeMessageToDelete(id);
 
         log.info("Sended message to delete user' data with id {} from analyze-service", id);
-
-        // 3. Удаление в book-service
-        this.outboxContextManager.addBookMessageToDelete(id);
-
-        log.info("Sended message to delete user' data with id {} from book-service", id);
 
         // Возвращение удалённого пользователя
         return this.userMapper.toDto(user.get());

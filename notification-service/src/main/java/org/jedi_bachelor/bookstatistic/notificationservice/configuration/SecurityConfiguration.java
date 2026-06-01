@@ -1,6 +1,5 @@
 package org.jedi_bachelor.bookstatistic.notificationservice.configuration;
 
-import org.jedi_bachelor.bookstatistic.notificationservice.utils.JwtAuthenticationFilter;
 import org.jedi_bachelor.bookstatistic.notificationservice.utils.JwtUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,7 +10,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -36,15 +34,16 @@ public class SecurityConfiguration {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(authz -> authz
-                        //.requestMatchers("/auth/login").permitAll()
-                        //.requestMatchers("/users/login/**").permitAll()
-                        //.requestMatchers("/products/**").hasAnyRole("MASTER", "GRAND_EMPLOYEE")
-                        //.requestMatchers("/client-products/**").hasAnyRole("MASTER", "GRAND_EMPLOYEE", "CURRENT_CLIENT")
-                        //.requestMatchers("/internal/**").hasAnyRole("MASTER", "GRAND_EMPLOYEE")
+                        .requestMatchers(
+                                "/v1/notifications/notification-settings/**",
+                                "/actuator/health",
+                                "/actuator/info",
+                                "/actuator/prometheus",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**"
+                        ).permitAll()
                         .anyRequest().authenticated()
-                )
-                .addFilterBefore(new JwtAuthenticationFilter(jwtUtil),
-                        UsernamePasswordAuthenticationFilter.class);
+                );
 
         return http.build();
     }

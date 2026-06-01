@@ -6,6 +6,7 @@ import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
+import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import io.micrometer.tracing.Tracer;
@@ -20,27 +21,20 @@ public class ResponseFilter {
 
     @Bean
     public GlobalFilter postGlobalFilter() {
-        return (exchange, chain) -> {
-            return chain.filter(exchange).then(Mono.fromRunnable(() -> {
-                String traceId = this.tracer.currentSpan().context().traceId();
+        return (exchange, chain) ->
+                chain.filter(exchange).then(Mono.fromRunnable(() -> {
+                    HttpHeaders requestHeaders = exchange.getRequest().getHeaders();
 
-                log.info("Adding correlation-id into headers. trace id : {}", traceId);
+                    String correlationId = filterUtils.getCorrelationId(requestHeaders);
+                    if (correlationId != null) {
+                        log.debug("Correlation id: {}", correlationId);
+                        ServerWebExchange mutatedExchange = filterUtils.setCorrelationId(exchange, correlationId);
+                    }
 
-                HttpHeaders requestHeaders = exchange.getRequest().getHeaders();
-                String correlationId = this.filterUtils.getCorrelationId(requestHeaders);
+                    String language = filterUtils.getAcceptLanguage(requestHeaders);
+                    log.debug("Accept-Language: {}", language);
 
-                log.info("Adding the correlation id to the outbound headers. {}", correlationId);
-
-                this.filterUtils.setCorrelationId(exchange, correlationId);
-
-                log.info("Completing outgoing request for {}.", exchange.getRequest().getURI());
-
-                String language = this.filterUtils.getAcceptLanguage(requestHeaders);
-
-                log.info("Adding the ACCEPT-LANGUAGE to the outbound headers. {}", correlationId);
-
-                this.filterUtils.setAcceptLanguage(exchange, language);
-            }));
-        };
+                    log.debug("Completing outgoing request for: {}", exchange.getRequest().getURI());
+                }));
     }
 }

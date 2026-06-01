@@ -1,6 +1,7 @@
 package org.jedi_bachelor.bookstatistic.accountservice.outbox.listener;
 
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.jedi_bachelor.bookstatistic.accountservice.kafka.KafkaProducer;
 import org.jedi_bachelor.bookstatistic.accountservice.outbox.OutboxContextManager;
 import org.jedi_bachelor.bookstatistic.accountservice.outbox.entity.OutboxAnalyzeMessage;
@@ -9,18 +10,18 @@ import org.jedi_bachelor.bookstatistic.commonslib.dto.request.notification.Notif
 import org.jedi_bachelor.bookstatistic.commonslib.internalinteraction.InteractionClient;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
+@Slf4j
 public class OutboxScheduler {
     private final KafkaProducer kafkaProducer;
 
     private final OutboxContextManager outboxContextManager;
-
-    private final InteractionClient bookClient;
 
     private final InteractionClient analyzerClient;
 
@@ -28,32 +29,12 @@ public class OutboxScheduler {
 
     public OutboxScheduler(KafkaProducer kafkaProducer,
                            OutboxContextManager outboxContextManager,
-                           @Qualifier("bookInteractionClient") InteractionClient bookClient,
                            @Qualifier("analyzerInteractionClient") InteractionClient analyzerClient,
                            @Qualifier("notificationInteractionClient") InteractionClient notificationClient) {
         this.kafkaProducer = kafkaProducer;
         this.outboxContextManager = outboxContextManager;
-        this.bookClient = bookClient;
         this.analyzerClient = analyzerClient;
         this.notificationClient = notificationClient;
-    }
-
-    /**
-     * Метод отправки сообщения в book-service
-     */
-    @Scheduled(fixedDelay = 5000)
-    @Transactional
-    public void sendingOutboxBookMessage() {
-        List<OutboxBookMessage> messages = this.outboxContextManager.findBookMessageByStatusFalse();
-
-        for(OutboxBookMessage message : messages) {
-            if(!message.getPublished()) {
-                this.bookClient.sendRequest(HttpMethod.DELETE, "/" + message.getUserId());
-
-                message.setPublished(true);
-                outboxContextManager.save(message);
-            }
-        }
     }
 
     /**
@@ -66,9 +47,16 @@ public class OutboxScheduler {
 
         for(OutboxAnalyzeMessage message : messages) {
             if(!message.getPublished()) {
+                log.info("Finded message to outboxing: {}", message);
+
                 this.analyzerClient.sendRequest(HttpMethod.DELETE, "/" + message.getUserId());
 
+                log.info("Message with id {} has been sended", message.getId());
+
                 message.setPublished(true);
+
+                log.info("Message with id {} has been flag as published", message.getId());
+
                 outboxContextManager.save(message);
             }
         }
@@ -83,37 +71,64 @@ public class OutboxScheduler {
         List<OutboxNotificationSettingsMessage> messages =
                 this.outboxContextManager.findNotificationSettingsMessageByStatusFalse();
 
-        for(OutboxNotificationSettingsMessage message : messages) {
-            if(!message.getPublished()) {
-                switch (message.getOperation()) {
-                    // Если добавляем настройки уведомлений
-                    case ADD_OPERATION -> {
-                        NotificationSettingsCreatingDto dto = new NotificationSettingsCreatingDto(
-                                message.getUserId(),
-                                message.getEmailEnable(),
-                                message.getEmailAddress()
-                        );
+        for (OutboxNotificationSettingsMessage message : messages) {
+            if (!message.getPublished()) {
+                log.info("Processing outbox message: {}", message);
 
-                        this.notificationClient.sendRequest(
-                                HttpMethod.POST,
-                                "/notification-settings/" + message.getUserId(),
-                                dto
-                        );
+                try {
+                    switch (message.getOperation()) {
+                        case ADD_OPERATION -> {
+                            NotificationSettingsCreatingDto dto = new NotificationSettingsCreatingDto(
+                                    message.getUserId(),
+                                    message.getEmailEnable(),
+                                    message.getEmailAddress()
+                            );
 
-                        message.setPublished(true);
-                        this.outboxContextManager.save(message);
+                            String url = "/v1/notifications/notification-settings";
+
+                            log.info("Sending ADD request to notification-service for user: {}", message.getUserId());
+
+                            ResponseEntity<?> response = this.notificationClient.sendRequest(
+                                    HttpMethod.POST,
+                                    url,
+                                    dto
+                            );
+
+                            if (response.getStatusCode().is2xxSuccessful()) {
+                                log.info("Successfully created notification settings for user: {}", message.getUserId());
+                            } else {
+                                log.error("Failed to create notification settings. Status: {}", response.getStatusCode());
+                                continue;
+                            }
+                        }
+
+                        case DELETE_OPERATION -> {
+                            String url = "/v1/notifications/notification-settings/" + message.getUserId();
+
+                            log.info("Sending DELETE request to notification-service for user: {}", message.getUserId());
+
+                            ResponseEntity<?> response = this.notificationClient.sendRequest(
+                                    HttpMethod.DELETE,
+                                    url
+                            );
+
+                            if (response.getStatusCode().is2xxSuccessful()) {
+                                log.info("Successfully deleted notification settings for user: {}", message.getUserId());
+                            } else {
+                                log.error("Failed to delete notification settings. Status: {}", response.getStatusCode());
+                                continue;
+                            }
+                        }
                     }
 
-                    // Если удаляем настройки уведомлений
-                    case DELETE_OPERATION -> {
-                        this.notificationClient.sendRequest(HttpMethod.DELETE, "/notification-settings/" + message.getUserId());
+                    message.setPublished(true);
+                    this.outboxContextManager.save(message);
+                    log.info("Message with id {} has been marked as published", message.getId());
 
-                        message.setPublished(true);
-                        this.outboxContextManager.save(message);
-                    }
+                } catch (Exception e) {
+                    log.error("Failed to process outbox message {}: {}", message.getId(), e.getMessage(), e);
                 }
             }
         }
     }
-
 }

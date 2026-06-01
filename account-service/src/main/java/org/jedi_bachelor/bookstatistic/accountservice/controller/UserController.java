@@ -182,31 +182,4 @@ public class UserController {
 
         return ResponseEntity.ok().body(new SuccessResponse(HttpStatus.OK.value(), user));
     }
-
-    @RolesAllowed({"ADMIN", "USER"})
-    @PostMapping
-    @Operation(summary = "Добавление нового пользователя",
-            description = "Добавление нового пользователя")
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "201",
-                    description = "Пользователь успешно добавлен в систему",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "500",
-                    description = "Внутренняя ошибка сервера",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_PROBLEM_JSON_VALUE,
-                            schema = @Schema(implementation = ErrorResponse.class)
-                    )
-            )
-    })
-    public ResponseEntity<?> addNewUser(RegisterDto dto) {
-        UserDto user = this.userService.addNewUser(dto);
-
-        return ResponseEntity.ok(new SuccessResponse(201, user));
-    }
 }

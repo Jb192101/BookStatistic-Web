@@ -37,9 +37,8 @@ spring:
     password: ${ACCOUNT_DB_PASSWORD:postgres}
 
 external-urls:
-  book: ${BOOK_SERVICE_URL:http://localhost:8082}
   analyze: ${ANALYZE_SERVICE_URL:http://localhost:8083}
-  notification: ${NOTIFICATION_SERVICE_URL:http://localhost:8081}
+  notification: http://localhost:8081
 
 server:
   port: ${ACCOUNT_SERVER_PORT:8084}

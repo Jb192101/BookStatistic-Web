@@ -18,21 +18,6 @@ public class OutboxContextManager {
 
     private final OutboxAnalyzeMessageRepository outboxAnalyzeMessageRepository;
 
-    private final OutboxBookMessageRepository outboxBookMessageRepository;
-
-    /**
-     * Метод добавления сообщения книг на удаление
-     *
-     * @param userId ID пользователя
-     */
-    public void addBookMessageToDelete(UUID userId) {
-        this.addBookMessage(userId, OutboxOperation.DELETE_OPERATION);
-    }
-
-    public List<OutboxBookMessage> findBookMessageByStatusFalse() {
-        return this.outboxBookMessageRepository.findByPublishedFalse();
-    }
-
     public List<OutboxNotificationSettingsMessage> findNotificationSettingsMessageByStatusFalse() {
         return this.outboxNotificationSettingsMessageRepository.findByPublishedFalse();
     }
@@ -45,21 +30,8 @@ public class OutboxContextManager {
         this.outboxAnalyzeMessageRepository.save(message);
     }
 
-    public void save(OutboxBookMessage message) {
-        this.outboxBookMessageRepository.save(message);
-    }
-
     public void save(OutboxNotificationSettingsMessage message) {
         this.outboxNotificationSettingsMessageRepository.save(message);
-    }
-
-    /**
-     * Метод добавления сообщения книг на создание
-     *
-     * @param userId ID пользователя
-     */
-    public void addBookMessageToAdd(UUID userId) {
-        this.addBookMessage(userId, OutboxOperation.ADD_OPERATION);
     }
 
     /**
@@ -87,14 +59,5 @@ public class OutboxContextManager {
         message.setCreatedAt(LocalDateTime.now());
 
         this.outboxAnalyzeMessageRepository.save(message);
-    }
-
-    private void addBookMessage(UUID userId, OutboxOperation action) {
-        OutboxBookMessage message = new OutboxBookMessage();
-        message.setUserId(userId);
-        message.setAction(action);
-        message.setCreatedAt(LocalDateTime.now());
-
-        this.outboxBookMessageRepository.save(message);
     }
 }

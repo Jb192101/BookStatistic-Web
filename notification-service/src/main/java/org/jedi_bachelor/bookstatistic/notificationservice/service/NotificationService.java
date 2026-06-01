@@ -6,6 +6,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.mapentities.NotificationDto;
+import org.jedi_bachelor.bookstatistic.commonslib.dto.mapentities.NotificationSettingsDto;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.request.notification.NotificationCreationDto;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.request.notification.NotificationSettingsCreatingDto;
 import org.jedi_bachelor.bookstatistic.commonslib.exceptions.NotificationNotFoundException;
@@ -16,6 +17,7 @@ import org.jedi_bachelor.bookstatistic.notificationservice.entity.Notification;
 import org.jedi_bachelor.bookstatistic.notificationservice.entity.NotificationSettings;
 import org.jedi_bachelor.bookstatistic.notificationservice.entity.enums.NotificationType;
 import org.jedi_bachelor.bookstatistic.notificationservice.mapper.NotificationMapper;
+import org.jedi_bachelor.bookstatistic.notificationservice.mapper.NotificationSettingsMapper;
 import org.jedi_bachelor.bookstatistic.notificationservice.outbox.OutboxContextManager;
 import org.jedi_bachelor.bookstatistic.notificationservice.outbox.entity.OutboxEmailMessage;
 import org.jedi_bachelor.bookstatistic.notificationservice.outbox.entity.OutboxKafkaMessage;
@@ -34,6 +36,8 @@ public class NotificationService {
     private final NotificationRepository notificationRepository;
 
     private final NotificationMapper notificationMapper;
+
+    private final NotificationSettingsMapper notificationSettingsMapper;
 
     private final NotificationSettingsRepository notificationSettingsRepository;
 
@@ -159,6 +163,16 @@ public class NotificationService {
         this.notificationSettingsRepository.save(settings);
 
         log.info("Notification settings for user with id {} succesfully created", dto.userId());
+    }
+
+    public NotificationSettingsDto getNotificationSettings(UUID userId) throws UserNotFoundException {
+        Optional<NotificationSettings> settings = this.notificationSettingsRepository.findByUserId(userId);
+
+        if(settings.isEmpty()) {
+            throw new UserNotFoundException(userId);
+        }
+
+        return this.notificationSettingsMapper.toDto(settings.get());
     }
 
     /**

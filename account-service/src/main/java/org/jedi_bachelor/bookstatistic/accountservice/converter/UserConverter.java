@@ -27,7 +27,9 @@ public class UserConverter implements Converter<UserProfile, RegisterDto> {
         userProfile.setId(UUID.randomUUID());
         userProfile.setName(dto.username());
         userProfile.setHashPassword(this.passwordEncoder.encode(dto.password()));
+        userProfile.setBirthDay(dto.birthDay());
+        userProfile.setLanguage(dto.language());
 
-        return null;
+        return userProfile;
     }
 }

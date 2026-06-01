@@ -1,6 +1,5 @@
 package org.jedi_bachelor.bookstatistic.commonslib.internalinteraction;
 
-import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -14,17 +13,28 @@ import org.springframework.web.client.RestClient;
 public class InteractionClient {
     private final RestClient restClient;
 
+    private final String baseUrl;
+
     /**
      * Базовый конструктор класса клиента взаимодействия
      *
-     * @param baseUrl базовый URL службы, с которой происходит взаимодействие
+     * @param baseUrl базовый URL
      * @param headers заголовки запросов
      */
     public InteractionClient(String baseUrl, HttpHeaders headers) {
-        this.restClient = RestClient.builder()
-                .baseUrl(baseUrl)
-                .defaultHeader(String.valueOf(headers))
-                .build();
+        RestClient.Builder builder = RestClient.builder();
+
+        if (headers != null && !headers.isEmpty()) {
+            headers.forEach((name, values) -> {
+                for (String value : values) {
+                    builder.defaultHeader(name, value);
+                }
+            });
+        }
+
+        this.restClient = builder.build();
+
+        this.baseUrl = baseUrl;
     }
 
     /**
@@ -37,7 +47,7 @@ public class InteractionClient {
     @Retry(name = "commonslib-retry")
     public ResponseEntity<?> sendRequest(HttpMethod httpMethod, String url) {
        return this.restClient.method(httpMethod)
-                    .uri(url)
+                    .uri(this.baseUrl + url)
                     .retrieve()
                     .toEntity(ResponseEntity.class);
     }
@@ -53,8 +63,26 @@ public class InteractionClient {
     @Retry(name = "commonslib-retry")
     public ResponseEntity<?> sendRequest(HttpMethod httpMethod, String url, Object body) {
         return this.restClient.method(httpMethod)
-                .uri(url)
+                .uri(this.baseUrl + url)
                 .body(body)
+                .retrieve()
+                .toEntity(ResponseEntity.class);
+    }
+
+    /**
+     * Метод отправки запроса в микросервис (с телом и с токеном)
+     *
+     * @param httpMethod метод HTTP (POST/GET/DELETE/PUT/PATCH)
+     * @param url url
+     * @param body тело запроса
+     * @return тело ответа
+     */
+    @Retry(name = "commonslib-retry")
+    public ResponseEntity<?> sendRequest(HttpMethod httpMethod, String url, Object body, String jwtToken) {
+        return this.restClient.method(httpMethod)
+                .uri(this.baseUrl + url)
+                .body(body)
+                .header("Authorization", "Bearer " + jwtToken)
                 .retrieve()
                 .toEntity(ResponseEntity.class);
     }
