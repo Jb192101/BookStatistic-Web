@@ -51,6 +51,16 @@ public class RedisContentManager {
     }
 
     /**
+     * Метод выдачи содержимого файла
+     *
+     * @param key ключ
+     * @return содержимое файла
+     */
+    public TextFile getTextFile(String key) {
+        return this.redisTemplate.opsForValue().get(key);
+    }
+
+    /**
      * Метод выдачи всех файлов с текстами
      *
      * @return список текстов

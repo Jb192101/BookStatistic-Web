@@ -44,6 +44,15 @@ public class KafkaConfiguration {
     }
 
     @Bean
+    public NewTopic bookTextAnalyzeTopic() {
+        return TopicBuilder
+                .name("book-text-analyze-topic")
+                .partitions(3)
+                .replicas(1)
+                .build();
+    }
+
+    @Bean
     public NewTopic sendingNotificationResultTopic() {
         return TopicBuilder
                 .name("sending-notification-result-topic")

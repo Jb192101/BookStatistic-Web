@@ -15,6 +15,10 @@ public class KafkaProducer {
         this.sendMessage("sending-notification-topic", message);
     }
 
+    public void sendMessageToBookTextAnalyzeTopic(Object message) {
+        this.sendMessage("book-text-analyze-topic", message);
+    }
+
     private void sendMessage(String topic, Object message) {
         log.info("Sending message to topic {} with message content {}", topic, message);
 

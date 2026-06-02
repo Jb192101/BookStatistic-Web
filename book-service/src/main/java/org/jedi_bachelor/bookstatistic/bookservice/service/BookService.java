@@ -4,15 +4,19 @@ import lombok.RequiredArgsConstructor;
 import org.jedi_bachelor.bookstatistic.bookservice.converter.BookConverter;
 import org.jedi_bachelor.bookstatistic.bookservice.converter.TextEntityConverter;
 import org.jedi_bachelor.bookstatistic.bookservice.entity.Book;
+import org.jedi_bachelor.bookstatistic.bookservice.entity.Text;
 import org.jedi_bachelor.bookstatistic.bookservice.entity.UserBookRelation;
+import org.jedi_bachelor.bookstatistic.bookservice.kafka.KafkaProducer;
 import org.jedi_bachelor.bookstatistic.bookservice.mapper.BookMapper;
 import org.jedi_bachelor.bookstatistic.bookservice.redis.RedisContentManager;
 import org.jedi_bachelor.bookstatistic.bookservice.redis.entity.TextFile;
 import org.jedi_bachelor.bookstatistic.bookservice.repository.*;
+import org.jedi_bachelor.bookstatistic.commonslib.dto.kafka.KafkaTextAnalyzeDto;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.mapentities.BookDto;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.request.book.BookCreationDto;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.response.book.UserReadingStat;
 import org.jedi_bachelor.bookstatistic.commonslib.exceptions.BookNotFoundException;
+import org.jedi_bachelor.bookstatistic.commonslib.exceptions.TextAlreadyLinkedException;
 import org.jedi_bachelor.bookstatistic.commonslib.exceptions.UserNotFoundException;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
@@ -45,6 +49,8 @@ public class BookService {
     private final TextEntityConverter textEntityConverter;
 
     private final UserBookRelationRepository userBookRelationRepository;
+
+    private final KafkaProducer kafkaProducer;
 
     // Пример использования: this.messageSource.getMessage(*код сообщения*);
     private final MessageSource messageSource;
@@ -144,7 +150,15 @@ public class BookService {
      * @param file файл с текстом
      * @throws BookNotFoundException если книги с таким ID не существует
      */
-    public void linkTextToBook(UUID bookId, MultipartFile file) throws BookNotFoundException, IOException {
+    public void linkTextToBook(UUID bookId, MultipartFile file) throws BookNotFoundException, IOException, TextAlreadyLinkedException {
+        if(!this.bookExistsById(bookId)) {
+            throw new BookNotFoundException(bookId);
+        }
+
+        if(this.textAlreadyLinkedToBook(bookId)) {
+            throw new TextAlreadyLinkedException(bookId);
+        }
+
         if (file.isEmpty()) {
             throw new RuntimeException("Файл пустой");
         }
@@ -154,13 +168,25 @@ public class BookService {
             throw new RuntimeException("Поддерживаются только текстовые файлы");
         }
 
-        this.redisContentManager.saveTextFile(bookId, file);
+        // Сохранение файла с текстом
+        String fileKey = this.redisContentManager.saveTextFile(bookId, file);
 
-        Optional<Book> bookOptional = this.bookRepository.findById(bookId);
+        // Отправка сообщения в топик
+        TextFile textFile = this.redisContentManager.getTextFile(fileKey);
 
-        if(bookOptional.isEmpty()) {
-            throw new BookNotFoundException(bookId);
-        }
+        KafkaTextAnalyzeDto dto = new KafkaTextAnalyzeDto(
+                bookId,
+                textFile.getId(),
+                textFile.getFilename(),
+                textFile.getContent(),
+                textFile.getContentType(),
+                textFile.getSize(),
+                textFile.getUploadTime()
+        );
+
+        this.kafkaProducer.sendMessageToBookTextAnalyzeTopic(
+                dto
+        );
     }
 
     /**
@@ -197,5 +223,29 @@ public class BookService {
      */
     private int getCountOfPagesBySymbols(TextFile text) {
         return (int) text.getSize() / 1700;
+    }
+
+    /**
+     * Проверка существования книги по ID
+     *
+     * @param bookId ID книги
+     * @return true, если книга существует
+     */
+    private boolean bookExistsById(UUID bookId) {
+        Optional<Book> book = this.bookRepository.findById(bookId);
+
+        return book.isPresent();
+    }
+
+    /**
+     * Проверка того, привязан ли уже к этой книге текст или нет
+     *
+     * @param bookId ID книги
+     * @return true, если уже привязан
+     */
+    private boolean textAlreadyLinkedToBook(UUID bookId) {
+        Optional<Text> text = this.textRepository.findByBookId(bookId);
+
+        return text.isPresent();
     }
 }

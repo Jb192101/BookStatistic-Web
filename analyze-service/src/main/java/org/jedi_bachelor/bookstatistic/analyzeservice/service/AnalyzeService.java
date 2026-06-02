@@ -8,8 +8,10 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jedi_bachelor.bookstatistic.analyzeservice.entity.BookAnalysis;
+import org.jedi_bachelor.bookstatistic.analyzeservice.redis.entity.TextFile;
 import org.jedi_bachelor.bookstatistic.analyzeservice.repository.BookAnalysisRepository;
 import org.jedi_bachelor.bookstatistic.analyzeservice.service.ml.GenreClassifier;
+import org.jedi_bachelor.bookstatistic.commonslib.dto.kafka.KafkaTextAnalyzeDto;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.mapentities.BookAnalysisResponse;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.mapentities.BookDto;
 import org.jedi_bachelor.bookstatistic.commonslib.internalinteraction.InteractionClient;
@@ -43,7 +45,8 @@ public class AnalyzeService {
      */
     public List<BookAnalysisResponse> analyzeUser(UUID userId) {
         log.info("Starting AI-powered analysis for user: {}", userId);
-        return analyze(userId);
+
+        return this.analyze(userId);
     }
 
     /**
@@ -60,7 +63,7 @@ public class AnalyzeService {
 
         for (UUID userId : randomUserIds) {
             try {
-                List<BookAnalysisResponse> userResults = analyzeUser(userId);
+                List<BookAnalysisResponse> userResults = this.analyzeUser(userId);
                 allResults.addAll(userResults);
             } catch (Exception e) {
                 log.error("Failed to analyze user: {}", userId, e);
@@ -68,6 +71,34 @@ public class AnalyzeService {
         }
 
         return allResults;
+    }
+
+    /**
+     * Метод анализа конкретного текста (из Kafka)
+     *
+     * @param file файл с текстом
+     */
+    @CircuitBreaker(
+            name = "bookService",
+            fallbackMethod = "fallbackForBookService"
+    )
+    @Retry(
+            name = "bookService",
+            fallbackMethod = "fallbackForBookService"
+    )
+    @Transactional
+    public void analyzeTextFile(KafkaTextAnalyzeDto file) {
+        // 1. Анализ
+        log.info("Starting analyzing file");
+
+        Map<String, Double> mapResult = this.genreClassifier.predict(file.content());
+
+        BookAnalysis analysis = this.formBookAnalysisFromGenreClassifierResults(file.bookId(), mapResult);
+
+        // 2. Сохранение результатов анализа в БД
+        log.info("Results of analyse saved in DB");
+
+        this.bookAnalysisRepository.save(analysis);
     }
 
     /**
@@ -156,46 +187,10 @@ public class AnalyzeService {
         // 2. Подготавливаем текст для анализа
         String preparedText = this.prepareTextForAnalysis(bookText, book);
 
-        // 3. Запускаем классификатор жанров (DL4J)
+        // 3. Запускаем классификатор жанров
         Map<String, Double> genrePredictions = genreClassifier.predict(preparedText);
 
-        // 4. Создаём сущность с результатами
-        BookAnalysis analysis = new BookAnalysis();
-        analysis.setBookId(book.id());
-        analysis.setAnalyzedAt(LocalDateTime.now());
-        analysis.setModelVersion(MODEL_VERSION);
-        analysis.setConfidenceScore(this.calculateConfidence(genrePredictions));
-
-        // 5. Распределяем предсказания по категориям
-        try {
-            // Основные жанры
-            Map<String, Double> mainGenres = this.extractMainGenres(genrePredictions);
-            analysis.setGenres(objectMapper.writeValueAsString(mainGenres));
-
-            // Поджанры
-            Map<String, Double> subgenres = this.extractSubgenres(genrePredictions);
-            analysis.setSubgenres(objectMapper.writeValueAsString(subgenres));
-
-            // Элементы повествования
-            Map<String, Double> narrativeElements = extractNarrativeElements(genrePredictions);
-            analysis.setNarrativeElements(objectMapper.writeValueAsString(narrativeElements));
-
-            // Темп
-            Map<String, Double> pacing = this.extractPacing(genrePredictions);
-            analysis.setPacing(objectMapper.writeValueAsString(pacing));
-
-            // Атмосфера
-            Map<String, Double> atmosphere = this.extractAtmosphere(genrePredictions);
-            analysis.setAtmosphere(objectMapper.writeValueAsString(atmosphere));
-
-            // Токены модели (для отладки)
-            analysis.setTokens(objectMapper.writeValueAsString(genrePredictions));
-        } catch (JsonProcessingException e) {
-            log.error("Failed to serialize analysis results", e);
-            throw new RuntimeException("JSON serialization failed", e);
-        }
-
-        return analysis;
+        return this.formBookAnalysisFromGenreClassifierResults(book.id(), genrePredictions);
     }
 
     /**
@@ -408,5 +403,43 @@ public class AnalyzeService {
         // Если кэша нет - возвращаем пустой список
         log.warn("No cached data available for user: {}", userId);
         return Collections.emptyList();
+    }
+
+    private BookAnalysis formBookAnalysisFromGenreClassifierResults(UUID bookId, Map<String, Double> mapResult) {
+        BookAnalysis analysis = new BookAnalysis();
+        analysis.setBookId(bookId);
+        analysis.setAnalyzedAt(LocalDateTime.now());
+        analysis.setModelVersion(MODEL_VERSION);
+        analysis.setConfidenceScore(this.calculateConfidence(mapResult));
+
+        try {
+            // Основные жанры
+            Map<String, Double> mainGenres = this.extractMainGenres(mapResult);
+            analysis.setGenres(this.objectMapper.writeValueAsString(mainGenres));
+
+            // Поджанры
+            Map<String, Double> subgenres = this.extractSubgenres(mapResult);
+            analysis.setSubgenres(this.objectMapper.writeValueAsString(subgenres));
+
+            // Элементы повествования
+            Map<String, Double> narrativeElements = extractNarrativeElements(mapResult);
+            analysis.setNarrativeElements(this.objectMapper.writeValueAsString(narrativeElements));
+
+            // Темп
+            Map<String, Double> pacing = this.extractPacing(mapResult);
+            analysis.setPacing(this.objectMapper.writeValueAsString(pacing));
+
+            // Атмосфера
+            Map<String, Double> atmosphere = this.extractAtmosphere(mapResult);
+            analysis.setAtmosphere(this.objectMapper.writeValueAsString(atmosphere));
+
+            // Токены модели (для отладки)
+            analysis.setTokens(this.objectMapper.writeValueAsString(mapResult));
+        } catch (JsonProcessingException e) {
+            log.error("Failed to serialize analysis results", e);
+            throw new RuntimeException("JSON serialization failed", e);
+        }
+
+        return analysis;
     }
 }
