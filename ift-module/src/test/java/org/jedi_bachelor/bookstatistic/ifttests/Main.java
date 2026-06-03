@@ -1,4 +1,4 @@
-package org.jedi_bachelor.bookstatistic;
+package org.jedi_bachelor.bookstatistic.ifttests;
 
 public class Main {
 }

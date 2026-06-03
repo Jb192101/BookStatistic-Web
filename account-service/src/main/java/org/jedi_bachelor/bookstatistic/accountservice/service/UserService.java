@@ -133,13 +133,8 @@ public class UserService {
             throw new UserNotFoundException(dto.id());
         }
 
-        // Изменения
-        // Для некоторых изменений потом предусмотри перенос в notification-service
-        //user.get().setEmail(dto.email());
         user.get().setName(dto.name());
-        //user.get().setEnableEmail(dto.enableEmail());
         user.get().setHashPassword(dto.hashPassword());
-        //user.get().setTelegramAddress(dto.telegramAddress());
 
         this.userRepository.save(user.get());
 

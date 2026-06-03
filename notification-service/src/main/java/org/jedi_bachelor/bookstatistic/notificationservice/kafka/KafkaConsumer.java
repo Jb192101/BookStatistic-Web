@@ -23,7 +23,7 @@ public class KafkaConsumer {
             groupId = "bs-group",
             containerFactory = "kafkaListenerContainerFactory"
     )
-    public void handleNotification(NotificationCreationDto message) throws NotificationSettingsNotExistsException {
+    public void handleNotification(@Payload NotificationCreationDto message) throws NotificationSettingsNotExistsException {
         log.info("DTO for creating notification {} has got", message);
 
         this.notificationService.addNewNotification(message);

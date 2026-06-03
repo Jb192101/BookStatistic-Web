@@ -10,17 +10,17 @@ participant AnalyzeService as analyzeService
 admin -> gateway : 1. Отправка запроса на создание новой книги
 gateway -> bookService : 2. Добавление новой книги
 bookService -> analyzeService : 3. Добавление информации по книге
-analyzeService -> analyzeService : 3.0. Сохранение информации
-analyzeService -> bookService : 3.1. Возврат ответа
-bookService -> gateway : 3.2. Возврат ответа
-gateway -> admin : 3.3. Возврат ответа
-admin -> gateway : 4. Отправка текста для этой книги
-gateway -> bookService : 5. Добавление текстов
-bookService -> analyzeService : 6. Добавление текста
-analyzeService -> analyzeService : 7. Проведение анализа текста
-analyzeService -> analyzeService : 8. Сохранение статической информации по тексту по анализу
-analyzeService -> bookService : 9. Возвращение ответа по успешной добавке текста
-bookService -> gateway : 10. Возвращение ответа по добавлению книги
-gateway -> admin : Возврат ответа
+analyzeService -> analyzeService : 4. Сохранение информации
+analyzeService -> bookService : 5. Возврат ответа
+bookService -> gateway : 6. Возврат ответа
+gateway -> admin : 7. Возврат ответа
+admin -> gateway : 8. Отправка текста для этой книги
+gateway -> bookService : 9. Добавление текстов
+bookService -> analyzeService : 10. Добавление текста
+analyzeService -> analyzeService : 11. Проведение анализа текста
+analyzeService -> analyzeService : 12. Сохранение статической информации по тексту по анализу
+analyzeService -> bookService : 13. Возвращение ответа по успешной добавке текста
+bookService -> gateway : 14. Возвращение ответа по добавлению книги
+gateway -> admin : 15. Возврат ответа
 
 @enduml
