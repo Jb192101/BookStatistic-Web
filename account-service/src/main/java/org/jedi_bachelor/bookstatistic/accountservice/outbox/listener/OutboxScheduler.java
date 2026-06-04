@@ -2,6 +2,7 @@ package org.jedi_bachelor.bookstatistic.accountservice.outbox.listener;
 
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.jedi_bachelor.bookstatistic.accountservice.configuration.InteractionPathsConfiguration;
 import org.jedi_bachelor.bookstatistic.accountservice.kafka.KafkaProducer;
 import org.jedi_bachelor.bookstatistic.accountservice.outbox.OutboxContextManager;
 import org.jedi_bachelor.bookstatistic.accountservice.outbox.entity.OutboxAnalyzeMessage;
@@ -27,14 +28,18 @@ public class OutboxScheduler {
 
     private final InteractionClient notificationClient;
 
+    private final InteractionPathsConfiguration interactionPathsConfiguration;
+
     public OutboxScheduler(KafkaProducer kafkaProducer,
                            OutboxContextManager outboxContextManager,
                            @Qualifier("analyzerInteractionClient") InteractionClient analyzerClient,
-                           @Qualifier("notificationInteractionClient") InteractionClient notificationClient) {
+                           @Qualifier("notificationInteractionClient") InteractionClient notificationClient,
+                           InteractionPathsConfiguration interactionPathsConfiguration) {
         this.kafkaProducer = kafkaProducer;
         this.outboxContextManager = outboxContextManager;
         this.analyzerClient = analyzerClient;
         this.notificationClient = notificationClient;
+        this.interactionPathsConfiguration = interactionPathsConfiguration;
     }
 
     /**
@@ -49,7 +54,9 @@ public class OutboxScheduler {
             if(!message.getPublished()) {
                 log.info("Finded message to outboxing: {}", message);
 
-                this.analyzerClient.sendRequest(HttpMethod.DELETE, "/" + message.getUserId());
+                String url = this.interactionPathsConfiguration.getAnalyzePaths().getDeleteUserDataPath();
+
+                this.analyzerClient.sendRequest(HttpMethod.DELETE, url + message.getUserId());
 
                 log.info("Message with id {} has been sended", message.getId());
 
@@ -84,7 +91,7 @@ public class OutboxScheduler {
                                     message.getEmailAddress()
                             );
 
-                            String url = "/v1/notifications/notification-settings";
+                            String url = this.interactionPathsConfiguration.getNotificationPaths().getNotificationSettingsPostPath();
 
                             log.info("Sending ADD request to notification-service for user: {}", message.getUserId());
 

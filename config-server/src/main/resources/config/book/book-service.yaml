@@ -82,3 +82,10 @@ keycloak:
     secret:
   bearer-only: true
   use-resource-role-mappings: true
+
+kafka:
+  topics:
+    sending-notification-topic: "sending-notification-topic"
+    sending-notification-result-topic: "sending-notification-result-topic"
+  groups:
+    bs-group: "bs-group"

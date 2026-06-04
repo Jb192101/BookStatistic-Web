@@ -5,23 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9753a1e7-9738-471e-85b6-9d133f8e3b79" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/audit/AuditRevisionListener.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/audit/entity/AuditRevisionEntity.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ift-module/src/test/java/org/jedi_bachelor/bookstatistic/ifttests/integration/AccountServiceTests.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ift-module/src/test/java/org/jedi_bachelor/bookstatistic/ifttests/integration/BookServiceTests.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/accountservice/configuration/InteractionPathsConfiguration.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/analyze-service/src/main/java/org/jedi_bachelor/bookstatistic/analyzeservice/configuration/InteractionPathsConfiguration.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/configuration/InteractionPathsConfiguration.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/configuration/InteractionPathsConfiguration.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/accountservice/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/accountservice/service/UserService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyze-service/src/main/java/org/jedi_bachelor/bookstatistic/analyzeservice/kafka/KafkaConsumer.java" beforeDir="false" afterPath="$PROJECT_DIR$/analyze-service/src/main/java/org/jedi_bachelor/bookstatistic/analyzeservice/kafka/KafkaConsumer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/book-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/book-service/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/configuration/ServiceConfiguration.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/controller/BookController.java" beforeDir="false" afterPath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/controller/BookController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/entity/Book.java" beforeDir="false" afterPath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/entity/Book.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/kafka/KafkaConsumer.java" beforeDir="false" afterPath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/kafka/KafkaConsumer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/documentation/sequence-diagrams/AddingNewBook.puml" beforeDir="false" afterPath="$PROJECT_DIR$/documentation/sequence-diagrams/AddingNewBook.puml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/documentation/sequence-diagrams/RegistrationOfUser.puml" beforeDir="false" afterPath="$PROJECT_DIR$/documentation/sequence-diagrams/RegistrationOfUser.puml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/documentation/sequence-diagrams/SendingNotification.puml" beforeDir="false" afterPath="$PROJECT_DIR$/documentation/sequence-diagrams/SendingNotification.puml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ift-module/src/test/java/org/jedi_bachelor/bookstatistic/ifttests/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/ift-module/src/test/java/org/jedi_bachelor/bookstatistic/ifttests/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/kafka/KafkaConsumer.java" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/kafka/KafkaConsumer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/accountservice/configuration/ClientConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/accountservice/configuration/ClientConfiguration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/accountservice/outbox/listener/OutboxScheduler.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/accountservice/outbox/listener/OutboxScheduler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config-server/src/main/resources/config/account/account-service.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config-server/src/main/resources/config/account/account-service.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config-server/src/main/resources/config/analyze/analyze-service.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config-server/src/main/resources/config/analyze/analyze-service.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config-server/src/main/resources/config/book/book-service.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config-server/src/main/resources/config/book/book-service.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config-server/src/main/resources/config/notification/notification-service.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config-server/src/main/resources/config/notification/notification-service.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/configuration/ClientConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/configuration/ClientConfiguration.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -108,6 +103,7 @@
       <recent name="C:\Users\gogat\Git\BookStatistic-Web\account-processing\src\main\resources" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="org.jedi_bachelor.bookstatistic.notificationservice.configuration" />
       <recent name="org.jedi_bachelor.bookstatistic.analyzeservice.outbox.listener" />
       <recent name="org.jedi_bachelor.bookstatistic.utils" />
       <recent name="org.jedi_bachelor.bookstatistic.configuration" />

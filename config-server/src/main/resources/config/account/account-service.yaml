@@ -37,8 +37,12 @@ spring:
     password: ${ACCOUNT_DB_PASSWORD:postgres}
 
 external-urls:
-  analyze: ${ANALYZE_SERVICE_URL:http://localhost:8083}
-  notification: http://localhost:8081
+  analyze:
+    base-url: ${ANALYZE_SERVICE_URL:http://localhost:8083/v1/analyze}
+    delete-user-data: /
+  notification:
+    base-url: http://localhost:8083/v1/notifications
+    post-notification-settings: /notification-settings
 
 server:
   port: ${ACCOUNT_SERVER_PORT:8084}
@@ -82,3 +86,10 @@ management:
   endpoint:
     health:
       show-details: always
+
+kafka:
+  topics:
+    sending-notification-topic: "sending-notification-topic"
+    sending-notification-result-topic: "sending-notification-result-topic"
+  groups:
+    bs-group: "bs-group"

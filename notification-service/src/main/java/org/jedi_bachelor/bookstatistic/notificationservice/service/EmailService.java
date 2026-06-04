@@ -2,7 +2,6 @@ package org.jedi_bachelor.bookstatistic.notificationservice.service;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.request.notification.BroadcastMessage;
 import org.jedi_bachelor.bookstatistic.commonslib.internalinteraction.InteractionClient;

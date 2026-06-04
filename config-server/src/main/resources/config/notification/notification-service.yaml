@@ -61,15 +61,14 @@ spring:
 
 kafka:
   topics:
-    sending-notification-topic: "sending_notification_topic"
-    sending-notification-result-topic: "sending_notification_result_topic"
+    sending-notification-topic: "sending-notification-topic"
+    sending-notification-result-topic: "sending-notification-result-topic"
   groups:
     bs-group: "bs-group"
 
 external-urls:
   account:
-    base-url: "http://localhost:8084/users"
-    emails: "/emails"
+    base-url: http://localhost:8083/v1/users
 
 management:
   endpoints:
