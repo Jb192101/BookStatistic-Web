@@ -1,11 +1,13 @@
 package org.jedi_bachelor.bookstatistic.accountservice.configuration;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @Getter
+@Setter
 public class InteractionPathsConfiguration {
     @Value("${external-urls.analyze.base-url}")
     private String analyzeBasePath;
@@ -13,19 +15,9 @@ public class InteractionPathsConfiguration {
     @Value("${external-urls.notification.base-url}")
     private String notificationBasePath;
 
-    private AnalyzePaths analyzePaths;
+    @Value("${external-urls.analyze.delete-user-data}")
+    private String deleteUserDataPath;
 
-    private NotificationPaths notificationPaths;
-
-    @Getter
-    public static class AnalyzePaths {
-        @Value("${external-urls.analyze.delete-user-data}")
-        private String deleteUserDataPath;
-    }
-
-    @Getter
-    public static class NotificationPaths {
-        @Value("${external-urls.notification.post-notification-settings}")
-        private String notificationSettingsPostPath;
-    }
+    @Value("${external-urls.notification.post-notification-settings}")
+    private String notificationSettingsPostPath;
 }

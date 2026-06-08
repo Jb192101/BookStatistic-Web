@@ -66,6 +66,7 @@ public class AuthService {
 
     @Transactional
     public UserDto register(RegisterDto registerDto) {
+        /*
         try {
             List<UserRepresentation> existingUsers = this.keycloakAdmin.realm(this.realm)
                     .users()
@@ -77,6 +78,7 @@ public class AuthService {
         } catch (Exception e) {
             log.warn("Error checking existing user: {}", e.getMessage());
         }
+         */
 
         UserRepresentation keycloakUser = this.createKeycloakUser(registerDto);
 

@@ -19,11 +19,11 @@ public class NotificationSettings {
     @Column(name = "user_id", unique = true)
     private UUID userId;
 
-    @Column(name = "enable_email", nullable = false, columnDefinition = "DEFAULT FALSE")
-    private Boolean enableEmail;
+    @Column(name = "enable_email", nullable = false)
+    private Boolean enableEmail = false;
 
-    @Column(name = "enable_broadcasting", nullable = false, columnDefinition = "DEFAULT FALSE")
-    private Boolean enableGettingBroadcastMessages;
+    @Column(name = "enable_broadcasting", nullable = false)
+    private Boolean enableGettingBroadcastMessages = false;
 
     @Column(name = "email")
     @Email
@@ -32,8 +32,8 @@ public class NotificationSettings {
     @Column(name = "telegram_address")
     private String telegramAddress;
 
-    @Column(name = "enable_telegram", nullable = false, columnDefinition = "DEFAULT FALSE")
-    private Boolean enableTelegram;
+    @Column(name = "enable_telegram", nullable = false)
+    private Boolean enableTelegram = false;
 
     public NotificationSettings(UUID userId) {
         this.userId = userId;

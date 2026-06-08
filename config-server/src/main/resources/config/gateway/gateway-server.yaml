@@ -33,7 +33,7 @@ spring:
         - id: notification-service
           uri: lb://notification-service
           predicates:
-            - Path=/api/v1/notifications/**
+            - Path=/v1/notifications/**
           filters:
             - RewritePath=/notification-service/(?<path>.*), /$\{path}
             - RemoveRequestHeader= Cookie,Set-Cookie
@@ -41,7 +41,7 @@ spring:
         - id: book-service
           uri: lb://book-service
           predicates:
-            - Path=/api/v1/books/**
+            - Path=/v1/books/**
           filters:
             - RewritePath=/book-service/(?<path>.*), /$\{path}
             - RemoveRequestHeader= Cookie,Set-Cookie
@@ -57,7 +57,7 @@ spring:
         - id: analyze-service
           uri: lb://analyze-service
           predicates:
-            - Path=/api/v1/analyze/**
+            - Path=/v1/analyze/**
           filters:
             - RewritePath=/analyze-service/(?<path>.*), /$\{path}
             - RemoveRequestHeader= Cookie,Set-Cookie

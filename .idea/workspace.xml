@@ -5,18 +5,30 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9753a1e7-9738-471e-85b6-9d133f8e3b79" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/accountservice/configuration/InteractionPathsConfiguration.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/analyze-service/src/main/java/org/jedi_bachelor/bookstatistic/analyzeservice/configuration/InteractionPathsConfiguration.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/configuration/InteractionPathsConfiguration.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/configuration/InteractionPathsConfiguration.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/accountservice/service/KeycloakTokenService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/accountservice/configuration/ClientConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/accountservice/configuration/ClientConfiguration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/accountservice/configuration/InteractionPathsConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/accountservice/configuration/InteractionPathsConfiguration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/accountservice/configuration/KeycloakAdminConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/accountservice/configuration/KeycloakAdminConfiguration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/accountservice/configuration/KeycloakInitializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/accountservice/configuration/KeycloakInitializer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/accountservice/outbox/listener/OutboxScheduler.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/accountservice/outbox/listener/OutboxScheduler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/accountservice/service/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/accountservice/service/AuthService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/commons-lib/src/main/java/org/jedi_bachelor/bookstatistic/commonslib/dto/request/account/RegisterDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/commons-lib/src/main/java/org/jedi_bachelor/bookstatistic/commonslib/dto/request/account/RegisterDto.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config-server/src/main/resources/config/account/account-service.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config-server/src/main/resources/config/account/account-service.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config-server/src/main/resources/config/analyze/analyze-service.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config-server/src/main/resources/config/analyze/analyze-service.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config-server/src/main/resources/config/book/book-service.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config-server/src/main/resources/config/book/book-service.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config-server/src/main/resources/config/gateway/gateway-server.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config-server/src/main/resources/config/gateway/gateway-server.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config-server/src/main/resources/config/notification/notification-service.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config-server/src/main/resources/config/notification/notification-service.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/gateway/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway/src/main/java/org/jedi_bachelor/bookstatistic/gateway/configuration/SecurityConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/gateway/src/main/java/org/jedi_bachelor/bookstatistic/gateway/configuration/SecurityConfiguration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway/src/main/java/org/jedi_bachelor/bookstatistic/gateway/utils/JwtAuthenticationGlobalFilter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway/src/main/java/org/jedi_bachelor/bookstatistic/gateway/utils/JwtUtil.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notification-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/configuration/ClientConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/configuration/ClientConfiguration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/configuration/InteractionPathsConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/configuration/InteractionPathsConfiguration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/configuration/SecurityConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/configuration/SecurityConfiguration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/controller/NotificationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/controller/NotificationController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/entity/NotificationSettings.java" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/entity/NotificationSettings.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/service/NotificationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/service/NotificationService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/utils/JwtAuthenticationFilter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/utils/JwtUtil.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,9 +43,9 @@
         <option value="Enum" />
         <option value="Python Script" />
         <option value="Interface" />
-        <option value="Interface" />
         <option value="Record" />
         <option value="Class" />
+        <option value="Interface" />
       </list>
     </option>
   </component>
@@ -109,7 +121,7 @@
       <recent name="org.jedi_bachelor.bookstatistic.configuration" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.Account-server">
+  <component name="RunManager" selected="Application.Notification-server">
     <configuration name="Account-server" type="Application" factoryName="Application">
       <option name="envFilePaths">
         <option value="$PROJECT_DIR$/docker/.env" />
@@ -194,8 +206,8 @@
       <item itemvalue="Application.Analyze-server" />
       <item itemvalue="Application.Book-server" />
       <item itemvalue="Application.Config-server" />
-      <item itemvalue="Application.Gateway-server" />
       <item itemvalue="Application.Discovery-server" />
+      <item itemvalue="Application.Gateway-server" />
       <item itemvalue="Application.Notification-server" />
     </list>
   </component>
@@ -225,5 +237,26 @@
     <option featureType="dependencySupport" implementationName="java:org.thymeleaf:thymeleaf" />
     <option featureType="dependencySupport" implementationName="java:org.springframework:spring-messaging" />
     <option featureType="dependencySupport" implementationName="java:org.springframework.boot:spring-boot" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="org.springframework.web.client.HttpClientErrorException$Unauthorized" package="org.springframework.web.client" />
+          <option name="timeStamp" value="1" />
+        </breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

@@ -2,7 +2,6 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
@@ -15,7 +14,7 @@ spring:
       client:
         registration:
           keycloak:
-            client-id: bookstatistic-app
+            client-id: bookstatistic
             client-secret: ${KEYCLOAK_CLIENT_SECRET}
             scope: openid,profile,email
             authorization-grant-type: authorization_code
@@ -23,7 +22,6 @@ spring:
         provider:
           keycloak:
             issuer-uri: ${KEYCLOAK_ISSUER_URI:http://localhost:8080/realms/bookstatistic-realm}
-            user-name-attribute: preferred_username
       resourceserver:
         jwt:
           issuer-uri: ${KEYCLOAK_ISSUER_URI:http://localhost:8080/realms/bookstatistic-realm}
@@ -58,22 +56,22 @@ eureka:
       defaultZone: http://localhost:8070/eureka/
 
 keycloak:
+  client-id: bookstatistic
   admin:
     server-url: ${KEYCLOAK_SERVER_URL:http://localhost:8080}
-    realm: master
-    client-id: admin-cli
-    client-secret: ${KEYCLOAK_ADMIN_SECRET:}
-    username: ${KEYCLOAK_ADMIN_USERNAME:admin}
-    password: ${KEYCLOAK_ADMIN_PASSWORD:admin}
+    realm: bookstatistic-realm
+    client-id: bookstatistic
+    username: ${KEYCLOAK_ADMIN_USERNAME}
+    password: ${KEYCLOAK_ADMIN_PASSWORD}
   realm: bookstatistic-realm
   auth-server-url: ${KEYCLOAK_AUTH_URL:http://localhost:8080}
-  resource: bookstatistic-app
+  resource: bookstatistic
   credentials:
     secret: ${KEYCLOAK_CLIENT_SECRET}
   bearer-only: true
   use-resource-role-mappings: true
   init:
-    enabled: ${KEYCLOAK_INIT_ENABLED:true}
+    enabled: false
 
 zipkin:
   baseUrl: ${ZIPKIN_URL:http://zipkin:9411}

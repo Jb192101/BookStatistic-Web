@@ -9,11 +9,4 @@ import org.springframework.context.annotation.Configuration;
 public class InteractionPathsConfiguration {
     @Value("${external-urls.account.base-url}")
     private String accountBasePath;
-
-    private AccountPaths accountPaths;
-
-    @Getter
-    public static class AccountPaths {
-
-    }
 }

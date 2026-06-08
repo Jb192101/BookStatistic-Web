@@ -7,7 +7,6 @@ import org.keycloak.admin.client.Keycloak;
 import org.keycloak.representations.idm.ClientRepresentation;
 import org.keycloak.representations.idm.RealmRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
-import org.keycloak.representations.idm.RolesRepresentation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -19,14 +18,22 @@ import java.util.List;
 public class KeycloakInitializer {
     private final Keycloak keycloakAdmin;
 
-    @Value("${keycloak.admin.realm}")
+    @Value("${keycloak.realm:bookstatistic-realm}")
     private String realm;
 
-    @Value("${spring.security.oauth2.client.registration.keycloak.client-id}")
+    @Value("${keycloak.client-id:bookstatistic}")
     private String clientId;
+
+    @Value("${keycloak.credentials.secret}")
+    private String clientSecret;
 
     @PostConstruct
     public void initializeRealm() {
+        if (!"${keycloak.init.enabled:true}".equals("true")) {
+            log.info("Keycloak initialization is disabled");
+            return;
+        }
+
         try {
             List<RealmRepresentation> realms = this.keycloakAdmin.realms().findAll();
             boolean realmExists = realms.stream().anyMatch(r -> r.getRealm().equals(this.realm));
@@ -49,14 +56,12 @@ public class KeycloakInitializer {
         newRealm.setRealm(this.realm);
         newRealm.setEnabled(true);
         newRealm.setDisplayName("BookStatistic Realm");
-
-        newRealm.setSslRequired("external");
-
+        newRealm.setSslRequired("EXTERNAL");
         newRealm.setAccessTokenLifespan(300);
         newRealm.setRefreshTokenMaxReuse(1800);
 
         this.keycloakAdmin.realms().create(newRealm);
-        log.info("Realm '{}' created", realm);
+        log.info("Realm '{}' created", this.realm);
     }
 
     private void createRoles() {
@@ -68,25 +73,29 @@ public class KeycloakInitializer {
         adminRole.setName("ADMIN");
         adminRole.setDescription("Administrator role");
 
-        keycloakAdmin.realm(realm).roles().create(userRole);
-        keycloakAdmin.realm(realm).roles().create(adminRole);
+        this.keycloakAdmin.realm(this.realm).roles().create(userRole);
+        this.keycloakAdmin.realm(this.realm).roles().create(adminRole);
 
-        log.info("Roles 'USER' and 'ADMIN' created in realm '{}'", realm);
+        log.info("Roles 'USER' and 'ADMIN' created in realm '{}'", this.realm);
     }
 
     private void createClient() {
         ClientRepresentation client = new ClientRepresentation();
-        client.setClientId(clientId);
+        client.setClientId(this.clientId);
         client.setName("BookStatistic Application");
         client.setEnabled(true);
         client.setPublicClient(false);
-        client.setSecret("your-client-secret");
-
+        client.setSecret(this.clientSecret);
         client.setStandardFlowEnabled(true);
         client.setDirectAccessGrantsEnabled(true);
         client.setServiceAccountsEnabled(true);
-
-        client.setRedirectUris(List.of("http://localhost:8081/*", "http://localhost:8082/*"));
+        client.setRedirectUris(List.of(
+                "http://localhost:8081/*",
+                "http://localhost:8082/*",
+                "http://localhost:8083/*",
+                "http://localhost:8084/*",
+                "http://localhost:8085/*"
+        ));
 
         this.keycloakAdmin.realm(this.realm).clients().create(client);
         log.info("Client '{}' created", this.clientId);

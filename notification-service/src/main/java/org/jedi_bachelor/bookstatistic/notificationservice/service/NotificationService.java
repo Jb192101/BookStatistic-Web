@@ -151,8 +151,6 @@ public class NotificationService {
         this.notificationRepository.delete(notification.get());
     }
 
-    @CircuitBreaker(name = "notification-circuitbreaker")
-    @Bulkhead(name = "notification-bulkhead", type = Bulkhead.Type.THREADPOOL)
     @Transactional
     public void addNotificationSettings(NotificationSettingsCreatingDto dto) {
         NotificationSettings settings = new NotificationSettings();
