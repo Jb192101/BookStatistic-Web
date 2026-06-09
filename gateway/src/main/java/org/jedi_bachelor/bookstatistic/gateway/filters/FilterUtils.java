@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 
 import java.util.List;
+import java.util.UUID;
 
 @Component
 public class FilterUtils {
@@ -28,6 +29,23 @@ public class FilterUtils {
 
     public ServerWebExchange setCorrelationId(ServerWebExchange exchange, String correlationId) {
         return this.setRequestHeader(exchange, CORRELATION_ID, correlationId);
+    }
+
+    public ServerWebExchange setUserId(ServerWebExchange exchange, UUID userId) {
+        return this.setRequestHeader(exchange, USER_ID, userId.toString());
+    }
+
+    public ServerWebExchange setUserId(ServerWebExchange exchange, String userId) {
+        return this.setRequestHeader(exchange, USER_ID, userId);
+    }
+
+    public String getUserId(HttpHeaders requestHeaders) {
+        if (requestHeaders.get(USER_ID) != null) {
+            List<String> header = requestHeaders.get(USER_ID);
+            return header.stream().findFirst().get();
+        } else {
+            return null;
+        }
     }
 
     public String getAcceptLanguage(HttpHeaders requestHeaders) {

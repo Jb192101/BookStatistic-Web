@@ -11,7 +11,9 @@ import org.jedi_bachelor.bookstatistic.commonslib.dto.request.notification.Notif
 import org.jedi_bachelor.bookstatistic.commonslib.dto.request.notification.NotificationSettingsCreatingDto;
 import org.jedi_bachelor.bookstatistic.commonslib.exceptions.NotificationNotFoundException;
 import org.jedi_bachelor.bookstatistic.commonslib.exceptions.NotificationSettingsNotExistsException;
+import org.jedi_bachelor.bookstatistic.commonslib.exceptions.UserHaventAccessException;
 import org.jedi_bachelor.bookstatistic.commonslib.exceptions.UserNotFoundException;
+import org.jedi_bachelor.bookstatistic.commonslib.security.SecurityRoles;
 import org.jedi_bachelor.bookstatistic.notificationservice.converter.NotificationConverter;
 import org.jedi_bachelor.bookstatistic.notificationservice.entity.Notification;
 import org.jedi_bachelor.bookstatistic.notificationservice.entity.NotificationSettings;
@@ -23,6 +25,7 @@ import org.jedi_bachelor.bookstatistic.notificationservice.outbox.entity.OutboxE
 import org.jedi_bachelor.bookstatistic.notificationservice.outbox.entity.OutboxKafkaMessage;
 import org.jedi_bachelor.bookstatistic.notificationservice.repository.NotificationRepository;
 import org.jedi_bachelor.bookstatistic.notificationservice.repository.NotificationSettingsRepository;
+import org.jedi_bachelor.bookstatistic.notificationservice.utils.SecurityUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -93,7 +96,7 @@ public class NotificationService {
     @CircuitBreaker(name = "notification-circuitbreaker")
     @Bulkhead(name = "getNotificationOfUser")
     @Transactional
-    public List<NotificationDto> getUserNotificationsInSystem(UUID userId) throws UserNotFoundException {
+    public List<NotificationDto> getUserNotificationsInSystem(UUID userId) throws UserNotFoundException, UserHaventAccessException {
         List<NotificationDto> notifications = this.getUserNotifications(userId);
 
         return notifications
@@ -105,7 +108,13 @@ public class NotificationService {
     @CircuitBreaker(name = "notification-circuitbreaker")
     @Bulkhead(name = "getNotificationOfUser")
     @Transactional
-    public List<NotificationDto> getUserNotifications(UUID userId) throws UserNotFoundException {
+    public List<NotificationDto> getUserNotifications(UUID userId) throws UserNotFoundException, UserHaventAccessException {
+        UUID currentUserId = SecurityUtils.getCurrentUserId();
+
+        if(!SecurityUtils.hasRole(SecurityRoles.ADMIN.toString()) && currentUserId != userId) {
+            throw new UserHaventAccessException(currentUserId, userId);
+        }
+
         List<Notification> dtos = this.notificationRepository.findByUserId(userId);
 
         if (dtos.isEmpty()) {
@@ -122,8 +131,14 @@ public class NotificationService {
     @CircuitBreaker(name = "notification-circuitbreaker")
     @Bulkhead(name = "notification-bulkhead", type = Bulkhead.Type.THREADPOOL)
     @Transactional
-    public NotificationDto getNotification(UUID notificationId) throws NotificationNotFoundException {
+    public NotificationDto getNotification(UUID notificationId) throws NotificationNotFoundException, UserHaventAccessException {
         Optional<Notification> notification = this.notificationRepository.findById(notificationId);
+
+        UUID currentUserId = SecurityUtils.getCurrentUserId();
+
+        if(!SecurityUtils.hasRole(SecurityRoles.ADMIN.toString()) && currentUserId != notification.get().getUserId()) {
+            throw new UserHaventAccessException(currentUserId, notification.get().getUserId());
+        }
 
         if(notification.isEmpty()) {
             log.error("Notification with id {} did not found", notificationId);
@@ -139,13 +154,19 @@ public class NotificationService {
     @CircuitBreaker(name = "notification-circuitbreaker")
     @Bulkhead(name = "notification-bulkhead", type = Bulkhead.Type.THREADPOOL)
     @Transactional
-    public void deleteNotification(UUID notificationId) throws NotificationNotFoundException {
+    public void deleteNotification(UUID notificationId) throws NotificationNotFoundException, UserHaventAccessException {
         Optional<Notification> notification = this.notificationRepository.findById(notificationId);
 
         if(notification.isEmpty()) {
             log.error("Notification with id {} did not found", notificationId);
 
             throw new NotificationNotFoundException(notificationId);
+        }
+
+        UUID currentUserId = SecurityUtils.getCurrentUserId();
+
+        if(!SecurityUtils.hasRole(SecurityRoles.ADMIN.toString()) && currentUserId != notification.get().getUserId()) {
+            throw new UserHaventAccessException(currentUserId, notification.get().getUserId());
         }
 
         this.notificationRepository.delete(notification.get());
@@ -163,7 +184,15 @@ public class NotificationService {
         log.info("Notification settings for user with id {} succesfully created", dto.userId());
     }
 
-    public NotificationSettingsDto getNotificationSettings(UUID userId) throws UserNotFoundException {
+    @Transactional
+    public NotificationSettingsDto getNotificationSettings(UUID userId) throws UserNotFoundException, UserHaventAccessException {
+        UUID currentUserId = SecurityUtils.getCurrentUserId();
+
+        if(!SecurityUtils.hasRole(SecurityRoles.ADMIN.toString())
+                && currentUserId != userId) {
+            throw new UserHaventAccessException(currentUserId, userId);
+        }
+
         Optional<NotificationSettings> settings = this.notificationSettingsRepository.findByUserId(userId);
 
         if(settings.isEmpty()) {
@@ -179,10 +208,17 @@ public class NotificationService {
      *
      * @param userId ID пользователя
      */
-    @CircuitBreaker(name = "notification-circuitbreaker")
-    @Bulkhead(name = "notification-bulkhead", type = Bulkhead.Type.THREADPOOL)
+    //@CircuitBreaker(name = "notification-circuitbreaker")
+    //@Bulkhead(name = "notification-bulkhead", type = Bulkhead.Type.THREADPOOL)
     @Transactional
-    public void deleteNotificationSettings(UUID userId) throws UserNotFoundException {
+    public void deleteNotificationSettings(UUID userId) throws UserNotFoundException, UserHaventAccessException {
+        UUID currentUserId = SecurityUtils.getCurrentUserId();
+
+        if(!SecurityUtils.hasRole(SecurityRoles.ADMIN.toString())
+                && currentUserId != userId) {
+            throw new UserHaventAccessException(currentUserId, userId);
+        }
+
         Optional<NotificationSettings> settings = this.notificationSettingsRepository.findByUserId(userId);
 
         if(settings.isEmpty()) {

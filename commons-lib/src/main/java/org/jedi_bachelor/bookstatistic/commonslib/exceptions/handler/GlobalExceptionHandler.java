@@ -24,6 +24,19 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(UserHaventAccessException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleUserHaventAccessException(UserHaventAccessException e) {
+        return new ErrorResponse(
+                "User haven't access to resource",
+                "User with ID: " + e.getCurrentUserId()
+                        + " haven't access to resource of user with ID: "
+                        + e.getRequiredUserId(),
+                HttpStatus.NO_CONTENT.value(),
+                Timestamp.from(Instant.now())
+        );
+    }
+
     @ExceptionHandler(IOException.class)
     @ResponseStatus(HttpStatus.LENGTH_REQUIRED) // ПОТОМ ПОМЕНЯТЬ
     public ErrorResponse handleIOException(IOException e) {

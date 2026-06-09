@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.annotation.security.RolesAllowed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.mapentities.NotificationDto;
@@ -18,6 +17,7 @@ import org.jedi_bachelor.bookstatistic.commonslib.dto.response.ErrorResponse;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.response.SuccessResponse;
 import org.jedi_bachelor.bookstatistic.commonslib.exceptions.NotificationNotFoundException;
 import org.jedi_bachelor.bookstatistic.commonslib.exceptions.NotificationSettingsNotExistsException;
+import org.jedi_bachelor.bookstatistic.commonslib.exceptions.UserHaventAccessException;
 import org.jedi_bachelor.bookstatistic.commonslib.exceptions.UserNotFoundException;
 import org.jedi_bachelor.bookstatistic.notificationservice.service.NotificationService;
 import org.springframework.http.HttpStatus;
@@ -39,7 +39,7 @@ import java.util.UUID;
 public class NotificationController {
     private final NotificationService notificationService;
 
-    @RolesAllowed("ADMIN")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping
     @Operation(summary = "Получение всех уведомлений",
             description = "Получение всех уведомлений всех пользователей")
@@ -69,7 +69,7 @@ public class NotificationController {
         ));
     }
 
-    @RolesAllowed({ "ADMIN", "USER" })
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
     @GetMapping("/{notificationId}")
     @Operation(summary = "Получение уведомления",
             description = "Получение конкретного уведомления по его ID")
@@ -117,7 +117,7 @@ public class NotificationController {
         ));
     }
 
-    @RolesAllowed({ "ADMIN", "USER" })
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
     @GetMapping("/system/user/{userId}")
     @Operation(summary = "Получение системных уведомлений пользователя",
             description = "Получение всех системных уведомлений пользователя по его ID")
@@ -162,7 +162,7 @@ public class NotificationController {
         return ResponseEntity.ok(new SuccessResponse(200, dtos));
     }
 
-    @RolesAllowed({ "ADMIN" })
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/user/{userId}")
     @Operation(summary = "Получение уведомлений пользователя",
             description = "Получение всех уведомлений пользователя по его ID")
@@ -207,7 +207,7 @@ public class NotificationController {
         return ResponseEntity.ok(new SuccessResponse(200, dtos));
     }
 
-    @RolesAllowed({ "ADMIN", "USER" })
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
     @PostMapping
     @Operation(
             summary = "Создать уведомление",
@@ -248,7 +248,7 @@ public class NotificationController {
         ));
     }
 
-    @RolesAllowed({ "ADMIN", "USER" })
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
     @DeleteMapping("/{notificationId}")
     @Operation(summary = "Удалить уведомление пользователя по ID")
     @ApiResponses(value = {
@@ -281,7 +281,7 @@ public class NotificationController {
                     schema = @Schema(
                             type = "string",
                             format = "uuid",
-                            description = "UUID пользователя"
+                            description = "UUID уведомления"
                     )
             ) @PathVariable UUID notificationId) throws NotificationNotFoundException {
         this.notificationService.deleteNotification(notificationId);
@@ -292,25 +292,104 @@ public class NotificationController {
         ));
     }
 
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/notification-settings")
+    @Operation(summary = "Добавление настроек уведомлений пользователя")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Успешное добавление настроек пользователя"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Внутренняя ошибка сервера",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_PROBLEM_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    )
+            )
+    })
     public ResponseEntity<?> addNotificationSettings(@RequestBody NotificationSettingsCreatingDto dto) {
         this.notificationService.addNotificationSettings(dto);
 
         return ResponseEntity.ok(new SuccessResponse(201, null));
     }
 
-    @RolesAllowed({ "ADMIN", "USER" })
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
     @GetMapping("/notification-settings/{userId}")
-    public ResponseEntity<?> getNotificationSettings(@PathVariable UUID userId) throws UserNotFoundException {
+    @Operation(summary = "Получение настроек уведомлений пользователя по ID")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Успешное удаление уведомления пользователя"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Уведомления с таким ID нет",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_PROBLEM_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Внутренняя ошибка сервера",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_PROBLEM_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    )
+            )
+    })
+    public ResponseEntity<?> getNotificationSettings(@Parameter(
+            description = "Уникальный идентификатор пользователя в формате UUID",
+            required = true,
+            example = "550e8400-e29b-41d4-a716-446655440001",
+            schema = @Schema(
+                    type = "string",
+                    format = "uuid",
+                    description = "UUID пользователя"
+            )
+    ) @PathVariable UUID userId) throws UserNotFoundException, UserHaventAccessException {
         NotificationSettingsDto dto = this.notificationService.getNotificationSettings(userId);
 
         return ResponseEntity.ok(new SuccessResponse(200, dto));
     }
 
-    @RolesAllowed({ "ADMIN", "USER" })
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
     @DeleteMapping("/notification-settings/{userId}")
-    public ResponseEntity<?> deleteNotificationSettings(@PathVariable UUID userId) throws UserNotFoundException {
+    @Operation(summary = "Удалить настройку уведомлений пользователя по ID")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Успешное удаление уведомления пользователя"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Уведомления с таким ID нет",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_PROBLEM_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Внутренняя ошибка сервера",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_PROBLEM_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    )
+            )
+    })
+    public ResponseEntity<?> deleteNotificationSettings(@Parameter(
+            description = "Уникальный идентификатор пользователя в формате UUID",
+            required = true,
+            example = "550e8400-e29b-41d4-a716-446655440001",
+            schema = @Schema(
+                    type = "string",
+                    format = "uuid",
+                    description = "UUID пользователя"
+            )
+    ) @PathVariable UUID userId) throws UserNotFoundException, UserHaventAccessException {
         this.notificationService.deleteNotificationSettings(userId);
 
         return ResponseEntity.ok(new SuccessResponse(200, null));

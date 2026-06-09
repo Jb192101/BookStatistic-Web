@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.annotation.security.RolesAllowed;
 import lombok.RequiredArgsConstructor;
 import org.jedi_bachelor.bookstatistic.bookservice.redis.entity.TextFile;
 import org.jedi_bachelor.bookstatistic.bookservice.service.BookService;
@@ -22,6 +21,7 @@ import org.jedi_bachelor.bookstatistic.commonslib.exceptions.UserNotFoundExcepti
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -39,7 +39,7 @@ import java.util.UUID;
 public class BookController {
     private final BookService bookService;
 
-    @RolesAllowed("ADMIN")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping
     @Operation(summary = "Добавление книги без текста",
             description = "Добавление книги без текста")
@@ -71,7 +71,7 @@ public class BookController {
         );
     }
 
-    @RolesAllowed({"ADMIN", "USER"})
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/stats/{userId}")
     @Operation(summary = "Статистика по числу книг",
             description = "Выдаёт кол-во полностью прочитанных книг, частично прочитанных, брошенных книг и взятых, но не открытых книг")
@@ -109,7 +109,7 @@ public class BookController {
                 new SuccessResponse(200, stat));
     }
 
-    @RolesAllowed("ADMIN")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PatchMapping("/{bookId}")
     @Operation(summary = "Привязка текста к книге",
             description = "Привязка текста к книге")
@@ -149,7 +149,7 @@ public class BookController {
                 new SuccessResponse(200, Map.of("linked", true)));
     }
 
-    @RolesAllowed({"ADMIN", "USER"})
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
     @GetMapping("/{bookId}")
     @Operation(summary = "Получение книги по ID",
             description = "Получение книги по ID")
@@ -196,7 +196,7 @@ public class BookController {
         return ResponseEntity.ok(new SuccessResponse(200, bookDto));
     }
 
-    @RolesAllowed("ADMIN")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping
     @Operation(summary = "Получение всех книг",
             description = "Получение всех книг всех пользователей")
@@ -223,7 +223,7 @@ public class BookController {
         return ResponseEntity.ok(new SuccessResponse(200, bookDtoList));
     }
 
-    @RolesAllowed({"ADMIN", "USER"})
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
     @GetMapping("/{bookId}/text")
     public ResponseEntity<?> getBookText(
             @Parameter(

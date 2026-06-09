@@ -13,6 +13,7 @@ import org.jedi_bachelor.bookstatistic.analyzeservice.service.AnalyzeService;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.request.analyze.UserBookReportCreateDto;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +28,7 @@ import java.util.UUID;
 public class AnalyzeController {
     private final AnalyzeService analyzeService;
 
-    @RolesAllowed("ADMIN")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/{userId}")
     @Operation(summary = "Анализ пользователя по его ID",
             description = "Отправляется запрос на эндпоинт, после чего сервис начинает сбор информации по пользователю и прогоняет данные через нейросеть")
@@ -52,7 +53,7 @@ public class AnalyzeController {
         return null;
     }
 
-    @RolesAllowed("ADMIN")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/{countOfUsers}")
     @Operation(summary = "Проведение анализа по N случайным пользователям",
             description = "Отправляется запрос на эндпоинт, после чего сервис начинает сбор информации по N случайным пользователям и прогоняет данные через нейросеть")
@@ -77,7 +78,7 @@ public class AnalyzeController {
         return null;
     }
 
-    @RolesAllowed({"ADMIN", "USER"})
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
     @PostMapping("/report")
     @Operation(summary = "Добавление инициализированного UserBookReport",
             description = "Создаёт сущность UserBookReport для пользователя")
@@ -102,7 +103,7 @@ public class AnalyzeController {
         return null;
     }
 
-    @RolesAllowed({"ADMIN", "USER"})
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
     @GetMapping("/report/{userId}")
     @Operation(summary = "Выдача отчёта по пользователю",
             description = "Отправляется запрос на эндпоинт, после чего сервис начинает сбор информации по N случайным пользователям и прогоняет данные через нейросеть")

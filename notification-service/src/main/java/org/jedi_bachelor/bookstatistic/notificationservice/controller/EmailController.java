@@ -16,6 +16,7 @@ import org.jedi_bachelor.bookstatistic.notificationservice.service.EmailService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,7 +35,7 @@ import java.util.Map;
 public class EmailController {
     private final EmailService emailService;
 
-    @RolesAllowed("ADMIN")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/broadcast")
     @Operation(summary = "Отправка broadcast-сообщения",
             description = "Отправляет broadcast-сообщение всем, кто пожелал получать уведомления по почте")

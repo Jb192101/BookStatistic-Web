@@ -34,6 +34,12 @@ public class ResponseFilter {
                     String language = filterUtils.getAcceptLanguage(requestHeaders);
                     log.debug("Accept-Language: {}", language);
 
+                    String userId = this.filterUtils.getUserId(requestHeaders);
+                    if(userId != null) {
+                        log.debug("User ID: {}", userId);
+                        ServerWebExchange mutatedExchange = filterUtils.setCorrelationId(exchange, userId);
+                    }
+
                     log.debug("Completing outgoing request for: {}", exchange.getRequest().getURI());
                 }));
     }
