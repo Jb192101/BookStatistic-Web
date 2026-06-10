@@ -108,7 +108,7 @@ public class NotificationController {
                             format = "uuid",
                             description = "UUID пользователя"
                     )
-            ) @PathVariable UUID notificationId) throws NotificationNotFoundException {
+            ) @PathVariable UUID notificationId) throws NotificationNotFoundException, UserHaventAccessException {
         NotificationDto dto = this.notificationService.getNotification(notificationId);
 
         return ResponseEntity.ok().body(new SuccessResponse(
@@ -156,7 +156,7 @@ public class NotificationController {
                             format = "uuid",
                             description = "UUID пользователя"
                     )
-            ) @PathVariable UUID userId) throws UserNotFoundException {
+            ) @PathVariable UUID userId) throws UserNotFoundException, UserHaventAccessException {
         List<NotificationDto> dtos = this.notificationService.getUserNotificationsInSystem(userId);
 
         return ResponseEntity.ok(new SuccessResponse(200, dtos));
@@ -201,7 +201,7 @@ public class NotificationController {
                             format = "uuid",
                             description = "UUID пользователя"
                     )
-            ) @PathVariable UUID userId) throws UserNotFoundException {
+            ) @PathVariable UUID userId) throws UserNotFoundException, UserHaventAccessException {
         List<NotificationDto> dtos = this.notificationService.getUserNotifications(userId);
 
         return ResponseEntity.ok(new SuccessResponse(200, dtos));
@@ -283,7 +283,7 @@ public class NotificationController {
                             format = "uuid",
                             description = "UUID уведомления"
                     )
-            ) @PathVariable UUID notificationId) throws NotificationNotFoundException {
+            ) @PathVariable UUID notificationId) throws NotificationNotFoundException, UserHaventAccessException {
         this.notificationService.deleteNotification(notificationId);
 
         return ResponseEntity.ok().body(new SuccessResponse(
