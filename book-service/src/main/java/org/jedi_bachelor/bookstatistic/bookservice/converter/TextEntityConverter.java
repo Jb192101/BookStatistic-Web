@@ -1,7 +1,7 @@
 package org.jedi_bachelor.bookstatistic.bookservice.converter;
 
 import org.jedi_bachelor.bookstatistic.bookservice.entity.Text;
-import org.jedi_bachelor.bookstatistic.bookservice.redis.entity.TextFile;
+import org.jedi_bachelor.bookstatistic.bookservice.filestorage.entity.TextFile;
 import org.jedi_bachelor.bookstatistic.commonslib.converter.Converter;
 import org.springframework.stereotype.Component;
 

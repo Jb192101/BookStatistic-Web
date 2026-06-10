@@ -6,10 +6,10 @@ import org.jedi_bachelor.bookstatistic.bookservice.converter.TextEntityConverter
 import org.jedi_bachelor.bookstatistic.bookservice.entity.Book;
 import org.jedi_bachelor.bookstatistic.bookservice.entity.Text;
 import org.jedi_bachelor.bookstatistic.bookservice.entity.UserBookRelation;
+import org.jedi_bachelor.bookstatistic.bookservice.filestorage.BookFileStorageService;
 import org.jedi_bachelor.bookstatistic.bookservice.kafka.KafkaProducer;
 import org.jedi_bachelor.bookstatistic.bookservice.mapper.BookMapper;
-import org.jedi_bachelor.bookstatistic.bookservice.redis.RedisContentManager;
-import org.jedi_bachelor.bookstatistic.bookservice.redis.entity.TextFile;
+import org.jedi_bachelor.bookstatistic.bookservice.filestorage.entity.TextFile;
 import org.jedi_bachelor.bookstatistic.bookservice.repository.*;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.kafka.KafkaTextAnalyzeDto;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.mapentities.BookDto;
@@ -44,7 +44,7 @@ public class BookService {
 
     private final BookMapper bookMapper;
 
-    private final RedisContentManager redisContentManager;
+    private final BookFileStorageService bookFileStorageService;
 
     private final TextEntityConverter textEntityConverter;
 
@@ -169,21 +169,23 @@ public class BookService {
         }
 
         // Сохранение файла с текстом
-        String fileKey = this.redisContentManager.saveTextFile(bookId, file);
+        //String fileKey = this.redisContentManager.saveTextFile(bookId, file);
 
         // Отправка сообщения в топик
-        TextFile textFile = this.redisContentManager.getTextFile(fileKey);
+        //TextFile textFile = this.redisContentManager.getTextFile(fileKey);
 
+        /*
         KafkaTextAnalyzeDto dto = new KafkaTextAnalyzeDto(
                 bookId,
-                textFile.getId(),
                 textFile.getFilename(),
                 textFile.getContent(),
                 textFile.getContentType(),
                 textFile.getSize(),
                 textFile.getUploadTime()
         );
+         */
 
+        // Добавление сообщения в outbox
         this.kafkaProducer.sendMessageToBookTextAnalyzeTopic(
                 dto
         );
@@ -197,11 +199,11 @@ public class BookService {
      * @throws BookNotFoundException если книги с таким ID не существует
      */
     public TextFile getBookTextById(UUID bookId) throws BookNotFoundException {
-        if(!this.redisContentManager.exists(bookId.toString())) {
-            throw new BookNotFoundException(bookId);
-        }
+        //if(!this.redisContentManager.exists(bookId.toString())) {
+        //    throw new BookNotFoundException(bookId);
+        //}
 
-        return this.redisContentManager.getTextFile(bookId);
+        //return this.redisContentManager.getTextFile(bookId);
     }
 
     /**

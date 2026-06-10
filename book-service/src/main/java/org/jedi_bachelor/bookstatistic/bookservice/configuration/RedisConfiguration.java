@@ -1,6 +1,6 @@
 package org.jedi_bachelor.bookstatistic.bookservice.configuration;
 
-import org.jedi_bachelor.bookstatistic.bookservice.redis.entity.TextFile;
+import org.jedi_bachelor.bookstatistic.bookservice.filestorage.entity.TextFile;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

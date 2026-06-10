@@ -5,7 +5,6 @@ import java.util.UUID;
 
 public record KafkaTextAnalyzeDto(
         UUID bookId,
-        String id,
         String filename,
         String content,
         String contentType,

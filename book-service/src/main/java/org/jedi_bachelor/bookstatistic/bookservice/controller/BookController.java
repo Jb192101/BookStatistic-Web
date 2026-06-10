@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.jedi_bachelor.bookstatistic.bookservice.redis.entity.TextFile;
+import org.jedi_bachelor.bookstatistic.bookservice.filestorage.entity.TextFile;
 import org.jedi_bachelor.bookstatistic.bookservice.service.BookService;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.mapentities.BookDto;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.request.book.BookCreationDto;

@@ -6,6 +6,17 @@ external-urls:
 server:
   port: ${BOOK_SERVER_PORT}
 
+book:
+  storage:
+    path: ${BOOK_STORAGE_PATH}
+    max-file-size: 104857600
+    allowed-extensions:
+      - .txt
+      - .pdf
+      - .epub
+      - .fb2
+      - .docx
+
 management:
   endpoints:
     web:
@@ -23,6 +34,12 @@ management:
         http.server.requests: true
 
 spring:
+  servlet:
+    multipart:
+      max-file-size: 30MB
+      max-request-size: 30MB
+      enabled: true
+
   application:
     name: book-service
 
@@ -66,12 +83,6 @@ spring:
   sleuth:
     sampler:
       percentage: 1
-
-servlet:
-  multipart:
-    max-file-size: 30MB
-    max-request-size: 30MB
-    enabled: true
 
 keycloak:
   realm: bookstatistic-realm

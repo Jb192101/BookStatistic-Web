@@ -1,11 +1,9 @@
-package org.jedi_bachelor.bookstatistic.bookservice.redis.entity;
+package org.jedi_bachelor.bookstatistic.bookservice.filestorage.entity;
 
-import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.redis.core.RedisHash;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -14,12 +12,8 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@RedisHash("text_file_redis")
 public class TextFile implements Serializable {
-    @Id
-    private String id;
-
-    private String filename;
+    private String filename; // ID книги в String
 
     private String content;
 
