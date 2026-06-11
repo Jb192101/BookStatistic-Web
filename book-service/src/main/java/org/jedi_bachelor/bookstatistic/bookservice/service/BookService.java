@@ -1,15 +1,16 @@
 package org.jedi_bachelor.bookstatistic.bookservice.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jedi_bachelor.bookstatistic.bookservice.converter.BookConverter;
-import org.jedi_bachelor.bookstatistic.bookservice.converter.TextEntityConverter;
 import org.jedi_bachelor.bookstatistic.bookservice.entity.Book;
-import org.jedi_bachelor.bookstatistic.bookservice.entity.Text;
 import org.jedi_bachelor.bookstatistic.bookservice.entity.UserBookRelation;
 import org.jedi_bachelor.bookstatistic.bookservice.filestorage.BookFileStorageService;
 import org.jedi_bachelor.bookstatistic.bookservice.kafka.KafkaProducer;
 import org.jedi_bachelor.bookstatistic.bookservice.mapper.BookMapper;
 import org.jedi_bachelor.bookstatistic.bookservice.filestorage.entity.TextFile;
+import org.jedi_bachelor.bookstatistic.bookservice.outbox.OutboxContentManager;
 import org.jedi_bachelor.bookstatistic.bookservice.repository.*;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.kafka.KafkaTextAnalyzeDto;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.mapentities.BookDto;
@@ -17,12 +18,17 @@ import org.jedi_bachelor.bookstatistic.commonslib.dto.request.book.BookCreationD
 import org.jedi_bachelor.bookstatistic.commonslib.dto.response.book.UserReadingStat;
 import org.jedi_bachelor.bookstatistic.commonslib.exceptions.BookNotFoundException;
 import org.jedi_bachelor.bookstatistic.commonslib.exceptions.TextAlreadyLinkedException;
+import org.jedi_bachelor.bookstatistic.commonslib.exceptions.TextNotFoundException;
 import org.jedi_bachelor.bookstatistic.commonslib.exceptions.UserNotFoundException;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -31,14 +37,11 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class BookService {
     private final BookAuthorRepository bookAuthorRepository;
 
     private final BookRepository bookRepository;
-
-    private final AuthorRepository authorRepository;
-
-    private final TextRepository textRepository;
 
     private final BookConverter bookConverter;
 
@@ -46,11 +49,11 @@ public class BookService {
 
     private final BookFileStorageService bookFileStorageService;
 
-    private final TextEntityConverter textEntityConverter;
-
     private final UserBookRelationRepository userBookRelationRepository;
 
     private final KafkaProducer kafkaProducer;
+
+    private final OutboxContentManager outboxContentManager;
 
     // Пример использования: this.messageSource.getMessage(*код сообщения*);
     private final MessageSource messageSource;
@@ -67,6 +70,17 @@ public class BookService {
         this.bookRepository.save(newBook);
 
         return this.bookMapper.toDto(newBook);
+    }
+
+    /**
+     * Получение только содержимого текста (без метаданных)
+     */
+    public String getBookTextContent(UUID bookId) throws BookNotFoundException, TextNotFoundException {
+        if (!this.bookExistsById(bookId)) {
+            throw new BookNotFoundException(bookId);
+        }
+
+        return this.bookFileStorageService.readFileContent(bookId);
     }
 
     /**
@@ -145,36 +159,31 @@ public class BookService {
 
     /**
      * Метод связки текста с книгой
-     *
-     * @param bookId ID книги
-     * @param file файл с текстом
-     * @throws BookNotFoundException если книги с таким ID не существует
      */
-    public void linkTextToBook(UUID bookId, MultipartFile file) throws BookNotFoundException, IOException, TextAlreadyLinkedException {
-        if(!this.bookExistsById(bookId)) {
+    public void linkTextToBook(UUID bookId, MultipartFile file)
+            throws BookNotFoundException, IOException, TextAlreadyLinkedException, TextNotFoundException {
+
+        if (!this.bookExistsById(bookId)) {
             throw new BookNotFoundException(bookId);
         }
 
-        if(this.textAlreadyLinkedToBook(bookId)) {
+        if (this.bookFileStorageService.exists(bookId)) {
             throw new TextAlreadyLinkedException(bookId);
         }
 
         if (file.isEmpty()) {
-            throw new RuntimeException("Файл пустой");
+            throw new RuntimeException("File " + file.getOriginalFilename() + " is empty");
         }
 
         String contentType = file.getContentType();
         if (contentType == null || (!contentType.equals("text/plain") && !contentType.equals("text/plain;charset=UTF-8"))) {
-            throw new RuntimeException("Поддерживаются только текстовые файлы");
+            throw new RuntimeException("Supported only text files");
         }
 
         // Сохранение файла с текстом
-        //String fileKey = this.redisContentManager.saveTextFile(bookId, file);
+        TextFile textFile = this.bookFileStorageService.saveTextFile(file, bookId);
 
-        // Отправка сообщения в топик
-        //TextFile textFile = this.redisContentManager.getTextFile(fileKey);
-
-        /*
+        // Отправка сообщения в Kafka (через Outbox)
         KafkaTextAnalyzeDto dto = new KafkaTextAnalyzeDto(
                 bookId,
                 textFile.getFilename(),
@@ -183,27 +192,40 @@ public class BookService {
                 textFile.getSize(),
                 textFile.getUploadTime()
         );
-         */
 
-        // Добавление сообщения в outbox
-        this.kafkaProducer.sendMessageToBookTextAnalyzeTopic(
-                dto
-        );
+        this.outboxContentManager.save(dto);
+
+        log.info("Text linked to book: {}", bookId);
     }
 
     /**
      * Метод выдачи текста книги по ID книги
-     *
-     * @param bookId ID книги
-     * @return файл текста
-     * @throws BookNotFoundException если книги с таким ID не существует
      */
-    public TextFile getBookTextById(UUID bookId) throws BookNotFoundException {
-        //if(!this.redisContentManager.exists(bookId.toString())) {
-        //    throw new BookNotFoundException(bookId);
-        //}
+    public TextFile getBookTextById(UUID bookId) throws BookNotFoundException, TextNotFoundException {
+        if (!this.bookExistsById(bookId)) {
+            throw new BookNotFoundException(bookId);
+        }
 
-        //return this.redisContentManager.getTextFile(bookId);
+        return this.bookFileStorageService.findTextFileByBookId(bookId);
+    }
+
+    /**
+     * Удаление текста книги
+     */
+    @Transactional
+    public void deleteBookText(UUID bookId) throws BookNotFoundException, TextNotFoundException {
+        if (!this.bookExistsById(bookId)) {
+            throw new BookNotFoundException(bookId);
+        }
+
+        // Удаляем файл
+        boolean deleted = this.bookFileStorageService.deleteByBookId(bookId);
+
+        if (deleted) {
+            log.info("Text deleted for book: {}", bookId);
+        } else {
+            throw new TextNotFoundException(bookId);
+        }
     }
 
     /**
@@ -229,25 +251,29 @@ public class BookService {
 
     /**
      * Проверка существования книги по ID
-     *
-     * @param bookId ID книги
-     * @return true, если книга существует
      */
     private boolean bookExistsById(UUID bookId) {
-        Optional<Book> book = this.bookRepository.findById(bookId);
-
-        return book.isPresent();
+        return this.bookRepository.existsById(bookId);
     }
 
     /**
-     * Проверка того, привязан ли уже к этой книге текст или нет
-     *
-     * @param bookId ID книги
-     * @return true, если уже привязан
+     * Конвертация File в TextFile (если нужен этот метод)
      */
-    private boolean textAlreadyLinkedToBook(UUID bookId) {
-        Optional<Text> text = this.textRepository.findByBookId(bookId);
+    private TextFile convertFileToTextFile(File file) throws IOException {
+        if (file == null || !file.exists()) {
+            return null;
+        }
 
-        return text.isPresent();
+        Path path = file.toPath();
+        String content = Files.readString(path, StandardCharsets.UTF_8);
+        String fileName = path.getFileName().toString();
+
+        return TextFile.builder()
+                .filename(fileName)
+                .content(content)
+                .contentType("text/plain")
+                .size(Files.size(path))
+                .uploadTime(LocalDateTime.now())
+                .build();
     }
 }

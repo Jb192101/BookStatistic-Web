@@ -17,6 +17,7 @@ import org.jedi_bachelor.bookstatistic.commonslib.dto.response.SuccessResponse;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.response.book.UserReadingStat;
 import org.jedi_bachelor.bookstatistic.commonslib.exceptions.BookNotFoundException;
 import org.jedi_bachelor.bookstatistic.commonslib.exceptions.TextAlreadyLinkedException;
+import org.jedi_bachelor.bookstatistic.commonslib.exceptions.TextNotFoundException;
 import org.jedi_bachelor.bookstatistic.commonslib.exceptions.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -142,7 +143,7 @@ public class BookController {
             @PathVariable UUID bookId,
             @RequestParam("file") MultipartFile file,
             @RequestHeader(value = "Accept-Language", required = false) Locale locale
-    ) throws BookNotFoundException, IOException, TextAlreadyLinkedException {
+    ) throws BookNotFoundException, IOException, TextAlreadyLinkedException, TextNotFoundException {
         this.bookService.linkTextToBook(bookId, file);
 
         return ResponseEntity.ok(
@@ -235,7 +236,7 @@ public class BookController {
                             format = "uuid",
                             description = "UUID книги"
                     )
-            ) @PathVariable UUID bookId) throws BookNotFoundException {
+            ) @PathVariable UUID bookId) throws BookNotFoundException, TextNotFoundException {
         TextFile file = this.bookService.getBookTextById(bookId);
 
         return ResponseEntity.ok(file);

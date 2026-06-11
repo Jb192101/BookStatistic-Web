@@ -9,53 +9,93 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class BookFileStorageService {
-    @Value("${book.storage.path}")
+
+    @Value("${book.storage.path:/data/books}")
     private String storagePath;
 
     /**
      * Сохранение файла в хранилище
      *
-     * @return
+     * @param file   файл для сохранения
+     * @param bookId ID книги
+     * @return TextFile с метаданными
      */
     @Transactional
     public TextFile saveTextFile(MultipartFile file, UUID bookId) throws IOException {
-        TextFile textFile = this.convertFileToEntity(file, bookId);
+        // 1. Создаём директорию, если её нет (одна общая директория)
+        Path dir = Paths.get(storagePath);
+        if (!Files.exists(dir)) {
+            Files.createDirectories(dir);
+        }
+
+        // 2. Формируем путь к файлу: {storagePath}/{bookId}.txt
+        String fileName = bookId.toString() + ".txt";
+        Path filePath = dir.resolve(fileName);
+
+        // 3. Сохраняем файл на диск
+        Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+        // 4. Конвертируем в TextFile
+        TextFile textFile = this.createNewTextFileEntity(fileName, new String(file.getBytes(), StandardCharsets.UTF_8));
+
+        log.info("File saved: {}", filePath);
+
+        return textFile;
+    }
+
+    /**
+     * Сохранение текстового содержимого напрямую (без MultipartFile)
+     */
+    @Transactional
+    public TextFile saveTextContent(String content, UUID bookId) throws IOException {
+        Path dir = Paths.get(storagePath);
+        if (!Files.exists(dir)) {
+            Files.createDirectories(dir);
+        }
+
+        String fileName = bookId.toString() + ".txt";
+        Path filePath = dir.resolve(fileName);
+
+        Files.writeString(filePath, content, StandardCharsets.UTF_8);
+
+        TextFile textFile = this.createNewTextFileEntity(fileName, content);
+
+        log.info("Text content saved: {}", filePath);
 
         return textFile;
     }
 
     /**
      * Метод выдачи всех файлов с текстами
-     *
-     * @return список текстов
      */
     public List<TextFile> findAll() {
         List<TextFile> documents = new ArrayList<>();
-        Path rootPath = Paths.get(this.storagePath);
+        Path dir = Paths.get(storagePath);
 
-        if (!Files.exists(rootPath)) {
+        if (!Files.exists(dir)) {
             return documents;
         }
 
-        try (Stream<Path> bookDirs = Files.list(rootPath)) {
-            //documents = bookDirs.collect(Collectors.toList());
+        try (Stream<Path> files = Files.list(dir)) {
+            documents = files
+                    .filter(Files::isRegularFile)
+                    .filter(path -> path.toString().endsWith(".txt"))
+                    .map(this::readTextFileFromPath)
+                    .filter(textFile -> textFile != null)
+                    .toList();
         } catch (IOException e) {
             log.error("Failed to list all text files", e);
         }
@@ -64,62 +104,101 @@ public class BookFileStorageService {
     }
 
     /**
-     * Существует ли текст с таким названием
-     *
-     * @param bookId ID книги
-     * @return true, если существует
+     * Существует ли текст с таким ID книги
      */
     @Transactional
-    public boolean exists(UUID bookId) throws TextNotFoundException {
-        return this.findByFilename(bookId.toString()) != null;
+    public boolean exists(UUID bookId) {
+        String fileName = bookId.toString() + ".txt";
+
+        Path filePath = Paths.get(storagePath, fileName);
+
+        return Files.exists(filePath);
     }
 
     /**
      * Метод удаления текста по ID книги
-     *
-     * @param bookId ID книги
-     * @return true, если сущность удалена
      */
     @Transactional
-    public boolean deleteByFilename(UUID bookId) throws TextNotFoundException {
-        File file = this.findByFilename(bookId.toString());
-        boolean deleted = file.delete();
+    public boolean deleteByBookId(UUID bookId) {
+        String fileName = bookId.toString() + ".txt";
+        Path filePath = Paths.get(storagePath, fileName);
 
-        if(deleted) {
-            log.info("File with book ID {} has deleted", bookId);
+        try {
+            boolean deleted = Files.deleteIfExists(filePath);
+            if (deleted) {
+                log.info("File with book ID {} has been deleted", bookId);
+            }
+            return deleted;
+        } catch (IOException e) {
+            log.error("Failed to delete file for book ID: {}", bookId, e);
+            return false;
+        }
+    }
+
+    /**
+     * Метод поиска TextFile по ID книги
+     */
+    @Transactional
+    public TextFile findTextFileByBookId(UUID bookId) throws TextNotFoundException {
+        String fileName = bookId.toString() + ".txt";
+        Path filePath = Paths.get(storagePath, fileName);
+
+        if (!Files.exists(filePath)) {
+            throw new TextNotFoundException(bookId);
         }
 
-        return deleted;
+        return readTextFileFromPath(filePath);
     }
 
     /**
-     * Метод поиска файла по его названию
-     *
-     * @param filename название файла
-     * @return файл, если он есть
+     * Получение содержимого файла в виде строки
      */
-    @Transactional
-    public File findByFilename(String filename) throws TextNotFoundException {
-        return null;
+    public String readFileContent(UUID bookId) throws TextNotFoundException {
+        String fileName = bookId.toString() + ".txt";
+        Path filePath = Paths.get(storagePath, fileName);
+
+        if (!Files.exists(filePath)) {
+            throw new TextNotFoundException(bookId);
+        }
+
+        try {
+            return Files.readString(filePath, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            log.error("Failed to read file content: {}", filePath, e);
+            throw new TextNotFoundException(bookId);
+        }
     }
 
     /**
-     * Метод для конвертации MultipartFile с содержимым текста в TextFile
-     *
-     * @param file MultipartFile с текстом
-     * @param bookId ID книги
-     * @return новую сущность TextFile
-     * @throws IOException если возникут проблемы при чтении данных из MultipartFile
+     * Чтение файла и конвертация в TextFile
      */
-    private TextFile convertFileToEntity(MultipartFile file, UUID bookId) throws IOException {
+    private TextFile readTextFileFromPath(Path filePath) {
+        try {
+            String fileName = filePath.getFileName().toString();
+            String content = Files.readString(filePath, StandardCharsets.UTF_8);
+            long size = Files.size(filePath);
+
+            return TextFile.builder()
+                    .filename(fileName)
+                    .content(content)
+                    .contentType("text/plain")
+                    .size(size)
+                    .uploadTime(LocalDateTime.now())
+                    .build();
+
+        } catch (IOException e) {
+            log.error("Failed to read file: {}", filePath, e);
+            return null;
+        }
+    }
+
+    private TextFile createNewTextFileEntity(String fileName, String content) {
         TextFile textFile = new TextFile();
-        textFile.setFilename(bookId.toString());
-        textFile.setContentType(file.getContentType());
-        textFile.setSize(file.getSize());
-        textFile.setUploadTime(LocalDateTime.now());
-
-        String content = new String(file.getBytes(), StandardCharsets.UTF_8);
+        textFile.setFilename(fileName);
         textFile.setContent(content);
+        textFile.setContentType("text/plain");
+        textFile.setSize(content.getBytes(StandardCharsets.UTF_8).length);
+        textFile.setUploadTime(LocalDateTime.now());
 
         return textFile;
     }

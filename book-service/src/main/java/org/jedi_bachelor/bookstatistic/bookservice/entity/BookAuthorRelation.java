@@ -2,6 +2,7 @@ package org.jedi_bachelor.bookstatistic.bookservice.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -25,6 +26,7 @@ public class BookAuthorRelation {
     private Integer authorPosition;
 
     @Data
+    @EqualsAndHashCode
     public static class BookAuthorRelationId implements Serializable {
         private UUID book;
         private UUID author;

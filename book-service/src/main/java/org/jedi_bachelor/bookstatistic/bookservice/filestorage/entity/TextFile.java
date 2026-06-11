@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TextFile implements Serializable {
-    private String filename; // ID книги в String
+    private String filename;
 
     private String content;
 
