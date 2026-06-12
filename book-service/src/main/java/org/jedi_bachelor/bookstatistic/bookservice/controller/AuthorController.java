@@ -9,10 +9,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.jedi_bachelor.bookstatistic.bookservice.service.AuthorService;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.mapentities.AuthorDto;
+import org.jedi_bachelor.bookstatistic.commonslib.dto.mapentities.BookAuthorRelationDto;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.request.book.AuthorCreationUpdatingDto;
+import org.jedi_bachelor.bookstatistic.commonslib.dto.request.book.BookAuthorRelationKey;
+import org.jedi_bachelor.bookstatistic.commonslib.dto.request.book.LinkBookToAuthorTaskDto;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.response.ErrorResponse;
-import org.jedi_bachelor.bookstatistic.commonslib.exceptions.AuthorAlreadyExistsException;
-import org.jedi_bachelor.bookstatistic.commonslib.exceptions.AuthorNotFoundException;
+import org.jedi_bachelor.bookstatistic.commonslib.exceptions.*;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -192,5 +194,59 @@ public class AuthorController {
         List<AuthorDto> authorDtoList = this.authorService.getAllAuthors();
 
         return ResponseEntity.ok(authorDtoList);
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping("/book-relation")
+    @Operation(summary = "Привязка отношения",
+            description = "Привязка отношения книга-автор")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "Успешное добавление нового отношения",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Внутренняя ошибка сервера",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_PROBLEM_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    )
+            )
+    })
+    public ResponseEntity<?> linkBookToAuthor(@RequestBody LinkBookToAuthorTaskDto dto) throws AuthorNotFoundException, BookNotFoundException, BookAuthorRelationAlreadyExistsException {
+        BookAuthorRelationDto relation = this.authorService.linkBookToAuthor(dto);
+
+        return ResponseEntity.status(201).body(relation);
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @DeleteMapping("/book-relation")
+    @Operation(summary = "Удаление отношения",
+            description = "Удаления отношения книга-автор")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Успешное удаление отношения",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Внутренняя ошибка сервера",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_PROBLEM_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    )
+            )
+    })
+    public ResponseEntity<?> deleteBookAuthorRelation(@RequestBody BookAuthorRelationKey key) throws BookAuthorRelationNotFoundException {
+        this.authorService.deleteBookAuthorRelation(key);
+
+        return ResponseEntity.ok().build();
     }
 }
