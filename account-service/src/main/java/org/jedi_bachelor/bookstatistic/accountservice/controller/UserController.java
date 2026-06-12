@@ -181,4 +181,12 @@ public class UserController {
 
         return ResponseEntity.ok().body(new SuccessResponse(HttpStatus.OK.value(), user));
     }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/random")
+    public ResponseEntity<List<UUID>> getRandomUserIds(@RequestParam("count") int count) {
+        List<UUID> randomUserIds = this.userService.getRandomUserIds(count);
+
+        return ResponseEntity.ok(randomUserIds);
+    }
 }

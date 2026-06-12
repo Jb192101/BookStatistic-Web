@@ -51,8 +51,6 @@ public class BookService {
 
     private final UserBookRelationRepository userBookRelationRepository;
 
-    private final KafkaProducer kafkaProducer;
-
     private final OutboxContentManager outboxContentManager;
 
     // Пример использования: this.messageSource.getMessage(*код сообщения*);
@@ -67,9 +65,9 @@ public class BookService {
     public BookDto addBookWithoutText(BookCreationDto dto) {
         Book newBook = this.bookConverter.convert(dto);
 
-        this.bookRepository.save(newBook);
+        Book savedBook = this.bookRepository.save(newBook);
 
-        return this.bookMapper.toDto(newBook);
+        return this.bookMapper.toDto(savedBook);
     }
 
     /**

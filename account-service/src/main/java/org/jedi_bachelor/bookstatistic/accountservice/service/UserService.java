@@ -171,4 +171,9 @@ public class UserService {
         // Возвращение удалённого пользователя
         return this.userMapper.toDto(user.get());
     }
+
+    @Transactional
+    public List<UUID> getRandomUserIds(int count) {
+        return List.of();
+    }
 }

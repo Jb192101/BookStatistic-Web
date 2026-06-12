@@ -15,6 +15,10 @@ public class BookConverter implements Converter<Book, BookCreationDto> {
      */
     @Override
     public Book convert(BookCreationDto dto) {
-        return null;
+        Book book = new Book();
+        book.setTitle(dto.title());
+        book.setDescription(dto.description());
+
+        return book;
     }
 }

@@ -1,5 +1,6 @@
 package org.jedi_bachelor.bookstatistic.bookservice.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jedi_bachelor.bookstatistic.bookservice.entity.Author;
@@ -41,6 +42,7 @@ public class AuthorService {
      * @param dto DTO создания автора
      * @return сущность автора
      */
+    @Transactional
     public AuthorDto addNewAuthor(AuthorCreationUpdatingDto dto) throws AuthorAlreadyExistsException {
         Optional<Author> authorOptional = this.authorRepository.findByFirstNameAndMiddleNameAndLastName(
                 dto.firstName(),
@@ -49,6 +51,8 @@ public class AuthorService {
         );
 
         if(authorOptional.isPresent()) {
+            log.error("Author with this data: {} {} {} already exists in system", dto.firstName(), dto.middleName(), dto.lastName());
+
             throw new AuthorAlreadyExistsException(dto.firstName(), dto.middleName(), dto.middleName());
         }
 
@@ -61,6 +65,8 @@ public class AuthorService {
 
         Author savedAuthor = this.authorRepository.save(author);
 
+        log.info("Author with name {} {} {} succesfully added to system", dto.firstName(), dto.middleName(), dto.lastName());
+
         return this.authorMapper.toDto(savedAuthor);
     }
 
@@ -70,8 +76,11 @@ public class AuthorService {
      * @param authorId ID автора
      * @return true, если сущность удалена
      */
+    @Transactional
     public void deleteAuthor(UUID authorId) throws AuthorNotFoundException {
         if(!this.authorRepository.existsById(authorId)) {
+            log.info("Author with ID {} does not exists", authorId);
+
             throw new AuthorNotFoundException(authorId);
         }
 
@@ -83,6 +92,8 @@ public class AuthorService {
             return;
         }
 
+        log.info("Author with ID {} successfully deleted", authorId);
+
         this.authorRepository.deleteById(authorId);
     }
 
@@ -92,10 +103,13 @@ public class AuthorService {
      * @param dto DTO обновления
      * @return автора с обновлёнными данными (для подтверждения)
      */
+    @Transactional
     public AuthorDto updateAuthor(UUID authorId, AuthorCreationUpdatingDto dto) throws AuthorNotFoundException {
         Optional<Author> author = this.authorRepository.findById(authorId);
 
         if(author.isEmpty()) {
+            log.info("Author with ID {} does not exists", authorId);
+
             throw new AuthorNotFoundException(authorId);
         }
 
@@ -108,35 +122,48 @@ public class AuthorService {
 
         Author savedAuthor = this.authorRepository.save(representedAuthor);
 
+        log.info("Author' data with ID {} succesfully updated", authorId);
+
         return this.authorMapper.toDto(savedAuthor);
     }
 
+    @Transactional
     public AuthorDto getAuthorById(UUID authorId) throws AuthorNotFoundException {
         if(!this.authorRepository.existsById(authorId)) {
+            log.info("Author with ID {} does not exists", authorId);
+
             throw new AuthorNotFoundException(authorId);
         }
 
         return this.authorMapper.toDto(this.authorRepository.findById(authorId).get());
     }
 
+    @Transactional
     public List<AuthorDto> getAllAuthors() {
         List<Author> authors = this.authorRepository.findAll();
 
         return this.authorMapper.toDtoList(authors);
     }
 
+    @Transactional
     public BookAuthorRelationDto linkBookToAuthor(LinkBookToAuthorTaskDto dto)
             throws AuthorNotFoundException, BookNotFoundException,
             BookAuthorRelationAlreadyExistsException {
         if(!this.authorRepository.existsById(dto.authorId())) {
+            log.error("Author with ID {} does not exists", dto.authorId());
+
             throw new AuthorNotFoundException(dto.authorId());
         }
 
         if(!this.bookRepository.existsById(dto.bookId())) {
+            log.error("Book with ID {} does not exists", dto.bookId());
+
             throw new BookNotFoundException(dto.bookId());
         }
 
         if(this.bookAuthorRepository.existsByBook_IdAndAuthor_Id(dto.bookId(), dto.authorId())) {
+            log.error("Book-Author relation with data author ID {} and book ID {} already exists", dto.bookId(), dto.authorId());
+
             throw new BookAuthorRelationAlreadyExistsException(dto.bookId(), dto.bookId());
         }
 
@@ -147,18 +174,26 @@ public class AuthorService {
 
         BookAuthorRelation savedRelation = this.bookAuthorRepository.save(relation);
 
+        log.info("New book-author relation with author ID {} and book ID {} succesfully added", dto.authorId(), dto.bookId());
+
         return this.bookAuthorMapper.toDto(savedRelation);
     }
 
+    @Transactional
     public void deleteBookAuthorRelation(BookAuthorRelationKey key)
             throws BookAuthorRelationNotFoundException {
         if(!this.bookAuthorRepository.existsByBook_IdAndAuthor_Id(key.bookId(), key.authorId())) {
+            log.error("Book-Author relation with data author ID {} and book ID {} already exists", key.bookId(), key.authorId());
+
             throw new BookAuthorRelationNotFoundException(key.bookId(), key.authorId());
         }
 
         this.bookAuthorRepository.deleteByBook_IdAndAuthor_Id(key.bookId(), key.authorId());
+
+        log.info("Book-author relation with author ID {} and book ID {} succesfully deleted", key.authorId(), key.bookId());
     }
 
+    @Transactional
     public List<BookAuthorRelationDto> getAllBookAuthorRelations() {
         List<BookAuthorRelation> relations = this.bookAuthorRepository.findAll();
 
