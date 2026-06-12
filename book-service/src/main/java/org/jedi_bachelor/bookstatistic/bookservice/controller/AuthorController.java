@@ -197,7 +197,7 @@ public class AuthorController {
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
-    @PostMapping("/book-relation")
+    @PostMapping("/book-relations")
     @Operation(summary = "Привязка отношения",
             description = "Привязка отношения книга-автор")
     @ApiResponses(value = {
@@ -224,7 +224,7 @@ public class AuthorController {
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
-    @DeleteMapping("/book-relation")
+    @DeleteMapping("/book-relations")
     @Operation(summary = "Удаление отношения",
             description = "Удаления отношения книга-автор")
     @ApiResponses(value = {
@@ -248,5 +248,32 @@ public class AuthorController {
         this.authorService.deleteBookAuthorRelation(key);
 
         return ResponseEntity.ok().build();
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/book-relations")
+    @Operation(summary = "Получение всех отношений",
+            description = "Получение всех отношений книга-автор")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Успешное получение отношений",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Внутренняя ошибка сервера",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_PROBLEM_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    )
+            )
+    })
+    public ResponseEntity<?> getAllBookAuthorRelations() {
+        List<BookAuthorRelationDto> dtos = this.authorService.getAllBookAuthorRelations();
+
+        return ResponseEntity.ok(dtos);
     }
 }

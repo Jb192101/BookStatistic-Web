@@ -158,4 +158,10 @@ public class AuthorService {
 
         this.bookAuthorRepository.deleteByBook_IdAndAuthor_Id(key.bookId(), key.authorId());
     }
+
+    public List<BookAuthorRelationDto> getAllBookAuthorRelations() {
+        List<BookAuthorRelation> relations = this.bookAuthorRepository.findAll();
+
+        return this.bookAuthorMapper.toDtoList(relations);
+    }
 }

@@ -5,16 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9753a1e7-9738-471e-85b6-9d133f8e3b79" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/analyze-service/src/main/java/org/jedi_bachelor/bookstatistic/analyzeservice/configuration/AsyncConfiguration.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/mapper/BookAuthorRelationMapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons-lib/src/main/java/org/jedi_bachelor/bookstatistic/commonslib/dto/mapentities/BookAuthorRelationDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons-lib/src/main/java/org/jedi_bachelor/bookstatistic/commonslib/dto/request/book/BookAuthorRelationKey.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons-lib/src/main/java/org/jedi_bachelor/bookstatistic/commonslib/dto/request/book/LinkBookToAuthorTaskDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons-lib/src/main/java/org/jedi_bachelor/bookstatistic/commonslib/exceptions/BookAuthorRelationAlreadyExistsException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/commons-lib/src/main/java/org/jedi_bachelor/bookstatistic/commonslib/exceptions/BookAuthorRelationNotFoundException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/controller/AuthorController.java" beforeDir="false" afterPath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/controller/AuthorController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/repository/BookAuthorRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/repository/BookAuthorRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/service/AuthorService.java" beforeDir="false" afterPath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/service/AuthorService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
