@@ -1,56 +1,39 @@
 package org.jedi_bachelor.bookstatistic.bookservice.outbox;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.jedi_bachelor.bookstatistic.bookservice.mapper.OutboxAnalyzeEntityMapper;
 import org.jedi_bachelor.bookstatistic.bookservice.outbox.entity.OutboxAnalyzeEntity;
-import org.jedi_bachelor.bookstatistic.bookservice.outbox.entity.OutboxNotificationEntity;
 import org.jedi_bachelor.bookstatistic.bookservice.outbox.repository.OutboxAnalyzeRepository;
 import org.jedi_bachelor.bookstatistic.bookservice.outbox.repository.OutboxNotificationEntityRepository;
-import org.jedi_bachelor.bookstatistic.commonslib.dto.kafka.KafkaTextAnalyzeDto;
+import org.jedi_bachelor.bookstatistic.commonslib.dto.response.book.OutboxAnalyzeDto;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
+@Slf4j
 @RequiredArgsConstructor
 public class OutboxContentManager {
-    private final OutboxNotificationEntityRepository outboxNotificationEntityRepository;
-
     private final OutboxAnalyzeRepository outboxAnalyzeRepository;
 
-    /**
-     * Метод добавления сущности сообщения для notification-service
-     *
-     * @param entity сущность сообщения
-     * @return сущность сообщения
-     */
-    public OutboxNotificationEntity save(OutboxNotificationEntity entity) {
-        return this.outboxNotificationEntityRepository.save(entity);
+    private final OutboxAnalyzeEntityMapper outboxAnalyzeEntityMapper;
+
+    private final OutboxNotificationEntityRepository outboxNotificationEntityRepository;
+
+    @Transactional
+    public List<OutboxAnalyzeEntity> findAnalyzeMessageByStatusFalse() {
+        return this.outboxAnalyzeRepository.findAll();//.stream().filter(e -> !e.getPublished()).toList();
     }
 
-    /**
-     * Метод добавления сущности сообщения для analyze-service
-     *
-     * @param dto DTO для сохранения
-     * @return сущность сообщения
-     */
-    public OutboxAnalyzeEntity save(KafkaTextAnalyzeDto dto) {
-        OutboxAnalyzeEntity entity = this.convertDtoToAnalyzeEntity(dto);
-
-        return this.outboxAnalyzeRepository.save(entity);
-    }
-
-    /**
-     * Метод добавления сущности сообщения для analyze-service
-     *
-     * @param entity сущность для сохранения
-     * @return сущность сообщения
-     */
     public OutboxAnalyzeEntity save(OutboxAnalyzeEntity entity) {
         return this.outboxAnalyzeRepository.save(entity);
     }
 
-    private OutboxAnalyzeEntity convertDtoToAnalyzeEntity(KafkaTextAnalyzeDto dto) {
-        OutboxAnalyzeEntity entity = new OutboxAnalyzeEntity();
-        entity.setDto(dto);
+    public List<OutboxAnalyzeDto> findAllOutboxAnalyzeMessages() {
+        List<OutboxAnalyzeEntity> result = this.outboxAnalyzeRepository.findAll();
 
-        return entity;
+        return this.outboxAnalyzeEntityMapper.toDtoList(result);
     }
 }

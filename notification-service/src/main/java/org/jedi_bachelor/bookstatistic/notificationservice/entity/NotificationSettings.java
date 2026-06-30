@@ -32,9 +32,6 @@ public class NotificationSettings {
     @Column(name = "telegram_address")
     private String telegramAddress;
 
-    @Column(name = "enable_telegram", nullable = false)
-    private Boolean enableTelegram = false;
-
     public NotificationSettings(UUID userId) {
         this.userId = userId;
     }
@@ -51,10 +48,6 @@ public class NotificationSettings {
 
         if(this.email == null) {
             this.email = "";
-        }
-
-        if(this.enableTelegram == null) {
-            this.enableTelegram = false;
         }
 
         if(this.telegramAddress == null) {

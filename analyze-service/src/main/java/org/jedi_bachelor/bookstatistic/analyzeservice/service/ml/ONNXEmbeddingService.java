@@ -11,7 +11,9 @@ import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.core.io.Resource;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,25 +22,32 @@ import java.util.Map;
 @Slf4j
 @Service
 public class ONNXEmbeddingService implements EmbeddingService {
-    private final String modelPath;
-    private final String vocabPath;
+    private final Resource modelResource;
+
+    private final Resource vocabResource;
+
     private OrtEnvironment env;
+
     private OrtSession session;
+
     private BertTokenizer tokenizer;
 
     private static final int EMBEDDING_SIZE = 384;  // all-MiniLM-L6-v2
     private static final int MAX_TOKENS = 512;
 
     public ONNXEmbeddingService(
-            @Value("${ml.model.path:models/sbert_base.onnx}") String modelPath,
-            @Value("${ml.vocab.path:models/vocab.txt}") String vocabPath) {
-        this.modelPath = modelPath;
-        this.vocabPath = vocabPath;
+            @Value("classpath:models/sbert_base.onnx") Resource modelResource,
+            @Value("classpath:models/vocab.txt") Resource vocabResource) {
+        this.modelResource = modelResource;
+        this.vocabResource = vocabResource;
     }
 
     @PostConstruct
     public void init() {
         try {
+            String modelPath = modelResource.getFile().getAbsolutePath();
+            String vocabPath = vocabResource.getFile().getAbsolutePath();
+
             this.env = OrtEnvironment.getEnvironment();
 
             OrtSession.SessionOptions options = new OrtSession.SessionOptions();
@@ -50,7 +59,7 @@ public class ONNXEmbeddingService implements EmbeddingService {
 
             log.info("ONNX model loaded successfully from: {}", modelPath);
             log.info("Embedding size: {}, Max tokens: {}", EMBEDDING_SIZE, MAX_TOKENS);
-        } catch (OrtException e) {
+        } catch (OrtException | IOException e) {
             log.error("Failed to initialize ONNX model", e);
             throw new RuntimeException("Cannot load SBERT model", e);
         }
@@ -69,15 +78,15 @@ public class ONNXEmbeddingService implements EmbeddingService {
             long[] attentionMask = tokens.getAttentionMask();
 
             OnnxTensor inputIdsTensor = OnnxTensor.createTensor(
-                    env, new long[][]{inputIds});
+                    this.env, new long[][]{inputIds});
             OnnxTensor attentionMaskTensor = OnnxTensor.createTensor(
-                    env, new long[][]{attentionMask});
+                    this.env, new long[][]{attentionMask});
 
             inputs.put("input_ids", inputIdsTensor);
             inputs.put("attention_mask", attentionMaskTensor);
 
             // Инференс
-            OrtSession.Result result = session.run(inputs);
+            OrtSession.Result result = this.session.run(inputs);
 
             // Получаем last_hidden_state [1, seq_len, 384]
             float[][][] hiddenStates = (float[][][]) result.get(0).getValue();

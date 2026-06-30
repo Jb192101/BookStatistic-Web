@@ -3,11 +3,11 @@ server:
 
 ml:
   model:
-    path: models/sbert_base.onnx
+    path: classpath:models/sbert_base.onnx
   vocab:
-    path: models/vocab.txt
+    path: classpath:models/vocab.txt
   classifier:
-    path: models/genre_classifier_dl4j.zip
+    path: classpath:models/genre_classifier_dl4j.zip
 
 management:
   endpoints:
@@ -28,6 +28,19 @@ management:
 spring:
   zipkin.baseUrl: zipkin:9411
   spring.sleuth.sampler.percentage: 1
+
+  kafka:
+    bootstrap-servers: localhost:9093
+    consumer:
+      group-id: bs-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
   application:
     name: analyze-service
@@ -61,6 +74,15 @@ servlet:
     max-request-size: 30MB
     enabled: true
 
+external-urls:
+  account:
+    base-url:
+    get-account-uri: "/"
+  book:
+    book-base-url:
+    get-users-book-uri: "/user/"
+    response-base-url: "/"
+
 keycloak:
   realm: bookstatistic-realm
   auth-server-url: http://keycloak:8090/auth
@@ -73,7 +95,7 @@ keycloak:
 
 kafka:
   topics:
-    sending-notification-topic: "sending-notification-topic"
-    sending-notification-result-topic: "sending-notification-result-topic"
+    book-text-analyze-topic: "book-text-analyze-topic"
+    book-text-analyze-result-topic: "book-text-analyze-result-topic"
   groups:
     bs-group: "bs-group"

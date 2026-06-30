@@ -17,21 +17,18 @@ import org.jedi_bachelor.bookstatistic.commonslib.dto.response.ErrorResponse;
 import org.jedi_bachelor.bookstatistic.commonslib.exceptions.*;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
 
-@Controller
+@RestController
 @RequestMapping("/v1/authors")
 @RequiredArgsConstructor
 @Tag(name = "Контроллер работы с авторами", description = "Для работы с авторами")
 public class AuthorController {
     private final AuthorService authorService;
 
-    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping
     @Operation(summary = "Добавление автора",
             description = "Добавление автора")
@@ -65,7 +62,6 @@ public class AuthorController {
         return ResponseEntity.status(201).body(author);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/{authorId}")
     @Operation(summary = "Удаление автора",
             description = "Удаление автора")
@@ -99,8 +95,7 @@ public class AuthorController {
         return ResponseEntity.ok().build();
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @DeleteMapping("/{authorId}")
+    @PutMapping("/{authorId}")
     @Operation(summary = "Обновление данных автора",
             description = "Обновление данных автора")
     @ApiResponses(value = {
@@ -135,8 +130,7 @@ public class AuthorController {
         return ResponseEntity.ok(authorDto);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
-    @DeleteMapping("/{authorId}")
+    @GetMapping("/{authorId}")
     @Operation(summary = "Поиск автора",
             description = "Поиск автора по ID")
     @ApiResponses(value = {
@@ -169,8 +163,7 @@ public class AuthorController {
         return ResponseEntity.ok(authorDto);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
-    @DeleteMapping("/{authorId}")
+    @GetMapping
     @Operation(summary = "Нахождение всех авторов",
             description = "Нахождение всех авторов")
     @ApiResponses(value = {
@@ -196,7 +189,6 @@ public class AuthorController {
         return ResponseEntity.ok(authorDtoList);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/book-relations")
     @Operation(summary = "Привязка отношения",
             description = "Привязка отношения книга-автор")
@@ -223,7 +215,6 @@ public class AuthorController {
         return ResponseEntity.status(201).body(relation);
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/book-relations")
     @Operation(summary = "Удаление отношения",
             description = "Удаления отношения книга-автор")
@@ -250,14 +241,13 @@ public class AuthorController {
         return ResponseEntity.ok().build();
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/book-relations")
     @Operation(summary = "Получение всех отношений",
             description = "Получение всех отношений книга-автор")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
-                    description = "Успешное получение отношений",
+                    description = "Успешное удаление отношения",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE
                     )
@@ -271,8 +261,36 @@ public class AuthorController {
                     )
             )
     })
-    public ResponseEntity<?> getAllBookAuthorRelations() {
+    public ResponseEntity<?> getBookAuthorRelation() throws BookAuthorRelationNotFoundException {
         List<BookAuthorRelationDto> dtos = this.authorService.getAllBookAuthorRelations();
+
+        return ResponseEntity.ok(dtos);
+    }
+
+    @GetMapping("/book-relations/{authorId}")
+    @Operation(summary = "Получение всех отношений конкретного автора",
+            description = "Получение всех отношений книга-автор конкретного автора")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Успешное удаление отношения",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Внутренняя ошибка сервера",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_PROBLEM_JSON_VALUE,
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    )
+            )
+    })
+    public ResponseEntity<?> getBookAuthorRelationOfAuthor(
+            @PathVariable UUID authorId
+    ) throws BookAuthorRelationNotFoundException {
+        List<BookAuthorRelationDto> dtos = this.authorService.getAllBookAuthorRelationsOfAuthor(authorId);
 
         return ResponseEntity.ok(dtos);
     }

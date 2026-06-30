@@ -1,68 +1,116 @@
 package org.jedi_bachelor.bookstatistic.gateway.configuration;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.NimbusReactiveJwtDecoder;
+import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.oauth2.server.resource.authentication.ReactiveJwtAuthenticationConverterAdapter;
 import org.springframework.security.web.server.SecurityWebFilterChain;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.reactive.CorsConfigurationSource;
-import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
+import reactor.core.publisher.Mono;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Configuration
 @EnableWebFluxSecurity
 public class SecurityConfiguration {
+    @Value("${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}")
+    private String jwkSetUri;
 
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
-        return http
-                .csrf(ServerHttpSecurity.CsrfSpec::disable)
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .authorizeExchange(exchanges -> exchanges
+        http
+                .csrf(csrf -> csrf.disable())
+                .authorizeExchange(exchange -> exchange
                         .pathMatchers(
-                                "/v1/auth/login",
-                                "/v1/auth/register",
-                                "/v1/auth/refresh",
                                 "/actuator/health",
                                 "/actuator/info",
-                                "/v3/api-docs/**",
-                                "/swagger-ui/**"
+                                "/actuator/prometheus",
+                                "/v1/auth/register",
+                                "/v1/auth/login"
                         ).permitAll()
+                        .pathMatchers(
+                                "/v1/books/**",
+                                "/v1/auth/**",
+                                "/v1/analyze/**"
+                        ).hasRole("USER")
+                        .pathMatchers(
+                                "/v1/users/**",
+                                "/v1/notifications/**",
+                                "/v1/email/**",
+                                "/v1/analyze/training/**"
+                        ).hasRole("ADMIN")
                         .anyExchange().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
-                        .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter()))
-                )
-                .build();
+                        .jwt(jwt -> jwt
+                                .jwtDecoder(reactiveJwtDecoder())
+                                .jwtAuthenticationConverter(grantedAuthoritiesExtractor())
+                        )
+                );
+
+        return http.build();
     }
 
     @Bean
-    public ReactiveJwtAuthenticationConverterAdapter jwtAuthenticationConverter() {
-        JwtGrantedAuthoritiesConverter converter =
+    public ReactiveJwtDecoder reactiveJwtDecoder() {
+        return NimbusReactiveJwtDecoder.withJwkSetUri(jwkSetUri).build();
+    }
+
+    @Bean
+    public Converter<Jwt, Mono<AbstractAuthenticationToken>> grantedAuthoritiesExtractor() {
+        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
+        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(new KeycloakGrantedAuthoritiesConverter());
+        return new ReactiveJwtAuthenticationConverterAdapter(jwtAuthenticationConverter);
+    }
+
+    static class KeycloakGrantedAuthoritiesConverter implements Converter<Jwt, Collection<GrantedAuthority>> {
+        private final JwtGrantedAuthoritiesConverter defaultGrantedAuthoritiesConverter =
                 new JwtGrantedAuthoritiesConverter();
-        converter.setAuthorityPrefix("ROLE_");
-        converter.setAuthoritiesClaimName("realm_access.roles");
 
-        org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter jwtConverter =
-                new org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter();
-        jwtConverter.setJwtGrantedAuthoritiesConverter(converter);
+        @Override
+        public Collection<GrantedAuthority> convert(Jwt jwt) {
+            Collection<GrantedAuthority> authorities = defaultGrantedAuthoritiesConverter.convert(jwt);
 
-        return new org.springframework.security.oauth2.server.resource.authentication.ReactiveJwtAuthenticationConverterAdapter(jwtConverter);
-    }
+            Map<String, Object> realmAccess = jwt.getClaim("realm_access");
+            if (realmAccess != null && realmAccess.containsKey("roles")) {
+                List<String> roles = (List<String>) realmAccess.get("roles");
+                authorities = Stream.concat(
+                                authorities.stream(),
+                                roles.stream()
+                                        .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+                        )
+                        .collect(Collectors.toList());
+            }
 
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("*"));
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(List.of("*"));
+            Map<String, Object> resourceAccess = jwt.getClaim("resource_access");
+            if (resourceAccess != null) {
+                Map<String, Object> clientAccess = (Map<String, Object>) resourceAccess.get("bookstatistic");
+                if (clientAccess != null && clientAccess.containsKey("roles")) {
+                    List<String> roles = (List<String>) clientAccess.get("roles");
+                    authorities = Stream.concat(
+                                    authorities.stream(),
+                                    roles.stream()
+                                            .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+                            )
+                            .collect(Collectors.toList());
+                }
+            }
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
+            return authorities;
+        }
     }
 }

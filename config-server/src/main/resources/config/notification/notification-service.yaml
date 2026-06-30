@@ -48,13 +48,6 @@ spring:
     username: ${NOTIFICATION_DB_USER}
     password: ${NOTIFICATION_DB_PASSWORD}
 
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: ${KEYCLOAK_ISSUER_URI:http://localhost:8080/realms/bookstatistic-realm}
-          jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
-
   mail:
     host: ${EMAIL_HOST}
     port: ${EMAIL_PORT}
@@ -91,26 +84,6 @@ management:
         enabled: false
       diskspace:
         enabled: true
-
-#keycloak:
-#  client-id: internal-client
-#  admin:
-#    server-url: ${KEYCLOAK_SERVER_URL:http://localhost:8080}
-#    realm: master
-#    client-id: admin-cli
-#    client-secret: ${KEYCLOAK_ADMIN_SECRET:}
-#    username: ${KEYCLOAK_ADMIN_USERNAME:admin}
-#    password: ${KEYCLOAK_ADMIN_PASSWORD:admin}
-#  realm: bookstatistic-realm
-#  auth-server-url: ${KEYCLOAK_AUTH_URL:http://localhost:8080}
-#  resource: bookstatistic
-#  credentials:
-#    secret: ${KEYCLOAK_CLIENT_SECRET}
-#    secret-internal-client: ${KEYCLOAK_INTERNAL_CLIENT_SECRET}
-#  bearer-only: true
-#  use-resource-role-mappings: true
-#  init:
-#    enabled: ${KEYCLOAK_INIT_ENABLED:true}
 
 logging:
   level:

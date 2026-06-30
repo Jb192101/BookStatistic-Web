@@ -1,7 +1,12 @@
 package org.jedi_bachelor.bookstatistic.commonslib.dto.request.account;
 
+import jakarta.validation.constraints.NotNull;
+
 public record LoginDto(
-    String username,
-    String password
+        @NotNull
+        String username,
+
+        @NotNull
+        String password
 ) {
 }

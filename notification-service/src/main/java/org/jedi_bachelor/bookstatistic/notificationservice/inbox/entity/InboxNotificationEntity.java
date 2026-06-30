@@ -2,6 +2,7 @@ package org.jedi_bachelor.bookstatistic.notificationservice.inbox.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.jedi_bachelor.bookstatistic.notificationservice.entity.enums.NotificationType;
 import org.jedi_bachelor.bookstatistic.notificationservice.inbox.InboxOperation;
 
 import java.time.LocalDateTime;
@@ -20,7 +21,7 @@ public class InboxNotificationEntity {
 
     @Column(name = "type", nullable = false)
     @Enumerated(EnumType.STRING)
-    private InboxOperation type;
+    private NotificationType type;
 
     @Column(name = "notification_title", nullable = false)
     private String notificationTitle;

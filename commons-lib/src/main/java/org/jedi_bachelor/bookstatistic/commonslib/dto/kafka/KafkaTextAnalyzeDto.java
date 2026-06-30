@@ -1,14 +1,23 @@
 package org.jedi_bachelor.bookstatistic.commonslib.dto.kafka;
 
-import java.time.LocalDateTime;
+import jakarta.validation.constraints.NotNull;
+
 import java.util.UUID;
 
 public record KafkaTextAnalyzeDto(
+        @NotNull
         UUID bookId,
+
+        @NotNull
         String filename,
+
+        @NotNull
         String content,
+
+        @NotNull
         String contentType,
-        long size,
-        LocalDateTime uploadTime
+
+        @NotNull
+        long size
 ) {
 }

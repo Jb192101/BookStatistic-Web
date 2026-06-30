@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface OutboxKafkaMessageRepository
         extends JpaRepository<OutboxKafkaMessage, Long> {
-    List<OutboxKafkaMessage> findByPublishedFalse();
+    List<OutboxKafkaMessage> findByPublished(Boolean published);
 }

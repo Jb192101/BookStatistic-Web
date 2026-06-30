@@ -3,22 +3,20 @@ package org.jedi_bachelor.bookstatistic.accountservice.outbox.entity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.jedi_bachelor.bookstatistic.accountservice.outbox.OutboxOperation;
+import org.jedi_bachelor.ioboxstarter.core.OutboxMessage;
+import org.springframework.http.HttpMethod;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "outbox-notification")
+@Table(name = "outbox_notification")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class OutboxNotificationSettingsMessage {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+@EqualsAndHashCode(callSuper = true)
+public class OutboxNotificationSettingsMessage extends OutboxMessage {
     @Column(name = "user_id")
     private UUID userId;
 
@@ -28,13 +26,13 @@ public class OutboxNotificationSettingsMessage {
     @Column(name = "email_address")
     private String emailAddress;
 
-    @Column(name = "published")
-    private Boolean published = false;
+    @Column(name = "telegram")
+    private String telegram;
+
+    @Column(name = "broadcast_enable")
+    private Boolean enableBroadcast;
 
     @Column(name = "operation")
     @Enumerated(EnumType.STRING)
     private OutboxOperation operation;
-
-    @Column(name = "created_at")
-    private LocalDateTime createdAt = LocalDateTime.now();
 }

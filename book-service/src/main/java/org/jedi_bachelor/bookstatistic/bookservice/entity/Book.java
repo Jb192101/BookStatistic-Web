@@ -22,4 +22,8 @@ public class Book {
     @Column(name = "description")
     @Audited
     private String description;
+
+    @Column(name = "pages")
+    @Audited
+    private Integer pages = 0;
 }

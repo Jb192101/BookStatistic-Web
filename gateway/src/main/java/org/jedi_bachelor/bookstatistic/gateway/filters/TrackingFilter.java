@@ -2,7 +2,7 @@ package org.jedi_bachelor.bookstatistic.gateway.filters;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jedi_bachelor.bookstatistic.gateway.utils.SecurityUtils;
+import org.jedi_bachelor.bookstatistic.gateway.utils.FilterUtils;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.annotation.Order;
@@ -34,14 +34,14 @@ public class TrackingFilter implements GlobalFilter {
             log.info("tmx-correlation-id generated in tracking filter: {}.", correlationId);
         }
 
-        // User ID
-        if (this.isUserIdPresent(requestHeaders)) {
-            log.info("tmx-user-id found in tracking filter: {}. ", this.filterUtils.getCorrelationId(requestHeaders));
+        // Accept Language
+        if(this.isAcceptLanguagePresent(requestHeaders)) {
+            log.info("Accept-Language found in tracking filter: {}. ", this.filterUtils.getAcceptLanguage(requestHeaders));
         } else {
-            String userId = SecurityUtils.getCurrentUserId().toString();
-            exchange = this.filterUtils.setUserId(exchange, userId);
+            String defaultLanguage = "EN";
+            exchange = this.filterUtils.setAcceptLanguage(exchange, defaultLanguage);
 
-            log.info("tmx-user-id generated in tracking filter: {}.", userId);
+            log.info("Accept-Language set to default: {}.", defaultLanguage);
         }
 
         return chain.filter(exchange);
@@ -51,8 +51,8 @@ public class TrackingFilter implements GlobalFilter {
         return this.filterUtils.getCorrelationId(requestHeaders) != null;
     }
 
-    private boolean isUserIdPresent(HttpHeaders requestHeaders) {
-        return this.filterUtils.getUserId(requestHeaders) != null;
+    private boolean isAcceptLanguagePresent(HttpHeaders headers) {
+        return this.filterUtils.getAcceptLanguage(headers) != null;
     }
 
     private String generateCorrelationId() {

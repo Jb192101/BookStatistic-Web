@@ -17,11 +17,12 @@ public class NotificationConverter
      */
     @Override
     public Notification convert(NotificationCreationDto dto) {
-        return Notification.builder()
-                .notificationTitle(dto.notificationTitle())
-                .message(dto.message())
-                .type(NotificationType.valueOf(dto.type()))
-                .userId(dto.userId())
-                .build();
+        Notification notification = new Notification();
+        notification.setNotificationTitle(dto.notificationTitle());
+        notification.setMessage(dto.message());
+        notification.setType(NotificationType.valueOf(dto.type()));
+        notification.setUserId(dto.userId());
+
+        return notification;
     }
 }

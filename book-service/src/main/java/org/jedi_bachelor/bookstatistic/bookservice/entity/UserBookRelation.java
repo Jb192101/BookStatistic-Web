@@ -12,7 +12,6 @@ import java.util.UUID;
 @Entity
 @Table(name = "users_books")
 @Data
-@IdClass(UserBookRelation.UserBookRelationId.class)
 public class UserBookRelation {
     @EmbeddedId
     private UserBookRelationId id;

@@ -2,10 +2,12 @@ package org.jedi_bachelor.bookstatistic.notificationservice.inbox;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jedi_bachelor.bookstatistic.commonslib.converter.Converter;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.request.notification.NotificationCreationDto;
+import org.jedi_bachelor.bookstatistic.commonslib.dto.response.notification.InboxNotificationDto;
+import org.jedi_bachelor.bookstatistic.notificationservice.converter.NotificationDtoConverter;
 import org.jedi_bachelor.bookstatistic.notificationservice.inbox.entity.InboxNotificationEntity;
 import org.jedi_bachelor.bookstatistic.notificationservice.inbox.repository.InboxNotificationRepository;
+import org.jedi_bachelor.bookstatistic.notificationservice.mapper.InboxNotificationMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -14,9 +16,17 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 public class InboxContentManager {
-    private final Converter<InboxNotificationEntity, NotificationCreationDto> converter;
+    private final NotificationDtoConverter converter;
 
     private final InboxNotificationRepository inboxNotificationRepository;
+
+    private final InboxNotificationMapper inboxNotificationMapper;
+
+    public List<InboxNotificationDto> findAllInboxNotifications() {
+        List<InboxNotificationEntity> entities = this.inboxNotificationRepository.findAll();
+
+        return this.inboxNotificationMapper.toDtoList(entities);
+    }
 
     /**
      * Метод сохранения сущности inbox через DTO

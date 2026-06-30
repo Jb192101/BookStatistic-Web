@@ -45,11 +45,11 @@ public class InteractionClient {
      * @return тело ответа
      */
     @Retry(name = "commonslib-retry")
-    public ResponseEntity<?> sendRequest(HttpMethod httpMethod, String url) {
+    public Object sendRequest(HttpMethod httpMethod, String url) {
        return this.restClient.method(httpMethod)
                     .uri(this.baseUrl + url)
                     .retrieve()
-                    .toEntity(ResponseEntity.class);
+                    .toEntity(Object.class);
     }
 
     /**
@@ -60,7 +60,7 @@ public class InteractionClient {
      * @param body тело запроса
      * @return тело ответа
      */
-    @Retry(name = "commonslib-retry")
+    //@Retry(name = "commonslib-retry")
     public ResponseEntity<?> sendRequest(HttpMethod httpMethod, String url, Object body) {
         return this.restClient.method(httpMethod)
                 .uri(this.baseUrl + url)

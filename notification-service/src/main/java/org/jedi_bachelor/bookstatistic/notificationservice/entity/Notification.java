@@ -1,8 +1,8 @@
 package org.jedi_bachelor.bookstatistic.notificationservice.entity;
 
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.jedi_bachelor.bookstatistic.notificationservice.entity.enums.NotificationType;
 
 import java.util.UUID;
@@ -10,7 +10,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "notifications")
 @Data
-@Builder
+@NoArgsConstructor
 public class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

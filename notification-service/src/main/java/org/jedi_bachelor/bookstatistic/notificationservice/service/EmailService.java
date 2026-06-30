@@ -4,13 +4,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.request.notification.BroadcastMessage;
-import org.jedi_bachelor.bookstatistic.commonslib.internalinteraction.InteractionClient;
-import org.jedi_bachelor.bookstatistic.notificationservice.emal.EmailContext;
+import org.jedi_bachelor.bookstatistic.notificationservice.email.EmailContext;
 import org.jedi_bachelor.bookstatistic.notificationservice.repository.NotificationSettingsRepository;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,9 +24,6 @@ public class EmailService {
     @Value("${spring.mail.username}")
     private String emailSenderAddress;
 
-    @Qualifier("accountInteractionClient")
-    private final InteractionClient accountClient;
-
     private final NotificationSettingsRepository notificationSettingsRepository;
 
     /**
@@ -35,7 +31,18 @@ public class EmailService {
      *
      * @param context контекст отправки
      */
+    @Async
     public void sendEmail(EmailContext context) {
+        if (context.getSubject() == null || context.getSubject().isBlank()) {
+            throw new IllegalArgumentException("Email subject cannot be null or empty");
+        }
+        if (context.getMessage() == null || context.getMessage().isBlank()) {
+            throw new IllegalArgumentException("Email message cannot be null or empty");
+        }
+        if (context.getTo() == null || context.getTo().isBlank()) {
+            throw new IllegalArgumentException("Email recipient cannot be null or empty");
+        }
+
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(context.getTo());
         message.setSubject(context.getSubject());
@@ -55,8 +62,10 @@ public class EmailService {
      *
      * @param message сообщение на отправку
      */
+    @Async
     public void sendBroadcastMessage(BroadcastMessage message) {
-        List<String> addresses = (List<String>) this.notificationSettingsRepository.findByEnableGettingBroadcastMessages(true);
+        List<String> addresses = (List<String>)
+                this.notificationSettingsRepository.findEmailsByEnableGettingBroadcastMessages(true);
 
         log.info("Email addresses has got {}", addresses);
 

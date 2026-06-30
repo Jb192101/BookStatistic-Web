@@ -5,6 +5,7 @@ import java.util.UUID;
 public record BookDto(
     UUID id,
     String title,
-    String description
+    String description,
+    Integer pages
 ) {
 }

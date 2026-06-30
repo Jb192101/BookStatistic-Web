@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -20,8 +22,14 @@ public class KafkaProducer {
     }
 
     private void sendMessage(String topic, Object message) {
-        log.info("Sending message to topic {} with message content {}", topic, message);
+        String messageKey = this.generateKey();
 
-        this.kafkaTemplate.send(topic, message);
+        log.info("Sending message to topic {} with message content {}, key: {}", topic, message, messageKey);
+
+        this.kafkaTemplate.send(topic, messageKey, message);
+    }
+
+    private String generateKey() {
+        return UUID.randomUUID().toString();
     }
 }

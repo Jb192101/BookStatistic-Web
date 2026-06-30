@@ -1,179 +1,168 @@
 package org.jedi_bachelor.bookstatistic.accountservice.service;
 
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jedi_bachelor.bookstatistic.accountservice.converter.UserConverter;
+import org.jedi_bachelor.bookstatistic.accountservice.converter.RegistrationConverter;
 import org.jedi_bachelor.bookstatistic.accountservice.entity.UserProfile;
+import org.jedi_bachelor.bookstatistic.accountservice.language.Language;
 import org.jedi_bachelor.bookstatistic.accountservice.mapper.UserMapper;
-import org.jedi_bachelor.bookstatistic.accountservice.outbox.OutboxContextManager;
-import org.jedi_bachelor.bookstatistic.accountservice.outbox.OutboxOperation;
-import org.jedi_bachelor.bookstatistic.accountservice.outbox.entity.OutboxAnalyzeMessage;
+import org.jedi_bachelor.bookstatistic.accountservice.outbox.OutboxContentManager;
 import org.jedi_bachelor.bookstatistic.accountservice.outbox.entity.OutboxNotificationSettingsMessage;
+import org.jedi_bachelor.bookstatistic.accountservice.outbox.entity.OutboxOperation;
 import org.jedi_bachelor.bookstatistic.accountservice.repository.UserRepository;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.mapentities.UserDto;
 import org.jedi_bachelor.bookstatistic.commonslib.dto.request.account.RegisterDto;
+import org.jedi_bachelor.bookstatistic.commonslib.dto.request.account.UserUpdateDto;
+import org.jedi_bachelor.bookstatistic.commonslib.exceptions.PasswordInvalidException;
+import org.jedi_bachelor.bookstatistic.commonslib.exceptions.UserAlreadyExistsInSystemException;
 import org.jedi_bachelor.bookstatistic.commonslib.exceptions.UserNotFoundException;
+import org.jedi_bachelor.bookstatistic.commonslib.exceptions.UsernameAlreadyExistsException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
 
     private final UserMapper userMapper;
 
-    private final UserConverter userConverter;
+    private final RegistrationConverter registrationConverter;
 
-    private final OutboxContextManager outboxContextManager;
+    private final OutboxContentManager outboxContentManager;
 
-    /**
-     * Конструктор класса
-     *
-     * @param userRepository репозиторий JPA
-     * @param userMapper маппер (mapstruct)
-     * @param userConverter конвертер DTO в Entity
-     * @param outboxContextManager менеджер контекста outbox-сообщений
-     */
-    public UserService(UserRepository userRepository,
-                       UserMapper userMapper,
-                       UserConverter userConverter,
-                       OutboxContextManager outboxContextManager) {
-        this.userMapper = userMapper;
-        this.userRepository = userRepository;
-        this.userConverter = userConverter;
-        this.outboxContextManager = outboxContextManager;
-    }
+    private final PasswordEncoder passwordEncoder;
 
     /**
-     * Метод для поиска пользователя по ID
-     *
-     * @param id ID пользователя
-     * @return пользователя, если он есть
-     * @throws UserNotFoundException исключение, если пользователя нет
-     */
-    @Transactional
-    public UserDto findUserById(UUID id) throws UserNotFoundException {
-        Optional<UserProfile> user = this.userRepository.findById(id);
-
-        if(user.isEmpty()) {
-            log.error("User with id {} don't exists", id);
-
-            throw new UserNotFoundException(id);
-        }
-
-        return this.userMapper.toDto(user.get());
-    }
-
-    /**
-     * Метод для выдачи всех пользователей
+     * Метод получения всех профилей пользователей
      *
      * @return список пользователей
      */
     @Transactional
-    public List<UserDto> findAll() {
-        List<UserProfile> userProfiles = this.userRepository.findAll();
+    public List<UserDto> getAllProfiles() {
+        List<UserProfile> profiles = this.userRepository.findAll();
 
-        return this.userMapper.toDtoList(userProfiles);
+        return this.userMapper.toDtoList(profiles);
     }
 
     /**
-     * Метод для добавления нового пользователя через DTO
+     * Получение пользователя по ID
      *
-     * @param dto DTO для добавления
-     * @return DTO с данными созданного пользователя
+     * @param userId ID пользователя
+     * @return пользователя, если он есть
      */
     @Transactional
-    public UserDto addNewUser(UserProfile profile, RegisterDto dto) {
-        this.userRepository.save(profile);
+    public UserDto getUserById(UUID userId) throws UserNotFoundException {
+        Optional<UserProfile> profile = this.userRepository.findById(userId);
 
-        log.info("New user has created by DTO {}", dto);
+        if(profile.isEmpty()) {
+            throw new UserNotFoundException(userId);
+        }
 
-        // Отправить задачу в outbox на создание представления пользователя в других системах
-        // Предоставление в notification-service
-        OutboxNotificationSettingsMessage notificationSettingsMessage =
-                new OutboxNotificationSettingsMessage();
-        notificationSettingsMessage.setUserId(profile.getId());
-        notificationSettingsMessage.setOperation(OutboxOperation.ADD_OPERATION);
-        notificationSettingsMessage.setEmailAddress(dto.email());
-        notificationSettingsMessage.setEmailEnable(dto.enableEmail());
+        return this.userMapper.toDto(profile.get());
+    }
 
-        this.outboxContextManager.save(notificationSettingsMessage);
+    /**
+     * Метод регистрации пользователя
+     *
+     * @return новый профиль
+     */
+    @Transactional
+    public UserDto register(RegisterDto dto) throws UserAlreadyExistsInSystemException, PasswordInvalidException {
+        if(this.userRepository.findByUsername(dto.username()).isPresent()) {
+            throw new UserAlreadyExistsInSystemException(dto.username());
+        }
 
-        log.info("Added message to outbox in notification-service: {}", notificationSettingsMessage);
+        if(!Objects.equals(dto.password(), dto.confirmPassword())) {
+            throw new PasswordInvalidException(dto.password(), dto.confirmPassword());
+        }
 
-        // Представление в analyze-service
-        OutboxAnalyzeMessage analyzeMessage = new OutboxAnalyzeMessage();
-        analyzeMessage.setUserId(profile.getId());
-        analyzeMessage.setAction(OutboxOperation.ADD_OPERATION);
+        UserProfile userProfile = this.registrationConverter.convert(dto);
 
-        this.outboxContextManager.save(analyzeMessage);
+        UserProfile savedProfile = this.userRepository.save(userProfile);
 
-        log.info("Added message to outbox in analyze-service: {}", analyzeMessage);
+        // Назначение keycloak-sub (потом)
 
-        return this.userMapper.toDto(profile);
+
+        // Отправка сообщений в outbox
+        OutboxNotificationSettingsMessage message = new OutboxNotificationSettingsMessage();
+        message.setUserId(savedProfile.getId());
+        message.setOperation(OutboxOperation.ADD_OPERATION);
+        message.setEnableBroadcast(dto.enableBroadcast());
+        message.setEmailEnable(dto.enableEmail());
+        message.setEmailAddress(dto.email());
+
+        this.outboxContentManager.save(message);
+
+        return this.userMapper.toDto(savedProfile);
+    }
+
+    /**
+     * Метод удаления пользователя по ID
+     *
+     * @param userId ID пользователя
+     * @return удалённого пользователя
+     */
+    @Transactional
+    public UserDto deleteUser(UUID userId) throws UserNotFoundException {
+        if(!this.userRepository.existsById(userId)) {
+            throw new UserNotFoundException(userId);
+        }
+
+        UserProfile deletedProfile = this.userRepository.findById(userId).get();
+
+        this.userRepository.deleteById(userId);
+
+        return this.userMapper.toDto(deletedProfile);
     }
 
     /**
      * Метод обновления пользователя по DTO
+     *
      * @param dto DTO обновления
      * @throws UserNotFoundException если пользователя с ID нет
      * @return пользователя с новыми данными
      */
     @Transactional
-    public UserDto updateUser(UserDto dto) throws UserNotFoundException {
-        Optional<UserProfile> user = this.userRepository.findById(dto.id());
+    public UserDto updateUser(UUID id, UserUpdateDto dto) throws UserNotFoundException, UsernameAlreadyExistsException, PasswordInvalidException {
+        if(!this.userRepository.existsById(id)) {
+            log.error("User with ID {} doesn't exists", id);
 
-        if(user.isEmpty()) {
-            log.error("User with id {} don't exists", dto.id());
-
-            throw new UserNotFoundException(dto.id());
-        }
-
-        user.get().setName(dto.name());
-        user.get().setHashPassword(dto.hashPassword());
-
-        this.userRepository.save(user.get());
-
-        log.info("User with id {} has been updated", dto.id());
-
-        return this.userMapper.toDto(user.get());
-    }
-
-    /**
-     * Метод для удаления пользователя
-     * Должен каскадно удалять следующие зависимости:
-     * - в analyze-service
-     * - в book-service
-     *
-     * @param id ID пользователя
-     * @return удалённый пользователь
-     * @throws UserNotFoundException если пользователя нет
-     */
-    @Transactional
-    public UserDto deleteUser(UUID id) throws UserNotFoundException {
-        // 1. Удаление самого пользователя
-        Optional<UserProfile> user = this.userRepository.findById(id);
-
-        // Проверка, если пользователя нет (тогда останавливаем удаление)
-        if(user.isEmpty()) {
             throw new UserNotFoundException(id);
         }
 
-        // 2. Удаление в analyze-service
-        this.outboxContextManager.addAnalyzeMessageToDelete(id);
+        // Проверка username-ов
+        UserProfile currentProfile = this.userRepository.findById(id).get();
+        String currentUsername = currentProfile.getUsername();
 
-        log.info("Sended message to delete user' data with id {} from analyze-service", id);
+        List<String> usernames = new ArrayList<>(this.userRepository.findAll().stream().map(UserProfile::getUsername).toList());
+        usernames.remove(currentUsername);
 
-        // Возвращение удалённого пользователя
-        return this.userMapper.toDto(user.get());
-    }
+        if(usernames.contains(dto.username())) {
+            throw new UsernameAlreadyExistsException(dto.username());
+        }
 
-    @Transactional
-    public List<UUID> getRandomUserIds(int count) {
-        return List.of();
+        if(!Objects.equals(dto.confirmPassword(), dto.password())) {
+            throw new PasswordInvalidException(dto.password(), dto.confirmPassword());
+        }
+
+        // Изменение данных
+        currentProfile.setUsername(dto.username());
+        currentProfile.setFirstName(dto.firstName());
+        currentProfile.setMiddleName(dto.middleName());
+        currentProfile.setLastName(dto.lastName());
+        currentProfile.setLanguage(Language.valueOf(dto.language()));
+        currentProfile.setPassword(this.passwordEncoder.encode(dto.password()));
+        currentProfile.setBirthDay(dto.birthDay());
+
+        this.userRepository.save(currentProfile);
+
+        log.info("User with id {} has been updated", id);
+
+        return this.userMapper.toDto(currentProfile);
     }
 }

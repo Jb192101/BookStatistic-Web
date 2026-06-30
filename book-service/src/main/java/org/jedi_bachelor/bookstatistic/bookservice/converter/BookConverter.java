@@ -2,11 +2,11 @@ package org.jedi_bachelor.bookstatistic.bookservice.converter;
 
 import org.jedi_bachelor.bookstatistic.bookservice.entity.Book;
 import org.jedi_bachelor.bookstatistic.commonslib.converter.Converter;
-import org.jedi_bachelor.bookstatistic.commonslib.dto.request.book.BookCreationDto;
+import org.jedi_bachelor.bookstatistic.commonslib.dto.request.book.BookCreationUpdatingDto;
 import org.springframework.stereotype.Component;
 
 @Component
-public class BookConverter implements Converter<Book, BookCreationDto> {
+public class BookConverter implements Converter<Book, BookCreationUpdatingDto> {
     /**
      * Метод конвертации DTO на создание сущности в сущность
      *
@@ -14,7 +14,7 @@ public class BookConverter implements Converter<Book, BookCreationDto> {
      * @return сущность
      */
     @Override
-    public Book convert(BookCreationDto dto) {
+    public Book convert(BookCreationUpdatingDto dto) {
         Book book = new Book();
         book.setTitle(dto.title());
         book.setDescription(dto.description());

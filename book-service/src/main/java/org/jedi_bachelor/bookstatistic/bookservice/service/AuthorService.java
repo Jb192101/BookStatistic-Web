@@ -23,18 +23,18 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
+@RequiredArgsConstructor
 public class AuthorService {
     private final AuthorRepository authorRepository;
 
     private final BookAuthorRepository bookAuthorRepository;
 
-    private final BookRepository bookRepository;
-
     private final AuthorMapper authorMapper;
 
     private final BookAuthorRelationMapper bookAuthorMapper;
+
+    private final BookRepository bookRepository;
 
     /**
      * Метод добавления нового автора в систему
@@ -74,7 +74,6 @@ public class AuthorService {
      * Метод удаления автора
      *
      * @param authorId ID автора
-     * @return true, если сущность удалена
      */
     @Transactional
     public void deleteAuthor(UUID authorId) throws AuthorNotFoundException {
@@ -196,6 +195,13 @@ public class AuthorService {
     @Transactional
     public List<BookAuthorRelationDto> getAllBookAuthorRelations() {
         List<BookAuthorRelation> relations = this.bookAuthorRepository.findAll();
+
+        return this.bookAuthorMapper.toDtoList(relations);
+    }
+
+    @Transactional
+    public List<BookAuthorRelationDto> getAllBookAuthorRelationsOfAuthor(UUID authorId) {
+        List<BookAuthorRelation> relations = this.bookAuthorRepository.findByAuthorId(authorId);
 
         return this.bookAuthorMapper.toDtoList(relations);
     }

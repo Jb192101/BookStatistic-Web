@@ -1,5 +1,6 @@
 package org.jedi_bachelor.bookstatistic.bookservice.repository;
 
+import org.jedi_bachelor.bookstatistic.bookservice.entity.Book;
 import org.jedi_bachelor.bookstatistic.bookservice.entity.BookAuthorRelation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -12,6 +13,9 @@ import java.util.UUID;
 public interface BookAuthorRepository extends JpaRepository<BookAuthorRelation, BookAuthorRelation.BookAuthorRelationId> {
     @Query("SELECT bar FROM BookAuthorRelation bar WHERE bar.author.id = :authorId")
     List<BookAuthorRelation> findByAuthorId(@Param("authorId") UUID authorId);
+
+    @Query("SELECT bar FROM BookAuthorRelation bar WHERE bar.book.id = :bookId")
+    List<BookAuthorRelation> findByBookId(@Param("bookId") UUID bookId);
 
     Optional<BookAuthorRelation> findByBook_IdAndAuthor_Id(UUID bookId, UUID authorId);
 

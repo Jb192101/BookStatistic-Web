@@ -70,6 +70,15 @@ public class DL4JGenreClassifier implements GenreClassifier {
         }
     }
 
+    public void fit(DataSet dataset) {
+        network.fit(dataset);
+    }
+
+    public double calculateLoss(DataSet dataset) {
+        INDArray output = network.output(dataset.getFeatures());
+        return dataset.getLabels().distance2(output);
+    }
+
     private void createNewNetwork() {
         int inputSize = embeddingService.getEmbeddingSize(); // 384
         int outputSize = ALL_LABELS.length; // 28

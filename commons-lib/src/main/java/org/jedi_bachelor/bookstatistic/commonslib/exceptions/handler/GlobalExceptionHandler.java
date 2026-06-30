@@ -24,6 +24,28 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(UserAlreadyExistsInSystemException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleNotificationNotFoundException(UserAlreadyExistsInSystemException e) {
+        return new ErrorResponse(
+                "User already exists",
+                "User with username already exists: " + e.getUsername(),
+                HttpStatus.CONFLICT.value(),
+                Timestamp.from(Instant.now())
+        );
+    }
+
+    @ExceptionHandler(PasswordInvalidException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleNotificationNotFoundException(PasswordInvalidException e) {
+        return new ErrorResponse(
+                "User already exists",
+                "Password invalid: " + e.getPassword() + ", " + e.getConfirmPassword(),
+                HttpStatus.CONFLICT.value(),
+                Timestamp.from(Instant.now())
+        );
+    }
+
     @ExceptionHandler(UserHaventAccessException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleUserHaventAccessException(UserHaventAccessException e) {

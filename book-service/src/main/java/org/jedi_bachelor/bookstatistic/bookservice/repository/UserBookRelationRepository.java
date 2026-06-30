@@ -10,4 +10,6 @@ public interface UserBookRelationRepository
         extends JpaRepository<UserBookRelation, UserBookRelation.UserBookRelationId> {
 
     List<UserBookRelation> findById_UserId(UUID userId);
+
+    List<UserBookRelation> findById_BookId(UUID bookId);
 }

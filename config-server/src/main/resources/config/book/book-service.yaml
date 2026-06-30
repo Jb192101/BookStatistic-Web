@@ -34,6 +34,14 @@ management:
         http.server.requests: true
 
 spring:
+  data:
+    mongodb:
+      port: ${BOOK_MONGO_DB_PORT}
+      username: ${BOOK_MONGO_DB_USERNAME}
+      password: ${BOOK_MONGO_DB_PASSWORD}
+      database: ${BOOK_MONGO_DB_NAME:bookstatistic}
+      authentication-database: admin
+
   servlet:
     multipart:
       max-file-size: 30MB
@@ -44,7 +52,17 @@ spring:
     name: book-service
 
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: localhost:9093
+    consumer:
+      group-id: bs-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
   datasource:
     url: ${BOOK_PG_DB_URL}
@@ -87,5 +105,9 @@ kafka:
   topics:
     sending-notification-topic: "sending-notification-topic"
     sending-notification-result-topic: "sending-notification-result-topic"
+    book-text-analyze-topic: "book-text-analyze-topic"
   groups:
     bs-group: "bs-group"
+
+outbox:
+  enabled: true

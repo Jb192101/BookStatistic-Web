@@ -9,22 +9,6 @@ spring:
   sleuth:
     sampler:
       probability: 1.0
-  security:
-    oauth2:
-      client:
-        registration:
-          keycloak:
-            client-id: bookstatistic
-            client-secret: ${KEYCLOAK_CLIENT_SECRET}
-            scope: openid,profile,email
-            authorization-grant-type: authorization_code
-            redirect-uri: "{baseUrl}/login/oauth2/code/keycloak"
-        provider:
-          keycloak:
-            issuer-uri: ${KEYCLOAK_ISSUER_URI:http://localhost:8080/realms/bookstatistic-realm}
-      resourceserver:
-        jwt:
-          issuer-uri: ${KEYCLOAK_ISSUER_URI:http://localhost:8080/realms/bookstatistic-realm}
 
   application:
     name: account-service
@@ -36,11 +20,11 @@ spring:
 
 external-urls:
   analyze:
-    base-url: ${ANALYZE_SERVICE_URL:http://localhost:8083/v1/analyze}
+    base-url: ${ANALYZE_SERVICE_URL:http://localhost:8081/v1/analyze}
     delete-user-data: /
   notification:
-    base-url: http://localhost:8083/v1/notifications
-    post-notification-settings: /notification-settings
+    base-url: http://localhost:8081/v1/notification-setting
+    post-notification-settings:
 
 server:
   port: ${ACCOUNT_SERVER_PORT:8084}
@@ -54,24 +38,6 @@ eureka:
     fetchRegistry: true
     serviceUrl:
       defaultZone: http://localhost:8070/eureka/
-
-keycloak:
-  client-id: bookstatistic
-  admin:
-    server-url: ${KEYCLOAK_SERVER_URL:http://localhost:8080}
-    realm: bookstatistic-realm
-    client-id: bookstatistic
-    username: ${KEYCLOAK_ADMIN_USERNAME}
-    password: ${KEYCLOAK_ADMIN_PASSWORD}
-  realm: bookstatistic-realm
-  auth-server-url: ${KEYCLOAK_AUTH_URL:http://localhost:8080}
-  resource: bookstatistic
-  credentials:
-    secret: ${KEYCLOAK_CLIENT_SECRET}
-  bearer-only: true
-  use-resource-role-mappings: true
-  init:
-    enabled: false
 
 zipkin:
   baseUrl: ${ZIPKIN_URL:http://zipkin:9411}

@@ -1,20 +1,49 @@
 package org.jedi_bachelor.bookstatistic.commonslib.dto.request.account;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
 
 import java.time.LocalDate;
 
 public record RegisterDto(
-    String username,
-    String password,
-    String confirmPassword,
-    String email,
-    Boolean enableEmail,
-    String telegram,
+        @NotNull
+        String username,
 
-    @JsonFormat(pattern = "dd-MM-yyyy")
-    LocalDate birthDay,
+        @NotNull
+        String password,
 
-    String language
+        @NotNull
+        String confirmPassword,
+
+        @NotNull
+        String firstName,
+
+        @NotNull
+        String middleName,
+
+        @NotNull
+        String lastName,
+
+        @NotNull
+        @Email
+        String email,
+        Boolean enableEmail,
+
+        @NotNull
+        Boolean enableBroadcast,
+
+        @NotNull
+        String telegram,
+
+        @JsonFormat(pattern = "dd-MM-yyyy")
+        @Past
+        LocalDate birthDay,
+
+        @NotNull
+        @Max(value = 2)
+        String language
 ) {
 }

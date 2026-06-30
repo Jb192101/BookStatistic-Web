@@ -6,9 +6,12 @@ import java.util.UUID;
 
 public record UserDto(
     UUID id,
-    String keycloakSub,
-    String name,
-    String hashPassword,
+    //String keycloakSub,
+    String username,
+    String password,
+    String firstName,
+    String middleName,
+    String lastName,
     String language,
     LocalDateTime createdAt,
     LocalDate birthDay
