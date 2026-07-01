@@ -76,12 +76,13 @@ servlet:
 
 external-urls:
   account:
-    base-url:
+    base-url: "http://localhost:8084/v1/users"
     get-account-uri: "/"
   book:
-    book-base-url:
+    book-base-url: "http://localhost:8082/v1/books"
     get-users-book-uri: "/user/"
-    response-base-url: "/"
+    response-base-url: "http://localhost:8082/v1/responses"
+    get-users-responses-uri: "/users/"
 
 keycloak:
   realm: bookstatistic-realm

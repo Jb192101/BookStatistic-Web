@@ -14,6 +14,7 @@ public record UserDto(
     String lastName,
     String language,
     LocalDateTime createdAt,
-    LocalDate birthDay
+    LocalDate birthDay,
+    String residenceCountry
 ) {
 }
