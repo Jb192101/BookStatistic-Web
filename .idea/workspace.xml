@@ -5,7 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9753a1e7-9738-471e-85b6-9d133f8e3b79" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/libs/spring-iobox-starter-0.0.1-SNAPSHOT.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/libs/spring-iobox-starter-1.0.0.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.github/workflows/ci.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/ci.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,51 +48,51 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.Account-server.executor&quot;: &quot;Run&quot;,
-    &quot;Application.AccountServiceApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Analyze-server.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Book-server.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Config-server.executor&quot;: &quot;Run&quot;,
-    &quot;Application.ConfigApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Discovery-server.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Gateway-server.executor&quot;: &quot;Run&quot;,
-    &quot;Application.JdbcTest.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Notification-server.executor&quot;: &quot;Run&quot;,
-    &quot;Application.NotificationServiceApplication.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.NotificationNegativeTests.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.NotificationPositiveTests.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.UserServiceNegativeTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.UserServicePositiveTest.executor&quot;: &quot;Run&quot;,
-    &quot;Maven.book-service [clean].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.book-service [compile].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.commons-lib [clean].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.commons-lib [install].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.notification-service [clean].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.notification-service [compile].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.notification-service [install].executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;dev&quot;,
-    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;corretto-21&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/gogat/Git/BookStatistic-Web/gateway/src/main/java/org/jedi_bachelor/bookstatistic/gateway/utils&quot;,
-    &quot;onboarding.tips.debug.path&quot;: &quot;C:/Users/gogat/Git/BookStatistic-Web/analyze-service/src/main/java/org/jedi_bachelor/bookstatistic/analyzeservice/Main.java&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Libraries&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.56551725&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.Account-server.executor": "Run",
+    "Application.AccountServiceApplication.executor": "Run",
+    "Application.Analyze-server.executor": "Run",
+    "Application.Book-server.executor": "Run",
+    "Application.Config-server.executor": "Run",
+    "Application.ConfigApplication.executor": "Run",
+    "Application.Discovery-server.executor": "Run",
+    "Application.Gateway-server.executor": "Run",
+    "Application.JdbcTest.executor": "Run",
+    "Application.Main.executor": "Run",
+    "Application.Notification-server.executor": "Run",
+    "Application.NotificationServiceApplication.executor": "Run",
+    "JUnit.NotificationNegativeTests.executor": "Run",
+    "JUnit.NotificationPositiveTests.executor": "Run",
+    "JUnit.UserServiceNegativeTest.executor": "Run",
+    "JUnit.UserServicePositiveTest.executor": "Run",
+    "Maven.book-service [clean].executor": "Run",
+    "Maven.book-service [compile].executor": "Run",
+    "Maven.commons-lib [clean].executor": "Run",
+    "Maven.commons-lib [install].executor": "Run",
+    "Maven.notification-service [clean].executor": "Run",
+    "Maven.notification-service [compile].executor": "Run",
+    "Maven.notification-service [install].executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "dev",
+    "jdk.selected.JAVA_MODULE": "corretto-21",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/gogat/Git/BookStatistic-Web/libs",
+    "onboarding.tips.debug.path": "C:/Users/gogat/Git/BookStatistic-Web/analyze-service/src/main/java/org/jedi_bachelor/bookstatistic/analyzeservice/Main.java",
+    "project.structure.last.edited": "Libraries",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.56551725",
+    "settings.editor.selected.configurable": "preferences.pluginManager"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\gogat\Git\BookStatistic-Web\libs" />
       <recent name="C:\Users\gogat\Git\BookStatistic-Web\gateway\src\main\java\org\jedi_bachelor\bookstatistic\gateway\utils" />
       <recent name="C:\Users\gogat\Git\BookStatistic-Web\account-service\src\main\java\org\jedi_bachelor\bookstatistic\accountservice\configuration" />
       <recent name="C:\Users\gogat\Git\BookStatistic-Web\account-service\src\main\java\org\jedi_bachelor\bookstatistic\accountservice\outbox\repository" />
       <recent name="C:\Users\gogat\Git\BookStatistic-Web\analyze-service\src\main\java\org\jedi_bachelor\bookstatistic\analyzeservice\configuration" />
-      <recent name="C:\Users\gogat\Git\BookStatistic-Web\analyze-service\src\main\java\org\jedi_bachelor\bookstatistic\analyzeservice\service\ml" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\gogat\Git\BookStatistic-Web\analyze-service\src\main\resources\models" />
