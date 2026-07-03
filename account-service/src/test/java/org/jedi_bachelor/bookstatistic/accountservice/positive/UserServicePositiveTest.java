@@ -79,7 +79,8 @@ class UserServicePositiveTest {
                 "Test LastName",
                 "EN",
                 LocalDateTime.now(),
-                LocalDate.of(2000, 2, 2)
+                LocalDate.of(2000, 2, 2),
+                "Russia"
         );
 
         registerDto = new RegisterDto(

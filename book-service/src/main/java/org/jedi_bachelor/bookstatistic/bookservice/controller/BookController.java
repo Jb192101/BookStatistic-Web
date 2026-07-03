@@ -38,6 +38,7 @@ import java.util.UUID;
 public class BookController {
     private final BookService bookService;
 
+    // ROLE_ADMIN, ROLE_MODERATOR
     @PostMapping
     @Operation(summary = "Добавление книги без текста",
             description = "Добавление книги без текста")
@@ -66,6 +67,7 @@ public class BookController {
         return ResponseEntity.status(HttpStatus.CREATED.value()).body(bookDto);
     }
 
+    // ROLE_ADMIN, ROLE_MODERATOR
     @GetMapping("/{bookId}")
     @Operation(summary = "Получение книги по ID",
             description = "Получение книги по ID")
@@ -112,6 +114,7 @@ public class BookController {
         return ResponseEntity.ok(bookDto);
     }
 
+    // ROLE_ADMIN, ROLE_MODERATOR
     @PutMapping("/{bookId}")
     @Operation(summary = "Обновление книги",
             description = "Обновление данных в сущности Book")
@@ -139,6 +142,7 @@ public class BookController {
         return ResponseEntity.ok(bookDto);
     }
 
+    // ROLE_ADMIN, ROLE_MODERATOR, ROLE_USER
     @GetMapping
     @Operation(summary = "Получение всех книг",
             description = "Получение всех книг всех пользователей")
@@ -165,6 +169,7 @@ public class BookController {
         return ResponseEntity.ok(bookDtoList);
     }
 
+    // ROLE_ADMIN, ROLE_MODERATOR, ROLE_USER
     @GetMapping("/{userId}/statistics")
     @Operation(summary = "Получение статистики по чтению у пользователя",
             description = "Получение краткой статистики по пользователю. В частности получение:" +
@@ -195,6 +200,7 @@ public class BookController {
         return ResponseEntity.ok(userReadingStat);
     }
 
+    // ROLE_ADMIN, ROLE_MODERATOR
     @PatchMapping("/{bookId}")
     @Operation(summary = "Привязка текста к книге",
             description = "Привязка текста к книге")
@@ -233,6 +239,7 @@ public class BookController {
         return ResponseEntity.ok(Map.of("linked", true));
     }
 
+    // ROLE_ADMIN, ROLE_MODERATOR, ROLE_USER
     @GetMapping("/{bookId}/text")
     @Operation(summary = "Выдача текста книги",
             description = "Выдача текста книги")
@@ -277,6 +284,7 @@ public class BookController {
         return ResponseEntity.ok(file);
     }
 
+    // ROLE_ADMIN, ROLE_MODERATOR
     @GetMapping("/texts")
     @Operation(summary = "Выдача текстов всех книг",
             description = "Выдача текстов всех книг")
@@ -303,6 +311,7 @@ public class BookController {
         return ResponseEntity.ok(files);
     }
 
+    // ROLE_ADMIN, ROLE_MODERATOR
     @DeleteMapping("/{bookId}")
     @Operation(summary = "Удаление книги",
             description = "Удаление книги")
@@ -355,6 +364,7 @@ public class BookController {
         return ResponseEntity.ok(Map.of("deleted", true));
     }
 
+    // ROLE_ADMIN, ROLE_MODERATOR
     @PatchMapping("/{bookId}/text")
     @Operation(summary = "Обновление текста книги",
             description = "Обновление текста книги")
@@ -400,6 +410,7 @@ public class BookController {
         return ResponseEntity.ok(updatedFile);
     }
 
+    // ROLE_ADMIN, ROLE_MODERATOR, ROLE_USER
     @GetMapping("/search")
     @Operation(summary = "Поиск книг",
             description = "Поиск книг по их названию или автору")
@@ -436,6 +447,7 @@ public class BookController {
         return ResponseEntity.ok(books);
     }
 
+    // ROLE_ADMIN, ROLE_MODERATOR
     @PostMapping("/reading")
     @Operation(summary = "Добавление отношения пользователь-книга",
             description = "Добавление отношения пользователь-книга")
@@ -472,6 +484,7 @@ public class BookController {
         return ResponseEntity.status(HttpStatus.CREATED.value()).body(userBookDto);
     }
 
+    // ROLE_ADMIN, ROLE_MODERATOR
     @PatchMapping("/reading")
     @Operation(summary = "Обновление отношения пользователь-книга",
             description = "Обновление отношения пользователь-книга")
@@ -508,6 +521,7 @@ public class BookController {
         return ResponseEntity.ok(userBookDto);
     }
 
+    // ROLE_ADMIN, ROLE_MODERATOR
     @GetMapping("/reading/{userId}")
     @Operation(summary = "Получение отношения пользователь-книга",
             description = "Получение отношения пользователь-книга")
@@ -544,6 +558,7 @@ public class BookController {
         return ResponseEntity.ok(userBookDto);
     }
 
+    // ROLE_ADMIN, ROLE_MODERATOR
     @GetMapping("/reading")
     @Operation(summary = "Получение всех отношений пользователь-книга",
             description = "Получение всех отношений пользователь-книга")
@@ -570,6 +585,7 @@ public class BookController {
         return ResponseEntity.ok(userBookDto);
     }
 
+    // ROLE_ADMIN, ROLE_MODERATOR
     @DeleteMapping("/reading/{userId}")
     @Operation(summary = "Удаление отношения пользователь-книга",
             description = "Удаление отношения пользователь-книга")
@@ -606,6 +622,7 @@ public class BookController {
         return ResponseEntity.ok(userBookDto);
     }
 
+    // ROLE_ADMIN, ROLE_MODERATOR, ROLE_USER
     @GetMapping("/book-relations/{bookId}")
     @Operation(summary = "Получение всех отношений конкретной книги",
             description = "Получение всех отношений книга-автор конкретной книги")
@@ -634,6 +651,7 @@ public class BookController {
         return ResponseEntity.ok(dtos);
     }
 
+    // ROLE_ADMIN, ROLE_MODERATOR, ROLE_USER
     @GetMapping("/user/{userId}")
     @Operation(summary = "Получение всех книг пользователя",
             description = "Получение всех книг, взятых пользователем себе в библиотеку")

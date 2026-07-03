@@ -5,33 +5,32 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9753a1e7-9738-471e-85b6-9d133f8e3b79" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/k8s/analyze-service/deployment.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/k8s/book-service/deployment.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/k8s/config-server/deployment.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/k8s/discovery-server/deployment.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/k8s/gateway/deployment.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/k8s/notification-service/deployment.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.github/workflows/cd.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/cd.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/accountservice/configuration/KeycloakConfiguration.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/accountservice/dto/JwtResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/accountservice/entity/Roles.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/account-service/k8s/deployment.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/k8s/account-service/deployment.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/account-service/k8s/service.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyze-service/k8s/deployment.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyze-service/k8s/service.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyze-service/src/main/java/org/jedi_bachelor/bookstatistic/analyzeservice/configuration/InteractionClientConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/analyze-service/src/main/java/org/jedi_bachelor/bookstatistic/analyzeservice/configuration/InteractionClientConfiguration.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyze-service/src/main/java/org/jedi_bachelor/bookstatistic/analyzeservice/configuration/InteractionPathsConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/analyze-service/src/main/java/org/jedi_bachelor/bookstatistic/analyzeservice/configuration/InteractionPathsConfiguration.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyze-service/src/main/java/org/jedi_bachelor/bookstatistic/analyzeservice/service/AnalyzeService.java" beforeDir="false" afterPath="$PROJECT_DIR$/analyze-service/src/main/java/org/jedi_bachelor/bookstatistic/analyzeservice/service/AnalyzeService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/book-service/k8s/deployment.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/book-service/k8s/service.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/commons-lib/src/main/java/org/jedi_bachelor/bookstatistic/commonslib/dto/mapentities/UserDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/commons-lib/src/main/java/org/jedi_bachelor/bookstatistic/commonslib/dto/mapentities/UserDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config-server/k8s/deployment.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/config-server/k8s/service.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/account-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/account-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/accountservice/configuration/SecurityConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/accountservice/configuration/SecurityConfiguration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/accountservice/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/accountservice/controller/AuthController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/accountservice/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/accountservice/controller/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/accountservice/entity/UserProfile.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/accountservice/entity/UserProfile.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/accountservice/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/accountservice/service/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/account-service/src/test/java/org/jedi_bachelor/bookstatistic/accountservice/positive/UserServicePositiveTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-service/src/test/java/org/jedi_bachelor/bookstatistic/accountservice/positive/UserServicePositiveTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/analyze-service/src/main/java/org/jedi_bachelor/bookstatistic/analyzeservice/controller/ModelTrainingController.java" beforeDir="false" afterPath="$PROJECT_DIR$/analyze-service/src/main/java/org/jedi_bachelor/bookstatistic/analyzeservice/controller/ModelTrainingController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/controller/AuditController.java" beforeDir="false" afterPath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/controller/AuditController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/controller/AuthorController.java" beforeDir="false" afterPath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/controller/AuthorController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/controller/BookController.java" beforeDir="false" afterPath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/controller/BookController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/controller/OutboxController.java" beforeDir="false" afterPath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/controller/OutboxController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/controller/ResponseController.java" beforeDir="false" afterPath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/controller/ResponseController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/commons-lib/src/main/java/org/jedi_bachelor/bookstatistic/commonslib/dto/request/account/RegisterDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/commons-lib/src/main/java/org/jedi_bachelor/bookstatistic/commonslib/dto/request/account/RegisterDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config-server/src/main/resources/config/account/account-service.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config-server/src/main/resources/config/account/account-service.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config-server/src/main/resources/config/analyze/analyze-service.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config-server/src/main/resources/config/analyze/analyze-service.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/discovery-server/k8s/deployment.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/discovery-server/k8s/service.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/gateway/k8s/deployment.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/gateway/k8s/service.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/notification-service/k8s/deployment.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/notification-service/k8s/service.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway/src/main/java/org/jedi_bachelor/bookstatistic/gateway/configuration/SecurityConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/gateway/src/main/java/org/jedi_bachelor/bookstatistic/gateway/configuration/SecurityConfiguration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/controller/EmailController.java" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/controller/EmailController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/controller/InboxController.java" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/controller/InboxController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/controller/NotificationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/controller/NotificationController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/controller/NotificationSettingsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/controller/NotificationSettingsController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/controller/OutboxController.java" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/controller/OutboxController.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,11 +43,11 @@
         <option value="Dockerfile" />
         <option value="AnnotationType" />
         <option value="Python Script" />
-        <option value="Enum" />
         <option value="Interface" />
         <option value="Interface" />
-        <option value="Class" />
         <option value="Record" />
+        <option value="Class" />
+        <option value="Enum" />
       </list>
     </option>
   </component>
@@ -101,7 +100,7 @@
     "git-widget-placeholder": "dev",
     "jdk.selected.JAVA_MODULE": "corretto-21",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/gogat/Git/BookStatistic-Web/k8s/notification-service",
+    "last_opened_file_path": "C:/Users/gogat/Git/BookStatistic-Web/account-service/src/main/java/org/jedi_bachelor/bookstatistic/accountservice/configuration",
     "onboarding.tips.debug.path": "C:/Users/gogat/Git/BookStatistic-Web/analyze-service/src/main/java/org/jedi_bachelor/bookstatistic/analyzeservice/Main.java",
     "project.structure.last.edited": "Libraries",
     "project.structure.proportion": "0.15",
@@ -111,11 +110,11 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\gogat\Git\BookStatistic-Web\account-service\src\main\java\org\jedi_bachelor\bookstatistic\accountservice\configuration" />
+      <recent name="C:\Users\gogat\Git\BookStatistic-Web\account-service\src\main\java\org\jedi_bachelor\bookstatistic\accountservice\dto" />
       <recent name="C:\Users\gogat\Git\BookStatistic-Web\k8s\notification-service" />
       <recent name="C:\Users\gogat\Git\BookStatistic-Web\k8s\gateway" />
       <recent name="C:\Users\gogat\Git\BookStatistic-Web\k8s\discovery-server" />
-      <recent name="C:\Users\gogat\Git\BookStatistic-Web\k8s\config-server" />
-      <recent name="C:\Users\gogat\Git\BookStatistic-Web\k8s\book-service" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\gogat\Git\BookStatistic-Web\analyze-service\src\main\resources\models" />
@@ -132,7 +131,7 @@
       <recent name="org.jedi_bachelor.bookstatistic.notificationservice.configuration" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.Book-server">
+  <component name="RunManager" selected="Application.Account-server">
     <configuration name="Account-server" type="Application" factoryName="Application">
       <option name="envFilePaths">
         <option value="$PROJECT_DIR$/docker/.env" />

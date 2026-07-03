@@ -37,6 +37,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-admin-client</artifactId>
+            <version>24.0.1</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.jedi_bachelor</groupId>
             <artifactId>spring-iobox-starter</artifactId>
             <version>1.0.0</version>

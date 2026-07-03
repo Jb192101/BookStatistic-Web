@@ -25,6 +25,7 @@ import java.util.List;
 public class NotificationController {
     private final NotificationService notificationService;
 
+    // ROLE_ADMIN, ROLE_MODERATOR
     @GetMapping
     @Operation(summary = "Получение всех уведомлений",
             description = "Получение всех уведомлений всех пользователей")
@@ -53,6 +54,7 @@ public class NotificationController {
         );
     }
 
+    // ROLE_ADMIN, ROLE_MODERATOR
     @PostMapping
     @Operation(
             summary = "Создать уведомление",

@@ -25,8 +25,8 @@ public class UserProfile implements UserDetails {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    //@Column(name = "keycloak_sub", unique = true, nullable = false)
-    //private String keycloakSub;
+    @Column(name = "keycloak_sub", unique = true, nullable = false)
+    private String keycloakSub;
 
     @Column(name = "username", nullable = false, unique = true)
     private String username;

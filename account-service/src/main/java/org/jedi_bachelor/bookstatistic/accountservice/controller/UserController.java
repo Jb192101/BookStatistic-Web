@@ -29,6 +29,7 @@ import java.util.UUID;
 public class UserController {
     private final UserService userService;
 
+    // ROLE_ADMIN
     @GetMapping
     public ResponseEntity<?> getAllUsers() {
         List<UserDto> dtos = this.userService.getAllProfiles();
@@ -36,6 +37,7 @@ public class UserController {
         return ResponseEntity.ok(dtos);
     }
 
+    // ROLE_USER, ROLE_ADMIN, ROLE_MODERATOR
     @GetMapping("/{userId}")
     public ResponseEntity<?> getUserById(@PathVariable UUID userId) throws UserNotFoundException {
         UserDto profile = this.userService.getUserById(userId);
@@ -43,6 +45,7 @@ public class UserController {
         return ResponseEntity.ok(profile);
     }
 
+    // ROLE_ADMIN, ROLE_MODERATOR
     @DeleteMapping("/{id}")
     @Operation(summary = "Удаление пользователя",
             description = "Удаление пользователя")
@@ -87,6 +90,7 @@ public class UserController {
         return ResponseEntity.ok().body(dto);
     }
 
+    // ROLE_ADMIN, ROLE_USER, ROLE_MODERATOR
     @PutMapping("/{id}")
     @Operation(summary = "Обновление данных пользователя",
             description = "Обновление данных пользователя")

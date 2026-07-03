@@ -20,6 +20,7 @@ import java.util.UUID;
 public class ResponseController {
     private final ResponseService responseService;
 
+    // ROLE_ADMIN, ROLE_MODERATOR, ROLE_USER
     @PostMapping
     public ResponseEntity<?> addNewResponse(@RequestBody ResponseCreateUpdateDto dto) throws BookNotFoundException, ResponseAlreadyExistsException {
         ResponseDto responseDto = this.responseService.addNewResponse(dto);
@@ -27,6 +28,7 @@ public class ResponseController {
         return ResponseEntity.status(201).body(responseDto);
     }
 
+    // ROLE_ADMIN, ROLE_MODERATOR, ROLE_USER
     @GetMapping("/books/{bookId}")
     public ResponseEntity<?> getResponse(@PathVariable UUID bookId, @RequestBody ResponsePartialKey key) throws ResponseNotFoundException {
         ResponseDto responseDto = this.responseService.getResponse(bookId, key.userId());
@@ -34,6 +36,7 @@ public class ResponseController {
         return ResponseEntity.ok(responseDto);
     }
 
+    // ROLE_ADMIN, ROLE_MODERATOR
     @GetMapping
     public ResponseEntity<?> getAllResponses() {
         List<ResponseDto> dtos = this.responseService.getAllResponses();
@@ -41,6 +44,7 @@ public class ResponseController {
         return ResponseEntity.ok(dtos);
     }
 
+    // ROLE_ADMIN, ROLE_MODERATOR, ROLE_USER
     @GetMapping("/books/{bookId}/all")
     public ResponseEntity<?> getAllResponsesOnBook(@PathVariable UUID bookId) {
         List<ResponseDto> dtos = this.responseService.getAllResponsesOnBook(bookId);
@@ -48,6 +52,7 @@ public class ResponseController {
         return ResponseEntity.ok(dtos);
     }
 
+    // ROLE_ADMIN, ROLE_MODERATOR, ROLE_USER
     @GetMapping("/users/{userId}")
     public ResponseEntity<?> getAllResponsesOfUser(@PathVariable UUID userId) {
         List<ResponseDto> dtos = this.responseService.getAllResponsesOfUser(userId);
@@ -55,6 +60,7 @@ public class ResponseController {
         return ResponseEntity.ok(dtos);
     }
 
+    // ROLE_ADMIN, ROLE_MODERATOR, ROLE_USER
     @PutMapping
     public ResponseEntity<?> updateResponse(@RequestBody ResponseCreateUpdateDto dto) throws ResponseNotFoundException {
         ResponseDto responseDto = this.responseService.updateResponse(dto);
@@ -62,6 +68,7 @@ public class ResponseController {
         return ResponseEntity.ok(responseDto);
     }
 
+    // ROLE_ADMIN, ROLE_MODERATOR, ROLE_USER
     @DeleteMapping("/books/{bookId}")
     public ResponseEntity<?> deleteResponse(@PathVariable UUID bookId, @RequestBody ResponsePartialKey key) throws ResponseNotFoundException {
         ResponseDto deleted = this.responseService.deleteResponse(bookId, key.userId());

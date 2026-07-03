@@ -21,7 +21,6 @@ public record RegisterDto(
         @NotNull
         String firstName,
 
-        @NotNull
         String middleName,
 
         @NotNull
@@ -30,6 +29,8 @@ public record RegisterDto(
         @NotNull
         @Email
         String email,
+
+        @NotNull
         Boolean enableEmail,
 
         @NotNull

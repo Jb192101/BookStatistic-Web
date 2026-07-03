@@ -25,6 +25,7 @@ import java.util.List;
 public class OutboxController {
     private final OutboxContentManager outboxContentManager;
 
+    // ROLE_ADMIN, ROLE_MODERATOR
     @GetMapping
     @Operation(
             summary = "Получение всех outbox-сообщений",

@@ -29,6 +29,7 @@ import java.util.UUID;
 public class NotificationSettingsController {
     private final NotificationService notificationService;
 
+    // ROLE_ADMIN, ROLE_MODERATOR
     @PostMapping
     @Operation(summary = "Добавление настроек уведомлений пользователя")
     @ApiResponses(value = {
@@ -51,6 +52,7 @@ public class NotificationSettingsController {
         return ResponseEntity.status(201).body(null);
     }
 
+    // ROLE_ADMIN, ROLE_MODERATOR, ROLE_USER
     @GetMapping("/{userId}")
     @Operation(summary = "Получение настроек уведомлений пользователя по ID")
     @ApiResponses(value = {
@@ -90,6 +92,7 @@ public class NotificationSettingsController {
         return ResponseEntity.ok(dto);
     }
 
+    // ROLE_ADMIN, ROLE_MODERATOR
     @DeleteMapping("/{userId}")
     @Operation(summary = "Удалить настройку уведомлений пользователя по ID")
     @ApiResponses(value = {
@@ -130,6 +133,7 @@ public class NotificationSettingsController {
     }
 
     // Протестировать
+    // ROLE_ADMIN, ROLE_MODERATOR, ROLE_USER
     @PatchMapping("/{userId}")
     @Operation(summary = "Обновить настройку уведомлений пользователя по ID")
     @ApiResponses(value = {

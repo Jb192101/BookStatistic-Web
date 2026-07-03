@@ -39,20 +39,130 @@ public class SecurityConfiguration {
                                 "/actuator/health",
                                 "/actuator/info",
                                 "/actuator/prometheus",
-                                "/v1/auth/register",
-                                "/v1/auth/login"
+                                "/v1/auth/register"
                         ).permitAll()
+
                         .pathMatchers(
                                 "/v1/books/**",
-                                "/v1/auth/**",
                                 "/v1/analyze/**"
                         ).hasRole("USER")
+
                         .pathMatchers(
-                                "/v1/users/**",
-                                "/v1/notifications/**",
-                                "/v1/email/**",
+                                "GET",
+                                "/v1/authors",
+                                "/v1/authors/{authorId}"
+                        ).hasAnyRole("USER", "ADMIN", "MODERATOR")
+
+                        .pathMatchers(
+                                "GET",
+                                "/v1/books",
+                                "/v1/books/{userId}/statistics",
+                                "/v1/books/{bookId}/text",
+                                "/v1/books/search",
+                                "/v1/books/book-relations/{bookId}",
+                                "/v1/books/user/{userId}"
+                        ).hasAnyRole("USER", "ADMIN", "MODERATOR")
+
+                        .pathMatchers(
+                                "POST",
+                                "/v1/responses"
+                        ).hasAnyRole("USER", "ADMIN", "MODERATOR")
+
+                        .pathMatchers(
+                                "GET",
+                                "/v1/responses/books/{bookId}",
+                                "/v1/responses/books/{bookId}/all",
+                                "/v1/responses/users/{userId}"
+                        ).hasAnyRole("USER", "ADMIN", "MODERATOR")
+
+                        .pathMatchers(
+                                "PUT",
+                                "/v1/responses"
+                        ).hasAnyRole("USER", "ADMIN", "MODERATOR")
+
+                        .pathMatchers(
+                                "DELETE",
+                                "/v1/responses/books/{bookId}"
+                        ).hasAnyRole("USER", "ADMIN", "MODERATOR")
+
+                        .pathMatchers(
+                                "POST",
+                                "/v1/authors",
+                                "/v1/authors/book-relations"
+                        ).hasAnyRole("ADMIN", "MODERATOR")
+
+                        .pathMatchers(
+                                "DELETE",
+                                "/v1/authors/{authorId}",
+                                "/v1/authors/book-relations"
+                        ).hasAnyRole("ADMIN", "MODERATOR")
+
+                        .pathMatchers(
+                                "PUT",
+                                "/v1/authors/{authorId}"
+                        ).hasAnyRole("ADMIN", "MODERATOR")
+
+                        .pathMatchers(
+                                "GET",
+                                "/v1/authors/book-relations",
+                                "/v1/authors/book-relations/{authorId}"
+                        ).hasAnyRole("ADMIN", "MODERATOR")
+
+                        .pathMatchers(
+                                "POST",
+                                "/v1/books",
+                                "/v1/books/reading"
+                        ).hasAnyRole("ADMIN", "MODERATOR")
+
+                        .pathMatchers(
+                                "GET",
+                                "/v1/books/{bookId}",
+                                "/v1/books/texts",
+                                "/v1/books/reading/{userId}",
+                                "/v1/books/reading"
+                        ).hasAnyRole("ADMIN", "MODERATOR")
+
+                        .pathMatchers(
+                                "PUT",
+                                "/v1/books/{bookId}"
+                        ).hasAnyRole("ADMIN", "MODERATOR")
+
+                        .pathMatchers(
+                                "PATCH",
+                                "/v1/books/{bookId}",
+                                "/v1/books/{bookId}/text",
+                                "/v1/books/reading"
+                        ).hasAnyRole("ADMIN", "MODERATOR")
+                        .pathMatchers(
+                                "DELETE",
+                                "/v1/books/{bookId}",
+                                "/v1/books/reading/{userId}"
+                        ).hasAnyRole("ADMIN", "MODERATOR")
+
+                        .pathMatchers(
+                                "GET",
+                                "/v1/books/outbox"
+                        ).hasAnyRole("ADMIN", "MODERATOR")
+
+                        .pathMatchers(
+                                "GET",
+                                "/v1/responses"
+                        ).hasAnyRole("ADMIN", "MODERATOR")
+
+                        .pathMatchers(
+                                "GET",
+                                "/v1/users"
+                        ).hasAnyRole("ADMIN", "MODERATOR")
+                        .pathMatchers(
+                                "DELETE",
+                                "/v1/users/{id}"
+                        ).hasAnyRole("ADMIN", "MODERATOR")
+
+                        // ADMIN
+                        .pathMatchers(
                                 "/v1/analyze/training/**"
                         ).hasRole("ADMIN")
+
                         .anyExchange().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2

@@ -29,6 +29,7 @@ import java.util.UUID;
 public class AuthorController {
     private final AuthorService authorService;
 
+    // ROLE_ADMIN, ROLE_MODERATOR
     @PostMapping
     @Operation(summary = "Добавление автора",
             description = "Добавление автора")
@@ -62,6 +63,7 @@ public class AuthorController {
         return ResponseEntity.status(201).body(author);
     }
 
+    // ROLE_ADMIN, ROLE_MODERATOR
     @DeleteMapping("/{authorId}")
     @Operation(summary = "Удаление автора",
             description = "Удаление автора")
@@ -95,6 +97,7 @@ public class AuthorController {
         return ResponseEntity.ok().build();
     }
 
+    // ROLE_ADMIN, ROLE_MODERATOR
     @PutMapping("/{authorId}")
     @Operation(summary = "Обновление данных автора",
             description = "Обновление данных автора")
@@ -130,6 +133,7 @@ public class AuthorController {
         return ResponseEntity.ok(authorDto);
     }
 
+    // ROLE_ADMIN, ROLE_USER, ROLE_MODERATOR
     @GetMapping("/{authorId}")
     @Operation(summary = "Поиск автора",
             description = "Поиск автора по ID")
@@ -163,6 +167,7 @@ public class AuthorController {
         return ResponseEntity.ok(authorDto);
     }
 
+    // ROLE_ADMIN, ROLE_USER, ROLE_MODERATOR
     @GetMapping
     @Operation(summary = "Нахождение всех авторов",
             description = "Нахождение всех авторов")
@@ -189,6 +194,7 @@ public class AuthorController {
         return ResponseEntity.ok(authorDtoList);
     }
 
+    // ROLE_ADMIN, ROLE_MODERATOR
     @PostMapping("/book-relations")
     @Operation(summary = "Привязка отношения",
             description = "Привязка отношения книга-автор")
@@ -215,6 +221,7 @@ public class AuthorController {
         return ResponseEntity.status(201).body(relation);
     }
 
+    // ROLE_ADMIN, ROLE_MODERATOR
     @DeleteMapping("/book-relations")
     @Operation(summary = "Удаление отношения",
             description = "Удаления отношения книга-автор")
@@ -241,6 +248,7 @@ public class AuthorController {
         return ResponseEntity.ok().build();
     }
 
+    // ROLE_ADMIN, ROLE_MODERATOR
     @GetMapping("/book-relations")
     @Operation(summary = "Получение всех отношений",
             description = "Получение всех отношений книга-автор")
@@ -267,6 +275,7 @@ public class AuthorController {
         return ResponseEntity.ok(dtos);
     }
 
+    // ROLE_ADMIN, ROLE_MODERATOR
     @GetMapping("/book-relations/{authorId}")
     @Operation(summary = "Получение всех отношений конкретного автора",
             description = "Получение всех отношений книга-автор конкретного автора")

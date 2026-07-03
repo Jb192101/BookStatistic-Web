@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 public class ModelTrainingController {
     private final ModelTrainerService modelTrainerService;
 
+    // ROLE_ADMIN, ROLE_MODERATOR
     @PostMapping("/run")
     public ResponseEntity<String> runTraining() {
         log.info("Training requested via API");

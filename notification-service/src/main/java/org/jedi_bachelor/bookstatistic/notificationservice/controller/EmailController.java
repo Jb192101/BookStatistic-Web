@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class EmailController {
     private final EmailService emailService;
 
+    // ROLE_ADMIN, ROLE_MODERATOR
     @PostMapping("/broadcast")
     @Operation(summary = "Отправка broadcast-сообщения",
             description = "Отправляет broadcast-сообщение всем, кто пожелал получать уведомления по почте")

@@ -24,6 +24,7 @@ import java.util.List;
 public class InboxController {
     private final InboxContentManager inboxContentManager;
 
+    // ROLE_ADMIN, ROLE_MODERATOR
     @GetMapping
     @Operation(
             summary = "Получение всех inbox-сообщений",

@@ -1,12 +1,19 @@
 package org.jedi_bachelor.bookstatistic.accountservice.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jedi_bachelor.bookstatistic.accountservice.converter.RegistrationConverter;
+import org.jedi_bachelor.bookstatistic.accountservice.dto.JwtResponse;
+import org.jedi_bachelor.bookstatistic.accountservice.entity.Roles;
 import org.jedi_bachelor.bookstatistic.accountservice.entity.UserProfile;
 import org.jedi_bachelor.bookstatistic.accountservice.language.Language;
 import org.jedi_bachelor.bookstatistic.accountservice.mapper.UserMapper;
+import org.jedi_bachelor.bookstatistic.commonslib.dto.request.account.LoginDto;
+import org.keycloak.representations.idm.CredentialRepresentation;
 import org.jedi_bachelor.bookstatistic.accountservice.outbox.OutboxContentManager;
 import org.jedi_bachelor.bookstatistic.accountservice.outbox.entity.OutboxNotificationSettingsMessage;
 import org.jedi_bachelor.bookstatistic.accountservice.outbox.entity.OutboxOperation;
@@ -18,8 +25,17 @@ import org.jedi_bachelor.bookstatistic.commonslib.exceptions.PasswordInvalidExce
 import org.jedi_bachelor.bookstatistic.commonslib.exceptions.UserAlreadyExistsInSystemException;
 import org.jedi_bachelor.bookstatistic.commonslib.exceptions.UserNotFoundException;
 import org.jedi_bachelor.bookstatistic.commonslib.exceptions.UsernameAlreadyExistsException;
+import org.keycloak.admin.client.Keycloak;
+import org.keycloak.admin.client.resource.UsersResource;
+import org.keycloak.representations.idm.RoleRepresentation;
+import org.keycloak.representations.idm.UserRepresentation;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
 
@@ -31,11 +47,29 @@ public class UserService {
 
     private final UserMapper userMapper;
 
+    private final Keycloak keycloakAdmin;
+
+    private final RestTemplate restTemplate = new RestTemplate();
+
     private final RegistrationConverter registrationConverter;
 
     private final OutboxContentManager outboxContentManager;
 
+    private final ObjectMapper objectMapper;
+
     private final PasswordEncoder passwordEncoder;
+
+    @Value("${spring.security.oauth2.client.provider.keycloak.issuer-uri}")
+    private String issuerUri;
+
+    @Value("${spring.security.oauth2.client.registration.keycloak.client-id}")
+    private String clientId;
+
+    @Value("${spring.security.oauth2.client.registration.keycloak.client-secret}")
+    private String clientSecret;
+
+    @Value("${keycloak.realm}")
+    private String realm;
 
     /**
      * Метод получения всех профилей пользователей
@@ -66,6 +100,63 @@ public class UserService {
         return this.userMapper.toDto(profile.get());
     }
 
+    @Transactional
+    public JwtResponse login(LoginDto loginDto) {
+        try {
+            String tokenResponse = this.getKeycloakTokens(loginDto.username(), loginDto.password());
+            return this.parseTokenResponse(tokenResponse);
+        } catch (Exception e) {
+            log.error("Login failed for user: {}", loginDto.username(), e);
+            throw new RuntimeException("Invalid credentials");
+        }
+    }
+
+    @Transactional
+    public void logout(String refreshToken) {
+        String logoutUrl = this.issuerUri + "/protocol/openid-connect/logout";
+
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("client_id", this.clientId);
+        params.add("client_secret", this.clientSecret);
+        params.add("refresh_token", refreshToken);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
+
+        try {
+            this.restTemplate.postForEntity(logoutUrl, request, String.class);
+            log.info("User logged out successfully");
+        } catch (Exception e) {
+            log.warn("Logout failed: {}", e.getMessage());
+        }
+    }
+
+    @Transactional
+    public JwtResponse refreshToken(String refreshToken) {
+        String tokenUrl = this.issuerUri + "/protocol/openid-connect/token";
+
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("client_id", this.clientId);
+        params.add("client_secret", this.clientSecret);
+        params.add("refresh_token", refreshToken);
+        params.add("grant_type", "refresh_token");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
+
+        ResponseEntity<String> response = this.restTemplate.postForEntity(tokenUrl, request, String.class);
+
+        if (response.getStatusCode() == HttpStatus.OK) {
+            return parseTokenResponse(response.getBody());
+        }
+
+        throw new RuntimeException("Failed to refresh token");
+    }
+
     /**
      * Метод регистрации пользователя
      *
@@ -81,24 +172,38 @@ public class UserService {
             throw new PasswordInvalidException(dto.password(), dto.confirmPassword());
         }
 
-        UserProfile userProfile = this.registrationConverter.convert(dto);
+        UserRepresentation keycloakUser = this.createKeycloakUser(dto);
 
-        UserProfile savedProfile = this.userRepository.save(userProfile);
+        // Назначение keycloak-sub
+        try (Response response = this.keycloakAdmin.realm(this.realm).users().create(keycloakUser)) {
 
-        // Назначение keycloak-sub (потом)
+            if (response.getStatus() != 201) {
+                throw new RuntimeException("Failed to create user in Keycloak: " + response.getStatusInfo());
+            }
 
+            String userId = this.extractUserIdFromResponse(response);
+            this.assignDefaultRole(userId);
 
-        // Отправка сообщений в outbox
-        OutboxNotificationSettingsMessage message = new OutboxNotificationSettingsMessage();
-        message.setUserId(savedProfile.getId());
-        message.setOperation(OutboxOperation.ADD_OPERATION);
-        message.setEnableBroadcast(dto.enableBroadcast());
-        message.setEmailEnable(dto.enableEmail());
-        message.setEmailAddress(dto.email());
+            UserProfile userProfile = this.registrationConverter.convert(dto);
+            userProfile.setKeycloakSub(userId);
 
-        this.outboxContentManager.save(message);
+            UserProfile savedProfile = this.userRepository.save(userProfile);
 
-        return this.userMapper.toDto(savedProfile);
+            // Отправка сообщений в outbox
+            OutboxNotificationSettingsMessage message = new OutboxNotificationSettingsMessage();
+            message.setUserId(savedProfile.getId());
+            message.setOperation(OutboxOperation.ADD_OPERATION);
+            message.setEnableBroadcast(dto.enableBroadcast());
+            message.setEmailEnable(dto.enableEmail());
+            message.setEmailAddress(dto.email());
+
+            this.outboxContentManager.save(message);
+
+            return this.userMapper.toDto(savedProfile);
+        } catch (Exception e) {
+            log.error("Registration failed", e);
+            throw new RuntimeException("Registration failed: " + e.getMessage());
+        }
     }
 
     /**
@@ -116,6 +221,8 @@ public class UserService {
         UserProfile deletedProfile = this.userRepository.findById(userId).get();
 
         this.userRepository.deleteById(userId);
+
+        // Удаление из Keycloak (реализовать)
 
         return this.userMapper.toDto(deletedProfile);
     }
@@ -161,8 +268,103 @@ public class UserService {
 
         this.userRepository.save(currentProfile);
 
+        // Изменения в Keycloak
+
         log.info("User with id {} has been updated", id);
 
         return this.userMapper.toDto(currentProfile);
+    }
+
+    /**
+     * Метод получения токенов из Keycloak
+     *
+     * @param username username пользователя
+     * @param password пароль пользователя
+     * @return access token
+     */
+    private String getKeycloakTokens(String username, String password) {
+        String tokenUrl = issuerUri + "/protocol/openid-connect/token";
+
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("client_id", clientId);
+        params.add("client_secret", clientSecret);
+        params.add("username", username);
+        params.add("password", password);
+        params.add("grant_type", "password");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
+
+        ResponseEntity<String> response = this.restTemplate.postForEntity(tokenUrl, request, String.class);
+
+        if (response.getStatusCode() == HttpStatus.OK) {
+            return response.getBody();
+        } else {
+            throw new RuntimeException("Failed to get tokens from Keycloak");
+        }
+    }
+
+    /**
+     * Метод извлечения UserId из ответа
+     */
+    private String extractUserIdFromResponse(Response response) {
+        String location = response.getLocation().toString();
+        return location.substring(location.lastIndexOf("/") + 1);
+    }
+
+    /**
+     * Метод назначения дефолтной роли для пользователя по ID
+     */
+    private void assignDefaultRole(String userId) {
+        UsersResource usersResource = this.keycloakAdmin.realm(this.realm).users();
+
+        RoleRepresentation userRole = this.keycloakAdmin.realm(this.realm)
+                .roles()
+                .get("ROLE_USER")
+                .toRepresentation();
+
+        usersResource.get(userId).roles().realmLevel().add(List.of(userRole));
+        log.info("Assigned USER role to user with ID: {}", userId);
+    }
+
+    /**
+     * Создание пользователя в Keycloak
+     */
+    private UserRepresentation createKeycloakUser(RegisterDto registerDto) {
+        UserRepresentation user = new UserRepresentation();
+        user.setUsername(registerDto.username());
+        user.setEmail(registerDto.email());
+        user.setEnabled(true);
+        user.setEmailVerified(false);
+
+        CredentialRepresentation credential = new CredentialRepresentation();
+        credential.setType(CredentialRepresentation.PASSWORD);
+        credential.setValue(registerDto.password());
+        credential.setTemporary(false);
+        user.setCredentials(List.of(credential));
+
+        return user;
+    }
+
+    /**
+     * Метод парсинга строки в Jwt
+     */
+    private JwtResponse parseTokenResponse(String responseBody) {
+        try {
+            JsonNode json = this.objectMapper.readTree(responseBody);
+
+            return JwtResponse.builder()
+                    .accessToken(json.get("access_token").asText())
+                    .refreshToken(json.get("refresh_token").asText())
+                    .tokenType(json.get("token_type").asText())
+                    .expiresIn(json.get("expires_in").asLong())
+                    .scope(json.has("scope") ? json.get("scope").asText() : null)
+                    .build();
+        } catch (Exception e) {
+            log.error("Failed to parse token response", e);
+            throw new RuntimeException("Failed to parse token response");
+        }
     }
 }

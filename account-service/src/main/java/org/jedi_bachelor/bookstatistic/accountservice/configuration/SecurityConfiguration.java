@@ -2,28 +2,36 @@ package org.jedi_bachelor.bookstatistic.accountservice.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
+@EnableWebSecurity
+@EnableMethodSecurity(jsr250Enabled = true, securedEnabled = true, prePostEnabled = true)
 public class SecurityConfiguration {
     @Bean
-    public PasswordEncoder encoder() {
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .authorizeHttpRequests(auth -> auth
+                        // Открытые эндпоинты (доступны без аутентификации)
+                        .requestMatchers("/v1/auth/**").permitAll()
+                        .requestMatchers("/actuator/health").permitAll()
+                        .requestMatchers("/actuator/info").permitAll()
+                        .anyRequest().authenticated()
                 )
-                .authorizeHttpRequests(authz -> authz
-                        .anyRequest().permitAll()  // ← разрешаем все запросы без аутентификации
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)  // Без сессий (используем JWT)
                 );
 
         return http.build();

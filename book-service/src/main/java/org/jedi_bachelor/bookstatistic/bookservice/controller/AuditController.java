@@ -19,6 +19,7 @@ import java.util.List;
 public class AuditController {
     private final AuditService auditService;
 
+    // ROLE_ADMIN, ROLE_MODERATOR
     @GetMapping
     public ResponseEntity<?> getAuditInfo(@RequestParam("desc") boolean desc) {
         List<AuditRevisionDto> dtos = this.auditService.getUserAuditHistory(desc);

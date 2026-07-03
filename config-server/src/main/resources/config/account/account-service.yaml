@@ -1,4 +1,14 @@
 spring:
+  security:
+    oauth2:
+      client:
+        provider:
+          keycloak:
+            issuer-uri: ${KEYCLOAK_ISSUER_URI:http://localhost:8080/realms/bookstatistic-realm}
+        registration:
+          keycloak:
+            client-id: ${KEYCLOAK_CLIENT_ID:bookstatistic}
+            client-secret: ${KEYCLOAK_CLIENT_SECRET}
   jpa:
     hibernate:
       ddl-auto: update
@@ -57,3 +67,10 @@ kafka:
     sending-notification-result-topic: "sending-notification-result-topic"
   groups:
     bs-group: "bs-group"
+
+keycloak:
+  auth-server-url: ${KEYCLOAK_SERVER_URL:http://localhost:8080}
+  realm: ${KEYCLOAK_REALM:bookstatistic-realm}
+  client-id: ${KEYCLOAK_CLIENT_ID:bookstatistic}
+  credentials:
+    secret: ${KEYCLOAK_CLIENT_SECRET}
