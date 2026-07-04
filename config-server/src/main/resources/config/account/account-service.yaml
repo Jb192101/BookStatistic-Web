@@ -74,3 +74,16 @@ keycloak:
   client-id: ${KEYCLOAK_CLIENT_ID:bookstatistic}
   credentials:
     secret: ${KEYCLOAK_CLIENT_SECRET}
+  init:
+    enabled: ${KEYCLOAK_INIT_ENABLED:false}
+  smtp:
+    host: ${KEYCLOAK_SMTP_HOST:smtp.yandex.ru}
+    port: ${KEYCLOAK_SMTP_PORT:465}
+    from: ${KEYCLOAK_SMTP_FROM}
+    from-display-name: ${KEYCLOAK_SMTP_FROM_DISPLAY_NAME:BookStatistic Team}
+    reply-to: ${KEYCLOAK_SMTP_REPLY_TO}
+    username: ${KEYCLOAK_SMTP_USERNAME}
+    password: ${KEYCLOAK_SMTP_PASSWORD}
+    ssl: ${KEYCLOAK_SMTP_SSL:true}
+    starttls: ${KEYCLOAK_SMTP_STARTTLS:false}
+    auth: ${KEYCLOAK_SMTP_AUTH:true}
