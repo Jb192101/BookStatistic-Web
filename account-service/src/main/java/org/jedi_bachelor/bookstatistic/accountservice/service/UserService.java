@@ -3,6 +3,7 @@ package org.jedi_bachelor.bookstatistic.accountservice.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -214,17 +215,26 @@ public class UserService {
      */
     @Transactional
     public UserDto deleteUser(UUID userId) throws UserNotFoundException {
-        if(!this.userRepository.existsById(userId)) {
-            throw new UserNotFoundException(userId);
-        }
+        UserProfile profile = this.userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
 
-        UserProfile deletedProfile = this.userRepository.findById(userId).get();
+        String keycloakId = profile.getKeycloakSub();
+
+        try {
+            this.keycloakAdmin.realm(this.realm).users().delete(keycloakId);
+
+            log.info("User deleted from Keycloak: {}", keycloakId);
+        } catch (Exception e) {
+            log.error("Failed to delete user from Keycloak: {}", keycloakId, e);
+
+            throw new RuntimeException("Failed to delete user from Keycloak: " + e.getMessage());
+        }
 
         this.userRepository.deleteById(userId);
 
-        // Удаление из Keycloak (реализовать)
+        log.info("User deleted from database: {}", userId);
 
-        return this.userMapper.toDto(deletedProfile);
+        return this.userMapper.toDto(profile);
     }
 
     /**
@@ -266,9 +276,16 @@ public class UserService {
         currentProfile.setPassword(this.passwordEncoder.encode(dto.password()));
         currentProfile.setBirthDay(dto.birthDay());
 
-        this.userRepository.save(currentProfile);
+        UserProfile savedProfile = this.userRepository.save(currentProfile);
+
+        log.info("User with id {} updated in database", id);
 
         // Изменения в Keycloak
+        try {
+            this.updateKeycloakUser(savedProfile, dto);
+        } catch (Exception e) {
+            log.error("Failed to update user in Keycloak: {}", id, e);
+        }
 
         log.info("User with id {} has been updated", id);
 
@@ -335,14 +352,19 @@ public class UserService {
     private UserRepresentation createKeycloakUser(RegisterDto registerDto) {
         UserRepresentation user = new UserRepresentation();
         user.setUsername(registerDto.username());
+        user.setLastName(registerDto.lastName());
+        user.setFirstName(registerDto.firstName());
         user.setEmail(registerDto.email());
         user.setEnabled(true);
-        user.setEmailVerified(false);
+
+        // Пока будет true, потом надо добавить верификацию по почте
+        user.setEmailVerified(true);
 
         CredentialRepresentation credential = new CredentialRepresentation();
         credential.setType(CredentialRepresentation.PASSWORD);
         credential.setValue(registerDto.password());
         credential.setTemporary(false);
+
         user.setCredentials(List.of(credential));
 
         return user;
@@ -365,6 +387,85 @@ public class UserService {
         } catch (Exception e) {
             log.error("Failed to parse token response", e);
             throw new RuntimeException("Failed to parse token response");
+        }
+    }
+
+    /**
+     * Обновление пользователя в Keycloak
+     */
+    private void updateKeycloakUser(UserProfile profile, UserUpdateDto dto) {
+        String keycloakId = profile.getKeycloakSub();
+
+        try {
+            UserRepresentation user = this.keycloakAdmin.realm(this.realm)
+                    .users()
+                    .get(keycloakId)
+                    .toRepresentation();
+
+            log.info("Current user in Keycloak: username={}, firstName={}, lastName={}, email={}",
+                    user.getUsername(), user.getFirstName(), user.getLastName(), user.getEmail());
+
+            UserRepresentation updatedUser = new UserRepresentation();
+
+            updatedUser.setUsername(user.getUsername());
+            updatedUser.setEmail(user.getEmail());
+            updatedUser.setEnabled(user.isEnabled());
+            updatedUser.setEmailVerified(user.isEmailVerified());
+            updatedUser.setFirstName(user.getFirstName());
+            updatedUser.setLastName(user.getLastName());
+
+            boolean hasChanges = false;
+
+            if (dto.username() != null && !dto.username().isEmpty()) {
+                updatedUser.setUsername(dto.username());
+                hasChanges = true;
+                log.info("Updating username to: {}", dto.username());
+            }
+
+            if (dto.firstName() != null && !dto.firstName().isEmpty()) {
+                updatedUser.setFirstName(dto.firstName());
+                hasChanges = true;
+                log.info("Updating firstName to: {}", dto.firstName());
+            }
+
+            if (dto.lastName() != null && !dto.lastName().isEmpty()) {
+                updatedUser.setLastName(dto.lastName());
+                hasChanges = true;
+                log.info("Updating lastName to: {}", dto.lastName());
+            }
+
+            if (dto.password() != null && !dto.password().isEmpty()) {
+                CredentialRepresentation credential = new CredentialRepresentation();
+                credential.setType(CredentialRepresentation.PASSWORD);
+                credential.setValue(dto.password());
+                credential.setTemporary(false);
+                updatedUser.setCredentials(List.of(credential));
+                hasChanges = true;
+                log.info("Updating password");
+            }
+
+            if (dto.email() != null && !dto.email().isEmpty()) {
+                updatedUser.setEmail(dto.email());
+                hasChanges = true;
+                log.info("Updating email to: {}", dto.email());
+            }
+
+            if (hasChanges) {
+                this.keycloakAdmin.realm(this.realm)
+                        .users()
+                        .get(keycloakId)
+                        .update(updatedUser);
+
+                log.info("User updated in Keycloak: {}", keycloakId);
+            } else {
+                log.info("No changes to update in Keycloak for user: {}", keycloakId);
+            }
+
+        } catch (NotFoundException e) {
+            log.warn("User not found in Keycloak: {}", keycloakId);
+        } catch (Exception e) {
+            log.error("Failed to update user in Keycloak: {}", keycloakId, e);
+            throw new RuntimeException("Failed to update user in Keycloak: " + e.getMessage());
         }
     }
 }

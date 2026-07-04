@@ -24,6 +24,7 @@ public class RegistrationConverter implements Converter<UserProfile, RegisterDto
         userProfile.setLastName(dto.lastName());
         userProfile.setUsername(dto.username());
         userProfile.setPassword(this.passwordEncoder.encode(dto.password()));
+        userProfile.setResidenceCountry(dto.residenceCountry());
 
         return userProfile;
     }

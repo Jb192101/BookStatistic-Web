@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
     private final UserService userService;
 
-    // Аккаунт по этому полностью не setup-ится
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterDto dto) throws UserAlreadyExistsInSystemException, PasswordInvalidException {
         UserDto userDto = this.userService.register(dto);

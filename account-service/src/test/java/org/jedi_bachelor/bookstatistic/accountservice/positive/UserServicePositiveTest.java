@@ -72,6 +72,7 @@ class UserServicePositiveTest {
 
         testUserDto = new UserDto(
                 testUserId,
+                "",
                 "testuser",
                 "Test",
                 "User",
@@ -95,7 +96,8 @@ class UserServicePositiveTest {
                 false,
                 "@telegram",
                 LocalDate.of(2000, 1, 1),
-                "EN"
+                "EN",
+                "Russia"
         );
     }
 

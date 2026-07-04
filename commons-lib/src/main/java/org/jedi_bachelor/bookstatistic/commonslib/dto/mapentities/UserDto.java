@@ -6,7 +6,7 @@ import java.util.UUID;
 
 public record UserDto(
     UUID id,
-    //String keycloakSub,
+    String keycloakSub,
     String username,
     String password,
     String firstName,

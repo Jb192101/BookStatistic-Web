@@ -45,6 +45,8 @@ public record RegisterDto(
 
         @NotNull
         @Max(value = 2)
-        String language
+        String language,
+
+        String residenceCountry
 ) {
 }

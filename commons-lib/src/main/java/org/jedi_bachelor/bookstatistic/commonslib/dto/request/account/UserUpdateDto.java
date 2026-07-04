@@ -12,6 +12,7 @@ public record UserUpdateDto(
         String middleName,
         String lastName,
         String language,
+        String email,
 
         @JsonFormat(pattern = "dd-MM-yyyy")
         LocalDate birthDay

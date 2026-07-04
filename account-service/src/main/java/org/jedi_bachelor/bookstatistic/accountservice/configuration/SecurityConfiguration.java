@@ -26,6 +26,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth -> auth
                         // Открытые эндпоинты (доступны без аутентификации)
                         .requestMatchers("/v1/auth/**").permitAll()
+                        .requestMatchers("/v1/users/**").permitAll()
                         .requestMatchers("/actuator/health").permitAll()
                         .requestMatchers("/actuator/info").permitAll()
                         .anyRequest().authenticated()
