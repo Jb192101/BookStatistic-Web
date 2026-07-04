@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jedi_bachelor.bookstatistic.accountservice.converter.RegistrationConverter;
 import org.jedi_bachelor.bookstatistic.accountservice.dto.JwtResponse;
-import org.jedi_bachelor.bookstatistic.accountservice.entity.Roles;
 import org.jedi_bachelor.bookstatistic.accountservice.entity.UserProfile;
 import org.jedi_bachelor.bookstatistic.accountservice.language.Language;
 import org.jedi_bachelor.bookstatistic.accountservice.mapper.UserMapper;
@@ -188,6 +187,11 @@ public class UserService {
             UserProfile userProfile = this.registrationConverter.convert(dto);
             userProfile.setKeycloakSub(userId);
 
+            this.keycloakAdmin.realm(this.realm)
+                    .users()
+                    .get(userProfile.getKeycloakSub())
+                    .sendVerifyEmail();
+
             UserProfile savedProfile = this.userRepository.save(userProfile);
 
             // Отправка сообщений в outbox
@@ -358,7 +362,11 @@ public class UserService {
         user.setEnabled(true);
 
         // Пока будет true, потом надо добавить верификацию по почте
-        user.setEmailVerified(true);
+        user.setEmailVerified(false);
+
+        List<String> requiredActions = new ArrayList<>();
+        requiredActions.add("VERIFY_EMAIL");
+        user.setRequiredActions(requiredActions);
 
         CredentialRepresentation credential = new CredentialRepresentation();
         credential.setType(CredentialRepresentation.PASSWORD);
