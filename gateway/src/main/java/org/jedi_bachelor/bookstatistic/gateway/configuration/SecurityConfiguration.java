@@ -13,16 +13,18 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.NimbusReactiveJwtDecoder;
 import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
-import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.oauth2.server.resource.authentication.ReactiveJwtAuthenticationConverterAdapter;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.reactive.CorsConfigurationSource;
+import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 import reactor.core.publisher.Mono;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Configuration
 @EnableWebFluxSecurity
@@ -34,145 +36,98 @@ public class SecurityConfiguration {
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
         http
                 .csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+
+                // 1. Публичные эндпоинты (без авторизации)
                 .authorizeExchange(exchange -> exchange
+                        // Регистрация и health checks
                         .pathMatchers(
+                                "/v1/auth/register",
+                                "/v1/auth/login",
                                 "/actuator/health",
                                 "/actuator/info",
-                                "/actuator/prometheus",
-                                "/v1/auth/register"
+                                "/actuator/prometheus"
                         ).permitAll()
 
+                        // Swagger / OpenAPI
                         .pathMatchers(
-                                "/v1/books/**",
-                                "/v1/analyze/**"
-                        ).hasRole("USER")
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html"
+                        ).permitAll()
+                )
 
-                        .pathMatchers(
-                                "GET",
-                                "/v1/authors",
-                                "/v1/authors/{authorId}"
-                        ).hasAnyRole("USER", "ADMIN", "MODERATOR")
+                // 2. Эндпоинты с проверкой ролей
+                .authorizeExchange(exchange -> exchange
+                        // Только для USER, ADMIN, MODERATOR
+                        .pathMatchers("/v1/books/**").hasAnyRole("USER", "ADMIN", "MODERATOR")
+                        .pathMatchers("/v1/analyze/**").hasAnyRole("USER", "ADMIN", "MODERATOR")
+                        .pathMatchers("/v1/notifications/**").hasAnyRole("USER", "ADMIN", "MODERATOR")
 
-                        .pathMatchers(
-                                "GET",
-                                "/v1/books",
-                                "/v1/books/{userId}/statistics",
-                                "/v1/books/{bookId}/text",
-                                "/v1/books/search",
-                                "/v1/books/book-relations/{bookId}",
-                                "/v1/books/user/{userId}"
-                        ).hasAnyRole("USER", "ADMIN", "MODERATOR")
+                        // Только для ADMIN и MODERATOR
+                        .pathMatchers("/v1/users/**").hasAnyRole("ADMIN", "MODERATOR")
+                        .pathMatchers("/v1/books/admin/**").hasAnyRole("ADMIN", "MODERATOR")
 
-                        .pathMatchers(
-                                "POST",
-                                "/v1/responses"
-                        ).hasAnyRole("USER", "ADMIN", "MODERATOR")
+                        // Только для ADMIN
+                        .pathMatchers("/v1/analyze/training/**").hasRole("ADMIN")
 
-                        .pathMatchers(
-                                "GET",
-                                "/v1/responses/books/{bookId}",
-                                "/v1/responses/books/{bookId}/all",
-                                "/v1/responses/users/{userId}"
-                        ).hasAnyRole("USER", "ADMIN", "MODERATOR")
-
-                        .pathMatchers(
-                                "PUT",
-                                "/v1/responses"
-                        ).hasAnyRole("USER", "ADMIN", "MODERATOR")
-
-                        .pathMatchers(
-                                "DELETE",
-                                "/v1/responses/books/{bookId}"
-                        ).hasAnyRole("USER", "ADMIN", "MODERATOR")
-
-                        .pathMatchers(
-                                "POST",
-                                "/v1/authors",
-                                "/v1/authors/book-relations"
-                        ).hasAnyRole("ADMIN", "MODERATOR")
-
-                        .pathMatchers(
-                                "DELETE",
-                                "/v1/authors/{authorId}",
-                                "/v1/authors/book-relations"
-                        ).hasAnyRole("ADMIN", "MODERATOR")
-
-                        .pathMatchers(
-                                "PUT",
-                                "/v1/authors/{authorId}"
-                        ).hasAnyRole("ADMIN", "MODERATOR")
-
-                        .pathMatchers(
-                                "GET",
-                                "/v1/authors/book-relations",
-                                "/v1/authors/book-relations/{authorId}"
-                        ).hasAnyRole("ADMIN", "MODERATOR")
-
-                        .pathMatchers(
-                                "POST",
-                                "/v1/books",
-                                "/v1/books/reading"
-                        ).hasAnyRole("ADMIN", "MODERATOR")
-
-                        .pathMatchers(
-                                "GET",
-                                "/v1/books/{bookId}",
-                                "/v1/books/texts",
-                                "/v1/books/reading/{userId}",
-                                "/v1/books/reading"
-                        ).hasAnyRole("ADMIN", "MODERATOR")
-
-                        .pathMatchers(
-                                "PUT",
-                                "/v1/books/{bookId}"
-                        ).hasAnyRole("ADMIN", "MODERATOR")
-
-                        .pathMatchers(
-                                "PATCH",
-                                "/v1/books/{bookId}",
-                                "/v1/books/{bookId}/text",
-                                "/v1/books/reading"
-                        ).hasAnyRole("ADMIN", "MODERATOR")
-                        .pathMatchers(
-                                "DELETE",
-                                "/v1/books/{bookId}",
-                                "/v1/books/reading/{userId}"
-                        ).hasAnyRole("ADMIN", "MODERATOR")
-
-                        .pathMatchers(
-                                "GET",
-                                "/v1/books/outbox"
-                        ).hasAnyRole("ADMIN", "MODERATOR")
-
-                        .pathMatchers(
-                                "GET",
-                                "/v1/responses"
-                        ).hasAnyRole("ADMIN", "MODERATOR")
-
-                        .pathMatchers(
-                                "GET",
-                                "/v1/users"
-                        ).hasAnyRole("ADMIN", "MODERATOR")
-                        .pathMatchers(
-                                "DELETE",
-                                "/v1/users/{id}"
-                        ).hasAnyRole("ADMIN", "MODERATOR")
-
-                        // ADMIN
-                        .pathMatchers(
-                                "/v1/analyze/training/**"
-                        ).hasRole("ADMIN")
-
+                        // Все остальные запросы требуют аутентификации
                         .anyExchange().authenticated()
                 )
+
+                // 3. Настройка JWT Resource Server
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt
                                 .jwtDecoder(reactiveJwtDecoder())
                                 .jwtAuthenticationConverter(grantedAuthoritiesExtractor())
                         )
+                        .authenticationEntryPoint((exchange, e) -> {
+                            // Кастомный ответ при 401
+                            exchange.getResponse().setStatusCode(org.springframework.http.HttpStatus.UNAUTHORIZED);
+                            return exchange.getResponse().writeWith(
+                                    Mono.just(exchange.getResponse()
+                                            .bufferFactory()
+                                            .wrap("{\"error\":\"Unauthorized\",\"message\":\"Invalid or missing token\"}".getBytes())
+                                    )
+                            );
+                        })
+                )
+
+                // 4. Access Denied Handler
+                .exceptionHandling(exceptionHandling -> exceptionHandling
+                        .accessDeniedHandler((exchange, denied) -> {
+                            exchange.getResponse().setStatusCode(org.springframework.http.HttpStatus.FORBIDDEN);
+                            return exchange.getResponse().writeWith(
+                                    Mono.just(exchange.getResponse()
+                                            .bufferFactory()
+                                            .wrap("{\"error\":\"Forbidden\",\"message\":\"Insufficient permissions\"}".getBytes())
+                                    )
+                            );
+                        })
                 );
 
         return http.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList(
+                "http://localhost:3000",  // React dev
+                "http://localhost:8080",  // Keycloak
+                "http://localhost:8081",  // Notification service
+                "http://localhost:8082",  // Book service
+                "http://localhost:8085",  // Analyze service
+                "http://localhost:8083",  // Gateway
+                "http://localhost:8084"   // Account service
+        ));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
     @Bean
@@ -182,41 +137,35 @@ public class SecurityConfiguration {
 
     @Bean
     public Converter<Jwt, Mono<AbstractAuthenticationToken>> grantedAuthoritiesExtractor() {
-        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
-        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(new KeycloakGrantedAuthoritiesConverter());
-        return new ReactiveJwtAuthenticationConverterAdapter(jwtAuthenticationConverter);
+        JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
+        converter.setJwtGrantedAuthoritiesConverter(new KeycloakGrantedAuthoritiesConverter());
+        return new ReactiveJwtAuthenticationConverterAdapter(converter);
     }
 
     static class KeycloakGrantedAuthoritiesConverter implements Converter<Jwt, Collection<GrantedAuthority>> {
-        private final JwtGrantedAuthoritiesConverter defaultGrantedAuthoritiesConverter =
-                new JwtGrantedAuthoritiesConverter();
-
         @Override
         public Collection<GrantedAuthority> convert(Jwt jwt) {
-            Collection<GrantedAuthority> authorities = defaultGrantedAuthoritiesConverter.convert(jwt);
+            Collection<GrantedAuthority> authorities = new java.util.ArrayList<>();
 
+            // Извлечение роли из realm_access
             Map<String, Object> realmAccess = jwt.getClaim("realm_access");
             if (realmAccess != null && realmAccess.containsKey("roles")) {
                 List<String> roles = (List<String>) realmAccess.get("roles");
-                authorities = Stream.concat(
-                                authorities.stream(),
-                                roles.stream()
-                                        .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
-                        )
-                        .collect(Collectors.toList());
+                authorities.addAll(roles.stream()
+                        .filter(role -> role.startsWith("ROLE_") || role.equals("ROLE_USER"))
+                        .map(role -> new SimpleGrantedAuthority(role.startsWith("ROLE_") ? role : "ROLE_" + role))
+                        .collect(Collectors.toList()));
             }
 
+            // Извлечение роли из resource_access (клиентские роли)
             Map<String, Object> resourceAccess = jwt.getClaim("resource_access");
             if (resourceAccess != null) {
                 Map<String, Object> clientAccess = (Map<String, Object>) resourceAccess.get("bookstatistic");
                 if (clientAccess != null && clientAccess.containsKey("roles")) {
                     List<String> roles = (List<String>) clientAccess.get("roles");
-                    authorities = Stream.concat(
-                                    authorities.stream(),
-                                    roles.stream()
-                                            .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
-                            )
-                            .collect(Collectors.toList());
+                    authorities.addAll(roles.stream()
+                            .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+                            .collect(Collectors.toList()));
                 }
             }
 

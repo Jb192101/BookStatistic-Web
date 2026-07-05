@@ -19,6 +19,7 @@ public class SecurityConfiguration {
         return new BCryptPasswordEncoder();
     }
 
+    /*
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -35,6 +36,19 @@ public class SecurityConfiguration {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)  // Без сессий (используем JWT)
                 );
 
+        return http.build();
+    }
+     */
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
+                        .anyRequest().permitAll()
+                )
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                );
         return http.build();
     }
 }

@@ -5,8 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9753a1e7-9738-471e-85b6-9d133f8e3b79" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/analyze-service/src/main/java/org/jedi_bachelor/bookstatistic/analyzeservice/configuration/SecurityConfiguration.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/configuration/SecurityConfiguration.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gateway/src/main/java/org/jedi_bachelor/bookstatistic/gateway/configuration/ReactiveConfiguration.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gateway/src/main/java/org/jedi_bachelor/bookstatistic/gateway/filters/UserContextFilter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/notification-service/src/main/java/org/jedi_bachelor/bookstatistic/notificationservice/configuration/SecurityConfiguration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/accountservice/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/accountservice/service/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/accountservice/configuration/SecurityConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/accountservice/configuration/SecurityConfiguration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/book-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/book-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway/src/main/java/org/jedi_bachelor/bookstatistic/gateway/configuration/SecurityConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/gateway/src/main/java/org/jedi_bachelor/bookstatistic/gateway/configuration/SecurityConfiguration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notification-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -100,11 +109,11 @@
       <recent name="C:\Users\gogat\Git\BookStatistic-Web\docker\conf" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="org.jedi_bachelor.bookstatistic.notificationservice.configuration" />
+      <recent name="org.jedi_bachelor.bookstatistic.bookservice.configuration" />
       <recent name="org.jedi_bachelor.bookstatistic.notificationservice.service" />
       <recent name="org.jedi_bachelor.bookstatistic.bookservice.service" />
       <recent name="org.jedi_bachelor.bookstatistic.analyzeservice.service" />
-      <recent name="org.jedi_bachelor.bookstatistic.gateway.utils" />
-      <recent name="org.jedi_bachelor.bookstatistic.notificationservice.configuration" />
     </key>
   </component>
   <component name="RunManager" selected="Application.Account-server">
