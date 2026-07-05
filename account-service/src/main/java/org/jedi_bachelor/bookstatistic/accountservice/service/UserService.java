@@ -3,6 +3,7 @@ package org.jedi_bachelor.bookstatistic.accountservice.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
@@ -260,7 +261,10 @@ public class UserService {
         UserProfile currentProfile = this.userRepository.findById(id).get();
         String currentUsername = currentProfile.getUsername();
 
-        List<String> usernames = new ArrayList<>(this.userRepository.findAll().stream().map(UserProfile::getUsername).toList());
+        List<String> usernames = new ArrayList<>(this.userRepository.findAll()
+                .stream().map(UserProfile::getUsername)
+                .toList());
+
         usernames.remove(currentUsername);
 
         if(usernames.contains(dto.username())) {
@@ -271,21 +275,21 @@ public class UserService {
             throw new PasswordInvalidException(dto.password(), dto.confirmPassword());
         }
 
-        // Изменение данных
-        currentProfile.setUsername(dto.username());
-        currentProfile.setFirstName(dto.firstName());
-        currentProfile.setMiddleName(dto.middleName());
-        currentProfile.setLastName(dto.lastName());
-        currentProfile.setLanguage(Language.valueOf(dto.language()));
-        currentProfile.setPassword(this.passwordEncoder.encode(dto.password()));
-        currentProfile.setBirthDay(dto.birthDay());
-
-        UserProfile savedProfile = this.userRepository.save(currentProfile);
-
-        log.info("User with id {} updated in database", id);
-
         // Изменения в Keycloak
         try {
+            // Изменение данных
+            currentProfile.setUsername(dto.username());
+            currentProfile.setFirstName(dto.firstName());
+            currentProfile.setMiddleName(dto.middleName());
+            currentProfile.setLastName(dto.lastName());
+            currentProfile.setLanguage(Language.valueOf(dto.language()));
+            currentProfile.setPassword(this.passwordEncoder.encode(dto.password()));
+            currentProfile.setBirthDay(dto.birthDay());
+
+            UserProfile savedProfile = this.userRepository.save(currentProfile);
+
+            log.info("User with id {} updated in database", id);
+
             this.updateKeycloakUser(savedProfile, dto);
         } catch (Exception e) {
             log.error("Failed to update user in Keycloak: {}", id, e);
@@ -415,6 +419,7 @@ public class UserService {
 
             UserRepresentation updatedUser = new UserRepresentation();
 
+            updatedUser.setId(user.getId());
             updatedUser.setUsername(user.getUsername());
             updatedUser.setEmail(user.getEmail());
             updatedUser.setEnabled(user.isEnabled());
@@ -425,40 +430,70 @@ public class UserService {
             boolean hasChanges = false;
 
             if (dto.username() != null && !dto.username().isEmpty()) {
-                updatedUser.setUsername(dto.username());
+                String newUsername = dto.username();
+                if (newUsername.length() > 36) {
+                    newUsername = newUsername.substring(0, 36);
+                    log.warn("Username truncated to 36 chars: {}", newUsername);
+                }
+                updatedUser.setUsername(newUsername);
                 hasChanges = true;
-                log.info("Updating username to: {}", dto.username());
+                log.info("Updating username to: {}", newUsername);
             }
 
             if (dto.firstName() != null && !dto.firstName().isEmpty()) {
-                updatedUser.setFirstName(dto.firstName());
+                String newFirstName = dto.firstName();
+                if (newFirstName.length() > 50) {
+                    newFirstName = newFirstName.substring(0, 50);
+                    log.warn("FirstName truncated to 50 chars: {}", newFirstName);
+                }
+                updatedUser.setFirstName(newFirstName);
                 hasChanges = true;
-                log.info("Updating firstName to: {}", dto.firstName());
+                log.info("Updating firstName to: {}", newFirstName);
             }
 
             if (dto.lastName() != null && !dto.lastName().isEmpty()) {
-                updatedUser.setLastName(dto.lastName());
+                String newLastName = dto.lastName();
+                if (newLastName.length() > 50) {
+                    newLastName = newLastName.substring(0, 50);
+                    log.warn("LastName truncated to 50 chars: {}", newLastName);
+                }
+                updatedUser.setLastName(newLastName);
                 hasChanges = true;
-                log.info("Updating lastName to: {}", dto.lastName());
-            }
-
-            if (dto.password() != null && !dto.password().isEmpty()) {
-                CredentialRepresentation credential = new CredentialRepresentation();
-                credential.setType(CredentialRepresentation.PASSWORD);
-                credential.setValue(dto.password());
-                credential.setTemporary(false);
-                updatedUser.setCredentials(List.of(credential));
-                hasChanges = true;
-                log.info("Updating password");
+                log.info("Updating lastName to: {}", newLastName);
             }
 
             if (dto.email() != null && !dto.email().isEmpty()) {
-                updatedUser.setEmail(dto.email());
-                hasChanges = true;
-                log.info("Updating email to: {}", dto.email());
+                String newEmail = dto.email();
+                if (!newEmail.contains("@") || !newEmail.contains(".")) {
+                    log.warn("Invalid email format: {}, skipping update", newEmail);
+                } else {
+                    updatedUser.setEmail(newEmail);
+                    updatedUser.setEmailVerified(false);
+                    hasChanges = true;
+                    log.info("Updating email to: {}, email verification reset", newEmail);
+                }
+            }
+
+            if (dto.password() != null && !dto.password().isEmpty()) {
+                String newPassword = dto.password();
+                if (newPassword.length() < 3) {
+                    log.warn("Password too short, minimum 3 characters");
+                } else {
+                    CredentialRepresentation credential = new CredentialRepresentation();
+                    credential.setType(CredentialRepresentation.PASSWORD);
+                    credential.setValue(newPassword);
+                    credential.setTemporary(false);
+                    updatedUser.setCredentials(List.of(credential));
+                    hasChanges = true;
+                    log.info("Updating password");
+                }
             }
 
             if (hasChanges) {
+                log.info("Sending update to Keycloak: username={}, email={}, firstName={}, lastName={}",
+                        updatedUser.getUsername(), updatedUser.getEmail(),
+                        updatedUser.getFirstName(), updatedUser.getLastName());
+
                 this.keycloakAdmin.realm(this.realm)
                         .users()
                         .get(keycloakId)
@@ -471,6 +506,34 @@ public class UserService {
 
         } catch (NotFoundException e) {
             log.warn("User not found in Keycloak: {}", keycloakId);
+        } catch (BadRequestException e) {
+            log.error("Bad request when updating user. This usually means invalid data format.");
+            log.error("Check: username length, email format, special characters");
+
+            try {
+                UserRepresentation currentUser = this.keycloakAdmin.realm(this.realm)
+                        .users()
+                        .get(keycloakId)
+                        .toRepresentation();
+
+                UserRepresentation minimalUpdate = new UserRepresentation();
+                minimalUpdate.setUsername(currentUser.getUsername());
+                minimalUpdate.setEmail(currentUser.getEmail());
+                minimalUpdate.setEnabled(true);
+                minimalUpdate.setEmailVerified(currentUser.isEmailVerified());
+                minimalUpdate.setFirstName(currentUser.getFirstName());
+                minimalUpdate.setLastName(currentUser.getLastName());
+
+                this.keycloakAdmin.realm(this.realm)
+                        .users()
+                        .get(keycloakId)
+                        .update(minimalUpdate);
+
+                log.info("User updated in Keycloak (without password): {}", keycloakId);
+            } catch (Exception ex) {
+                log.error("Even minimal update failed: {}", ex.getMessage());
+                throw new RuntimeException("Failed to update user in Keycloak: " + e.getMessage());
+            }
         } catch (Exception e) {
             log.error("Failed to update user in Keycloak: {}", keycloakId, e);
             throw new RuntimeException("Failed to update user in Keycloak: " + e.getMessage());
