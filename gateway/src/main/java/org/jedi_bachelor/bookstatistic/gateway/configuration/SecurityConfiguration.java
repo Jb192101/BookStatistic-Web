@@ -43,10 +43,7 @@ public class SecurityConfiguration {
                         // Регистрация и health checks
                         .pathMatchers(
                                 "/v1/auth/register",
-                                "/v1/auth/login",
-                                "/actuator/health",
-                                "/actuator/info",
-                                "/actuator/prometheus"
+                                "/v1/auth/login"
                         ).permitAll()
 
                         // Swagger / OpenAPI
@@ -69,7 +66,10 @@ public class SecurityConfiguration {
                         .pathMatchers("/v1/books/admin/**").hasAnyRole("ADMIN", "MODERATOR")
 
                         // Только для ADMIN
-                        .pathMatchers("/v1/analyze/training/**").hasRole("ADMIN")
+                        .pathMatchers("/v1/analyze/training/**",
+                                "/actuator/health",
+                                "/actuator/info",
+                                "/actuator/prometheus").hasRole("ADMIN")
 
                         // Все остальные запросы требуют аутентификации
                         .anyExchange().authenticated()

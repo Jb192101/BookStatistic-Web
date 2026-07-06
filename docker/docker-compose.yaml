@@ -142,6 +142,8 @@ services:
       context: .
       dockerfile: dockerfiles/Dockerfile-book
     container_name: bookstatistic-book-container
+    environment:
+      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=health,info,prometheus,metrics
     ports:
       - ${BOOK_SERVER_PORT}:8082
     networks:
@@ -153,6 +155,8 @@ services:
       context: .
       dockerfile: dockerfiles/Dockerfile-account
     container_name: bookstatistic-account-container
+    environment:
+      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=health,info,prometheus,metrics
     ports:
       - ${ACCOUNT_SERVER_PORT}:8084
     networks:
@@ -164,6 +168,8 @@ services:
       context: .
       dockerfile: dockerfiles/Dockerfile-analyze
     container_name: bookstatistic-analyze-container
+    environment:
+      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=health,info,prometheus,metrics
     ports:
       - ${ANALYZE_SERVER_PORT}:8085
     networks:
@@ -175,6 +181,8 @@ services:
       context: .
       dockerfile: dockerfiles/Dockerfile-notification
     container_name: bookstatistic-notification-container
+    environment:
+      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=health,info,prometheus,metrics
     ports:
       - ${NOTIFICATION_SERVER_PORT}:8081
     networks:
@@ -268,22 +276,6 @@ services:
       - bookstatistic-network
     restart: unless-stopped
 
-  prometheus:
-    image: prom/prometheus:latest
-    volumes:
-      - ./prometheus:/etc/prometheus/
-    container_name: prometheus
-    hostname: prometheus
-    command:
-      - --config.file=/etc/prometheus/prometheus.yml
-    ports:
-      - "9090:9090"
-    restart: unless-stopped
-    environment:
-      TZ: "Europe/Moscow"
-    networks:
-      - default
-
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.15.0
     container_name: elasticsearch
@@ -337,6 +329,51 @@ services:
       - "9411:9411"
     networks:
       - bookstatistic-network
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    ports:
+      - "9090:9090"
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    networks:
+      - bookstatistic-network
+    depends_on:
+      - account-service
+      - book-service
+      - analyze-service
+      - notification-service
+      - gateway
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/provisioning
+      - ./grafana/provisioning:/dashboards
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_INSTALL_PLUGINS=grafana-piechart-panel
+    networks:
+      - bookstatistic-network
+    depends_on:
+      - prometheus
+
+volumes:
+  prometheus_data:
+  grafana_data:
 
 networks:
   bookstatistic-network:

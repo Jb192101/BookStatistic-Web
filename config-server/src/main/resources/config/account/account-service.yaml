@@ -56,8 +56,12 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info,prometheus
+        include: '*'
   endpoint:
+    info:
+      contact:
+        email: support@bookstatistic.com
+        phone: +79009065746
     health:
       show-details: always
 

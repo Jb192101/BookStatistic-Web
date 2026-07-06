@@ -75,7 +75,8 @@ external-urls:
 management:
   endpoints:
     web:
-      base-path: "/"
+      exposure:
+        include: '*'
     enabled-by-default: false
     health:
       enabled: true

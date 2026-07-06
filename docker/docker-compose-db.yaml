@@ -25,6 +25,41 @@ services:
       start_period: 5s
     restart: unless-stopped
 
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./prometheus:/etc/prometheus/
+    container_name: prometheus
+    hostname: prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+    ports:
+      - 9090:9090
+    restart: unless-stopped
+    environment:
+      TZ: "Europe/Moscow"
+    networks:
+      - default
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_INSTALL_PLUGINS=grafana-piechart-panel
+      - GF_PATHS_PROVISIONING=/etc/grafana/provisioning
+    networks:
+      - bookstatistic-network
+    depends_on:
+      - prometheus
+
   mongodb:
     image: mongo:7.0
     container_name: mongodb
@@ -285,3 +320,5 @@ networks:
 
 volumes:
   elasticsearch_data:
+  prometheus_data:
+  grafana_data:
