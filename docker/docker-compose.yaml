@@ -1,6 +1,10 @@
 version: '3.8'
 
 services:
+  # ============================================
+  # БАЗЫ ДАННЫХ
+  # ============================================
+
   notification-postgres:
     image: postgres:16-alpine
     container_name: notification-postgres
@@ -9,14 +13,11 @@ services:
       POSTGRES_USER: ${NOTIFICATION_DB_USER}
       POSTGRES_PASSWORD: ${NOTIFICATION_DB_PASSWORD}
       PGDATA: /var/lib/postgresql/data/pgdata
-      POSTGRES_HOST_AUTH_METHOD: trust
       TZ: UTC+3
     ports:
-      - ${NOTIFICATION_DB_PORT}:5432
+      - "${NOTIFICATION_DB_PORT:-5432}:5432"
     tmpfs:
       - /var/lib/postgresql/data:rw,noexec,nosuid,size=256m
-    volumes:
-      - ./docker/init-notification.sql
     shm_size: "256m"
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB} -h 127.0.0.1 -p 5432" ]
@@ -25,23 +26,22 @@ services:
       retries: 15
       start_period: 5s
     restart: unless-stopped
+    networks:
+      - bookstatistic-network
 
   book-postgres:
     image: postgres:16-alpine
     container_name: book-postgres
     environment:
-      POSTGRES_DB: ${BOOK_DB_NAME}
-      POSTGRES_USER: ${BOOK_DB_USER}
-      POSTGRES_PASSWORD: ${BOOK_DB_PASSWORD}
+      POSTGRES_DB: ${BOOK_PG_DB_NAME}
+      POSTGRES_USER: ${BOOK_PG_DB_USER}
+      POSTGRES_PASSWORD: ${BOOK_PG_DB_PASSWORD}
       PGDATA: /var/lib/postgresql/data/pgdata
-      POSTGRES_HOST_AUTH_METHOD: trust
       TZ: UTC+3
     ports:
-      - ${BOOK_PG_DB_PORT}:5431
+      - "${BOOK_PG_DB_PORT:-5431}:5432"
     tmpfs:
       - /var/lib/postgresql/data:rw,noexec,nosuid,size=256m
-    volumes:
-      - ./docker/init-books.sql
     shm_size: "256m"
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB} -h 127.0.0.1 -p 5432" ]
@@ -50,6 +50,73 @@ services:
       retries: 15
       start_period: 5s
     restart: unless-stopped
+    networks:
+      - bookstatistic-network
+
+  account-postgres:
+    image: postgres:16-alpine
+    container_name: account-postgres
+    environment:
+      POSTGRES_DB: ${ACCOUNT_DB_NAME}
+      POSTGRES_USER: ${ACCOUNT_DB_USER}
+      POSTGRES_PASSWORD: ${ACCOUNT_DB_PASSWORD}
+      PGDATA: /var/lib/postgresql/data/pgdata
+      TZ: UTC+3
+    ports:
+      - "${ACCOUNT_DB_PORT:-5432}:5432"
+    tmpfs:
+      - /var/lib/postgresql/data:rw,noexec,nosuid,size=256m
+    shm_size: "256m"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB} -h 127.0.0.1 -p 5432" ]
+      interval: 5s
+      timeout: 3s
+      retries: 15
+      start_period: 5s
+    restart: unless-stopped
+    networks:
+      - bookstatistic-network
+
+  analyze-postgres:
+    image: postgres:16-alpine
+    container_name: analyze-postgres
+    environment:
+      POSTGRES_DB: ${ANALYZE_PG_DB_NAME}
+      POSTGRES_USER: ${ANALYZE_PG_DB_USER}
+      POSTGRES_PASSWORD: ${ANALYZE_PG_DB_PASSWORD}
+      PGDATA: /var/lib/postgresql/data/pgdata
+      TZ: UTC+3
+    ports:
+      - "${ANALYZE_PG_DB_PORT:-5432}:5432"
+    tmpfs:
+      - /var/lib/postgresql/data:rw,noexec,nosuid,size=256m
+    shm_size: "256m"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB} -h 127.0.0.1 -p 5432" ]
+      interval: 5s
+      timeout: 3s
+      retries: 15
+      start_period: 5s
+    restart: unless-stopped
+    networks:
+      - bookstatistic-network
+
+  keycloak-postgres:
+    image: postgres:16-alpine
+    container_name: keycloak-postgres
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: keycloak
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U keycloak -d keycloak" ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - bookstatistic-network
 
   mongodb:
     image: mongo:7.0
@@ -60,7 +127,7 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${BOOK_MONGO_DB_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${BOOK_MONGO_DB_PASSWORD}
-      MONGO_INITDB_DATABASE: ${BOOK_MONGO_DB_HOSTNAME}
+      MONGO_INITDB_DATABASE: ${BOOK_MONGO_DB_NAME}
     volumes:
       - mongodb_data:/data/db
       - ./docker/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
@@ -77,163 +144,298 @@ services:
     image: redis:7-alpine
     container_name: book-redis
     ports:
-      - ${BOOK_DB_REDIS_PORT}:6379
+      - "${BOOK_DB_REDIS_PORT:-6379}:6379"
     restart: unless-stopped
-
-  account-postgres:
-    image: postgres:16-alpine
-    container_name: account-postgres
-    environment:
-      POSTGRES_DB: ${ACCOUNT_DB_NAME}
-      POSTGRES_USER: ${ACCOUNT_DB_USER}
-      POSTGRES_PASSWORD: ${ACCOUNT_DB_PASSWORD}
-      PGDATA: /var/lib/postgresql/data/pgdata
-      POSTGRES_HOST_AUTH_METHOD: trust
-      TZ: UTC+3
-    ports:
-      - ${ACCOUNT_DB_PORT}:5432
-    tmpfs:
-      - /var/lib/postgresql/data:rw,noexec,nosuid,size=256m
-    volumes:
-      - ./docker/init-account.sql
-    shm_size: "256m"
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB} -h 127.0.0.1 -p 5432" ]
-      interval: 5s
-      timeout: 3s
-      retries: 15
-      start_period: 5s
-    restart: unless-stopped
-
-  analyze-postgres:
-    image: postgres:16-alpine
-    container_name: analyze-postgres
-    environment:
-      POSTGRES_DB: ${ANALYZE_PG_DB_NAME}
-      POSTGRES_USER: ${ANALYZE_PG_DB_USER}
-      POSTGRES_PASSWORD: ${ANALYZE_PG_DB_PASSWORD}
-      PGDATA: /var/lib/postgresql/data/pgdata
-      POSTGRES_HOST_AUTH_METHOD: trust
-      TZ: UTC+3
-    ports:
-      - ${ANALYZE_PG_DB_PORT}:5432
-    tmpfs:
-      - /var/lib/postgresql/data:rw,noexec,nosuid,size=256m
-    volumes:
-      - ./docker/init-analyze.sql
-    shm_size: "256m"
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB} -h 127.0.0.1 -p 5432" ]
-      interval: 5s
-      timeout: 3s
-      retries: 15
-      start_period: 5s
-    restart: unless-stopped
+    networks:
+      - bookstatistic-network
 
   analyze-redis:
     image: redis:7-alpine
     container_name: analyze-redis
     ports:
-      - ${ANALYZE_REDIS_DB_PORT}:6378
+      - "${ANALYZE_REDIS_DB_PORT:-6378}:6378"
+    restart: unless-stopped
+    networks:
+      - bookstatistic-network
+
+  # ============================================
+  # МИКРОСЕРВИСЫ
+  # ============================================
+
+  discovery-server:
+    build:
+      context: ../discovery-server
+      dockerfile: ../docker/dockerfiles/Dockerfile-discovery
+    container_name: discovery-server
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - EUREKA_SERVER_PORT=8070
+    ports:
+      - "8070:8070"
+    networks:
+      - bookstatistic-network
     restart: unless-stopped
 
-  book-service:
+  config-server:
     build:
-      context: .
-      dockerfile: dockerfiles/Dockerfile-book
-    container_name: bookstatistic-book-container
+      context: ../config-server
+      dockerfile: ../docker/dockerfiles/Dockerfile-config
+    container_name: config-server
     environment:
-      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=health,info,prometheus,metrics
+      - SPRING_PROFILES_ACTIVE=prod
+      - CONFIG_SERVER_PORT=8071
     ports:
-      - ${BOOK_SERVER_PORT}:8082
+      - "8071:8071"
     networks:
       - bookstatistic-network
     restart: unless-stopped
 
   account-service:
     build:
-      context: .
-      dockerfile: dockerfiles/Dockerfile-account
-    container_name: bookstatistic-account-container
+      context: ../account-service
+      dockerfile: ../docker/dockerfiles/Dockerfile-account
+    container_name: account-service
     environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - ACCOUNT_SERVER_PORT=8084
+      - ACCOUNT_DB_URL=jdbc:postgresql://account-postgres:5432/${ACCOUNT_DB_NAME}
+      - ACCOUNT_DB_USER=${ACCOUNT_DB_USER}
+      - ACCOUNT_DB_PASSWORD=${ACCOUNT_DB_PASSWORD}
+      - KEYCLOAK_SERVER_URL=http://keycloak:8080
+      - KEYCLOAK_ISSUER_URI=http://keycloak:8080/realms/bookstatistic-realm
+      - KEYCLOAK_REALM=bookstatistic-realm
+      - KEYCLOAK_CLIENT_ID=bookstatistic
+      - KEYCLOAK_CLIENT_SECRET=${KEYCLOAK_CLIENT_SECRET}
+      - EUREKA_URL=http://discovery-server:8070/eureka/
+      - EUREKA_REGISTER=true
+      - EUREKA_FETCH=true
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=health,info,prometheus,metrics
     ports:
-      - ${ACCOUNT_SERVER_PORT}:8084
+      - "${ACCOUNT_SERVER_PORT:-8084}:8084"
     networks:
       - bookstatistic-network
     restart: unless-stopped
+    depends_on:
+      account-postgres:
+        condition: service_healthy
+      keycloak-postgres:
+        condition: service_healthy
+      discovery-server:
+        condition: service_started
+      config-server:
+        condition: service_started
+
+  book-service:
+    build:
+      context: ../book-service
+      dockerfile: ../docker/dockerfiles/Dockerfile-book
+    container_name: book-service
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - BOOK_SERVER_PORT=8082
+      - BOOK_PG_DB_URL=jdbc:postgresql://book-postgres:5432/${BOOK_PG_DB_NAME}
+      - BOOK_PG_DB_USER=${BOOK_PG_DB_USER}
+      - BOOK_PG_DB_PASSWORD=${BOOK_PG_DB_PASSWORD}
+      - BOOK_MONGO_DB_PORT=${BOOK_MONGO_DB_PORT}
+      - BOOK_MONGO_DB_USERNAME=${BOOK_MONGO_DB_USERNAME}
+      - BOOK_MONGO_DB_PASSWORD=${BOOK_MONGO_DB_PASSWORD}
+      - BOOK_MONGO_DB_NAME=${BOOK_MONGO_DB_NAME}
+      - MONGO_HOST=mongodb
+      - MONGO_PORT=27017
+      - REDIS_HOST=book-redis
+      - REDIS_PORT=6379
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - KEYCLOAK_SERVER_URL=http://keycloak:8080
+      - KEYCLOAK_REALM=bookstatistic-realm
+      - KEYCLOAK_CLIENT_SECRET=${KEYCLOAK_CLIENT_SECRET}
+      - EUREKA_URL=http://discovery-server:8070/eureka/
+      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=health,info,prometheus,metrics
+      - BOOK_STORAGE_PATH=/data/books
+    ports:
+      - "${BOOK_SERVER_PORT:-8082}:8082"
+    networks:
+      - bookstatistic-network
+    restart: unless-stopped
+    depends_on:
+      book-postgres:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+      discovery-server:
+        condition: service_started
+      config-server:
+        condition: service_started
 
   analyze-service:
     build:
-      context: .
-      dockerfile: dockerfiles/Dockerfile-analyze
-    container_name: bookstatistic-analyze-container
+      context: ../analyze-service
+      dockerfile: ../docker/dockerfiles/Dockerfile-analyze
+    container_name: analyze-service
     environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - ANALYZE_SERVER_PORT=8085
+      - ANALYZE_PG_DB_URL=jdbc:postgresql://analyze-postgres:5432/${ANALYZE_PG_DB_NAME}
+      - ANALYZE_PG_DB_USER=${ANALYZE_PG_DB_USER}
+      - ANALYZE_PG_DB_PASSWORD=${ANALYZE_PG_DB_PASSWORD}
+      - REDIS_HOST=analyze-redis
+      - REDIS_PORT=6378
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - KEYCLOAK_SERVER_URL=http://keycloak:8080
+      - KEYCLOAK_REALM=bookstatistic-realm
+      - KEYCLOAK_CLIENT_SECRET=${KEYCLOAK_CLIENT_SECRET}
+      - ACCOUNT_SERVICE_URL=http://account-service:8084
+      - BOOK_SERVICE_URL=http://book-service:8082
       - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=health,info,prometheus,metrics
     ports:
-      - ${ANALYZE_SERVER_PORT}:8085
+      - "${ANALYZE_SERVER_PORT:-8085}:8085"
     networks:
       - bookstatistic-network
     restart: unless-stopped
+    depends_on:
+      analyze-postgres:
+        condition: service_healthy
+      discovery-server:
+        condition: service_started
+      config-server:
+        condition: service_started
 
   notification-service:
     build:
-      context: .
-      dockerfile: dockerfiles/Dockerfile-notification
-    container_name: bookstatistic-notification-container
+      context: ../notification-service
+      dockerfile: ../docker/dockerfiles/Dockerfile-notification
+    container_name: notification-service
     environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - NOTIFICATION_SERVER_PORT=8081
+      - NOTIFICATION_DB_URL=jdbc:postgresql://notification-postgres:5432/${NOTIFICATION_DB_NAME}
+      - NOTIFICATION_DB_USER=${NOTIFICATION_DB_USER}
+      - NOTIFICATION_DB_PASSWORD=${NOTIFICATION_DB_PASSWORD}
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - EUREKA_URL=http://discovery-server:8070/eureka/
       - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=health,info,prometheus,metrics
+      - EMAIL_HOST=${EMAIL_HOST}
+      - EMAIL_PORT=${EMAIL_PORT}
+      - EMAIL_USERNAME=${EMAIL_USERNAME}
+      - EMAIL_PASSWORD=${EMAIL_PASSWORD}
+      - ACCOUNT_SERVICE_URL=http://account-service:8084
     ports:
-      - ${NOTIFICATION_SERVER_PORT}:8081
+      - "${NOTIFICATION_SERVER_PORT:-8081}:8081"
     networks:
       - bookstatistic-network
     restart: unless-stopped
+    depends_on:
+      notification-postgres:
+        condition: service_healthy
+      discovery-server:
+        condition: service_started
+      config-server:
+        condition: service_started
 
   gateway:
     build:
-      context: .
-      dockerfile: dockerfiles/Dockerfile-gateway
-    container_name: bookstatistic-gateway-container
+      context: ../gateway
+      dockerfile: ../docker/dockerfiles/Dockerfile-gateway
+    container_name: gateway
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - GATEWAY_SERVER_PORT=8083
+      - KEYCLOAK_ISSUER_URI=http://keycloak:8080/realms/bookstatistic-realm
+      - KEYCLOAK_CLIENT_SECRET=${KEYCLOAK_CLIENT_SECRET}
+      - KEYCLOAK_SERVER_URL=http://keycloak:8080
+      - EUREKA_URL=http://discovery-server:8070/eureka/
+      - ACCOUNT_SERVICE_URL=http://account-service:8084
+      - BOOK_SERVICE_URL=http://book-service:8082
+      - ANALYZE_SERVICE_URL=http://analyze-service:8085
+      - NOTIFICATION_SERVICE_URL=http://notification-service:8081
+      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=health,info,prometheus,metrics
     ports:
-      - ${GATEWAY_SERVER_PORT}:8083
+      - "${GATEWAY_SERVER_PORT:-8083}:8083"
+    networks:
+      - bookstatistic-network
+    restart: unless-stopped
+    depends_on:
+      discovery-server:
+        condition: service_started
+      config-server:
+        condition: service_started
+
+  # ============================================
+  # KEYCLOAK
+  # ============================================
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0.1
+    container_name: keycloak
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://keycloak-postgres:5432/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: keycloak
+      KC_HOSTNAME: localhost
+      KC_HTTP_ENABLED: true
+    ports:
+      - "8080:8080"
+    command: start-dev
+    depends_on:
+      keycloak-postgres:
+        condition: service_healthy
+    networks:
+      - bookstatistic-network
+
+  # ============================================
+  # МОНИТОРИНГ И ЛОГГИНГ
+  # ============================================
+
+  zipkin:
+    image: openzipkin/zipkin:latest
+    container_name: zipkin
+    ports:
+      - "9411:9411"
     networks:
       - bookstatistic-network
     restart: unless-stopped
 
-  keycloak:
-    image: jboss/keycloak
-    restart: always
-    environment:
-      KC_DB: postgres
-      KC_DB_URL: jdbc:postgresql://postgres-keycloak:5432/keycloak
-      KC_HOSTNAME: localhost
-      KC_HTTP_ENABLED: true
-      KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: admin123
-      KEYCLOAK_VERSION: 6.0.1
-      KEYCLOAK_USER: ${KEYCLOAK_USER}
-      KEYCLOAK_PASSWORD: ${KEYCLOAK_PASSWORD}
+  prometheus:
+    image: prom/prometheus:latest
     volumes:
-      - ./docker/realm-export.json
+      - ./prometheus:/etc/prometheus/
+    container_name: prometheus
+    hostname: prometheus
     command:
-      - "-b 0.0.0.0"
-      - "-Dkeycloak.import=/opt/jboss/keycloak/realm-export.json"
-      - "-Dkeycloak.profile.feature.scripts=enabled"
-      - "-Dkeycloak.profile.feature.upload_scripts=enabled"
+      - --config.file=/etc/prometheus/prometheus.yml
     ports:
-      - "8090:8090"
-    networks:
-      backend:
-        aliases:
-          - "keycloak"
-
-  postgres-keycloak:
-    image: postgres:15
+      - "9090:9090"
+    restart: unless-stopped
     environment:
-      POSTGRES_DB: keycloak
-      POSTGRES_USER: keycloak
-      POSTGRES_PASSWORD: keycloak123
-      POSTGRES_HOST_AUTH_METHOD: trust
+      TZ: "Europe/Moscow"
+    networks:
+      - bookstatistic-network
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_PLUGINS_PREINSTALL=grafana-piechart-panel
+      - GF_PATHS_PROVISIONING=/etc/grafana/provisioning
+    networks:
+      - bookstatistic-network
+    depends_on:
+      - prometheus
+
+  # ============================================
+  # KAFKA
+  # ============================================
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.4.0
@@ -276,6 +478,10 @@ services:
       - bookstatistic-network
     restart: unless-stopped
 
+  # ============================================
+  # ELK STACK
+  # ============================================
+
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.15.0
     container_name: elasticsearch
@@ -285,95 +491,69 @@ services:
       - cluster.name=docker-cluster
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - xpack.security.enabled=false
+      - xpack.security.enrollment.enabled=false
     ulimits:
       memlock:
         soft: -1
         hard: -1
     volumes:
-      - esdata1:/usr/share/elasticsearch/data
+      - elasticsearch_data:/usr/share/elasticsearch/data
     ports:
-      - 9300:9300
-      - 9200:9200
+      - "9200:9200"
+      - "9300:9300"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9200/_cluster/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
     networks:
       - bookstatistic-network
+
   kibana:
     image: docker.elastic.co/kibana/kibana:8.15.0
     container_name: kibana
     environment:
-      ELASTICSEARCH_URL: "http://elasticsearch:9200"
+      ELASTICSEARCH_HOSTS: "http://elasticsearch:9200"
     ports:
-      - 5601:5601
+      - "5601:5601"
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
     networks:
       - bookstatistic-network
 
   logstash:
     image: docker.elastic.co/logstash/logstash:8.15.0
     container_name: logstash
-    command: logstash -f /etc/logstash/conf.d/logstash.conf
     volumes:
-      - ./config:/etc/logstash/conf.d
+      - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
     ports:
       - "5000:5000"
-    networks:
-      - bookstatistic-network
-
-  zipkin:
-    image: openzipkin/zipkin
-    container_name: zipkin
-    depends_on:
-      - elasticsearch
+      - "9600:9600"
     environment:
-      - STORAGE_TYPE=elasticsearch
-      - ES_HOSTS=elasticsearch:9200
-    ports:
-      - "9411:9411"
+      - xpack.monitoring.enabled=false
+      - LS_JAVA_OPTS=-Xms256m -Xmx256m
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
     networks:
       - bookstatistic-network
 
-  prometheus:
-    image: prom/prometheus:latest
-    container_name: prometheus
-    volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
-      - prometheus_data:/prometheus
-    ports:
-      - "9090:9090"
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--storage.tsdb.path=/prometheus'
-      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
-      - '--web.console.templates=/usr/share/prometheus/consoles'
-      - '--web.enable-lifecycle'
-    networks:
-      - bookstatistic-network
-    depends_on:
-      - account-service
-      - book-service
-      - analyze-service
-      - notification-service
-      - gateway
-
-  grafana:
-    image: grafana/grafana:latest
-    container_name: grafana
-    ports:
-      - "3000:3000"
-    volumes:
-      - grafana_data:/var/lib/grafana
-      - ./grafana/provisioning:/provisioning
-      - ./grafana/provisioning:/dashboards
-    environment:
-      - GF_SECURITY_ADMIN_USER=admin
-      - GF_SECURITY_ADMIN_PASSWORD=admin
-      - GF_INSTALL_PLUGINS=grafana-piechart-panel
-    networks:
-      - bookstatistic-network
-    depends_on:
-      - prometheus
+# ============================================
+# VOLUMES
+# ============================================
 
 volumes:
+  elasticsearch_data:
   prometheus_data:
   grafana_data:
+  mongodb_data:
+
+# ============================================
+# NETWORKS
+# ============================================
 
 networks:
   bookstatistic-network:

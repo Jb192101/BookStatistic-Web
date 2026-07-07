@@ -1,11 +1,13 @@
 spring:
+  profiles:
+    active: native
   application:
     name: book-service
   config:
-    import: configserver:http://localhost:8071
+    import: configserver:${CONFIG_SERVER_PATH}
   cloud:
     config:
-      uri: http://localhost:8071
+      uri: ${CONFIG_SERVER_PATH}
       fail-fast: true
       retry:
         max-attempts: 6

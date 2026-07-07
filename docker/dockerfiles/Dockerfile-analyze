@@ -1,18 +1,19 @@
-FROM openjdk:21-jdk-slim as build
+FROM eclipse-temurin:21-jdk-alpine as build
 
-ARG JAR_FILE
+# Устанавливаем Maven в контейнере
+RUN apk add --no-cache maven
 
-COPY ${JAR_FILE} app.jar
+WORKDIR /app
 
-RUN mkdir -p target/dependency && (cd target/dependency; jar -xf /app.jar)
+COPY . .
 
-FROM openjdk:21-jdk-slim
+# Используем mvn напрямую (без mvnw)
+RUN mvn clean package -DskipTests -pl analyze-service -am -e
+
+FROM eclipse-temurin:21-jre-alpine
 
 VOLUME /tmp
 
-ARG DEPENDENCY=/target/dependency
-COPY --from=build ${DEPENDENCY}/BOOT-INF/lib /app/lib
-COPY --from=build ${DEPENDENCY}/META-INF /app/META-INF
-COPY --from=build ${DEPENDENCY}/BOOT-INF/classes /app
+COPY --from=build /app/analyze-service/target/*.jar app.jar
 
-ENTRYPOINT ["java","-cp","app:app/lib/*","org.jedi_bachelor.bookstatistic.analyzeservice.AnalyzeServiceApplication"]
+ENTRYPOINT ["java","-jar","/app.jar"]

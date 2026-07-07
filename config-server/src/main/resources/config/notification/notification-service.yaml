@@ -9,6 +9,8 @@ eureka:
       defaultZone: http://localhost:8070/eureka/
 
 server:
+  lifecycle.timeout-per-shutdown-phase: 20s
+  shutdown: graceful
   port: ${NOTIFICATION_SERVER_PORT:8081}
 
 spring:
@@ -73,6 +75,9 @@ external-urls:
     base-url: http://localhost:8083/v1/users
 
 management:
+  health:
+    probes:
+      enabled: true
   endpoints:
     web:
       exposure:
@@ -91,3 +96,24 @@ logging:
     org.springframework.security: DEBUG
     org.jedi_bachelor.bookstatistic.notificationservice: DEBUG
     org.springframework.security.oauth2: DEBUG
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      notification-circuitbreaker:
+        registerHealthIndicator: true
+        ringBufferSizeInClosedState: 5
+        ringBufferSizeInHalfOpenState: 3
+        waitDurationInOpenState: 10s
+        failureRateThreshold: 50
+        recordExceptions:
+          - org.springframework.web.client.HttpServerErrorException
+          - java.io.IOException
+          - java.util.concurrent.TimeoutException
+          - org.springframework.web.client.ResourceAccessException
+
+  bulkhead:
+    instances:
+      notification-bulkhead:
+        maxWaitDuration: 2ms
+        maxConcurrentCalls: 20

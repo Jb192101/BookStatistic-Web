@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: book-service
-          image: ${IMAGE_NAME}:${IMAGE_TAG}
+          image: book-service:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8082

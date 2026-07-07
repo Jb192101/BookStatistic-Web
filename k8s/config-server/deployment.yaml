@@ -1,12 +1,12 @@
 apiVersion: apps/v1
-
 kind: Deployment
 metadata:
   name: config-server
+  namespace: bookstatistic
   labels:
     app: config-server
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: config-server
@@ -17,35 +17,35 @@ spec:
     spec:
       containers:
         - name: config-server
-          image: ${IMAGE_NAME}:${IMAGE_TAG}
-          imagePullPolicy: Always
+          image: config-server:latest
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8071
           env:
             - name: SPRING_PROFILES_ACTIVE
-              value: "prod"
-            - name: DB_URL
+              value: "k8s"
+            - name: ENCRYPT_KEY
               valueFrom:
                 secretKeyRef:
-                  name: db-secret
-                  key: url
+                  name: config-secrets
+                  key: encrypt-key
           resources:
             requests:
-              memory: "512Mi"
-              cpu: "500m"
+              memory: "256Mi"
+              cpu: "200m"
             limits:
-              memory: "1Gi"
-              cpu: "1000m"
-
+              memory: "512Mi"
+              cpu: "400m"
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: config-server
+  namespace: bookstatistic
 spec:
   selector:
     app: config-server
   ports:
-    - protocol: TCP
-      port: 8071
+    - port: 8071
       targetPort: 8071
+  type: ClusterIP

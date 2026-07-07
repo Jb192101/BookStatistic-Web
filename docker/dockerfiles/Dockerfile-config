@@ -8,12 +8,12 @@ WORKDIR /app
 COPY . .
 
 # Используем mvn напрямую (без mvnw)
-RUN mvn clean package -DskipTests -pl book-service -am -e
+RUN mvn clean package -DskipTests -pl config-server -am -e
 
 FROM eclipse-temurin:21-jre-alpine
 
 VOLUME /tmp
 
-COPY --from=build /app/book-service/target/*.jar app.jar
+COPY --from=build /app/config-server/target/*.jar app.jar
 
 ENTRYPOINT ["java","-jar","/app.jar"]

@@ -1,0 +1,148 @@
+eureka:
+  instance:
+    preferIpAddress: false
+    hostname: ${EUREKA_INSTANCE_HOSTNAME:notification-service}
+    instance-id: ${spring.application.name}:${random.value}
+    lease-renewal-interval-in-seconds: 30
+    lease-expiration-duration-in-seconds: 90
+  client:
+    registerWithEureka: ${EUREKA_REGISTER:true}
+    fetchRegistry: ${EUREKA_FETCH:true}
+    serviceUrl:
+      defaultZone: ${EUREKA_URL:http://discovery-server:8070/eureka/}
+
+server:
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
+  shutdown: graceful
+  port: ${NOTIFICATION_SERVER_PORT:8081}
+
+spring:
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: false
+        jdbc:
+          batch_size: 20
+        order_inserts: true
+        order_updates: true
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:kafka:9092}
+    consumer:
+      group-id: bs-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+        spring.json.value.default.type: org.jedi_bachelor.bookstatistic.commonslib.dto.request.notification.NotificationCreationDto
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+  zipkin:
+    baseUrl: ${ZIPKIN_URL:http://zipkin:9411}
+
+  sleuth:
+    sampler:
+      percentage: ${TRACING_SAMPLER_PROBABILITY:0.1}
+
+  application:
+    name: notification-service
+
+  datasource:
+    url: ${NOTIFICATION_DB_URL}
+    username: ${NOTIFICATION_DB_USER}
+    password: ${NOTIFICATION_DB_PASSWORD}
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 30000
+
+  mail:
+    host: ${EMAIL_HOST}
+    port: ${EMAIL_PORT}
+    username: ${EMAIL_USERNAME}
+    password: ${EMAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+        ssl:
+          enable: true
+    default-encoding: UTF-8
+
+kafka:
+  topics:
+    sending-notification-topic: "sending-notification-topic"
+    sending-notification-result-topic: "sending-notification-result-topic"
+  groups:
+    bs-group: "bs-group"
+
+external-urls:
+  account:
+    base-url: ${ACCOUNT_SERVICE_URL:http://account-service:8084/v1/users}
+
+management:
+  health:
+    probes:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+    enabled-by-default: false
+    health:
+      enabled: true
+      show-details: when-authorized
+      db:
+        enabled: false
+      diskspace:
+        enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    tags:
+      application: ${spring.application.name}
+
+logging:
+  level:
+    root: WARN
+    org.jedi_bachelor.bookstatistic.notificationservice: INFO
+    org.springframework.security: WARN
+    org.springframework.security.oauth2: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } --- [%15.15t] %-40.40logger{39} : %m%n"
+  file:
+    name: /var/log/notification-service/application.log
+    max-size: 100MB
+    max-history: 7
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      notification-circuitbreaker:
+        registerHealthIndicator: true
+        ringBufferSizeInClosedState: 10
+        ringBufferSizeInHalfOpenState: 5
+        waitDurationInOpenState: 10s
+        failureRateThreshold: 50
+        recordExceptions:
+          - org.springframework.web.client.HttpServerErrorException
+          - java.io.IOException
+          - java.util.concurrent.TimeoutException
+          - org.springframework.web.client.ResourceAccessException
+  bulkhead:
+    instances:
+      notification-bulkhead:
+        maxWaitDuration: 2ms
+        maxConcurrentCalls: 20

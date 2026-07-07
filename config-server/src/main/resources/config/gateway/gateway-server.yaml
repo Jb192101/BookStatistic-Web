@@ -1,11 +1,25 @@
 server:
+  lifecycle.timeout-per-shutdown-phase: 20s
+  shutdown: graceful
   port: ${GATEWAY_SERVER_PORT:8083}
 
 management:
+  health:
+    probes:
+      enabled: true
   endpoints:
     web:
       exposure:
         include: '*'
+
+bookstatistic:
+  routing:
+    analyze: http://localhost:8085
+    book: http://localhost:8082
+    notification: http://localhost:8081
+    gateway: http://localhost:8083
+    keycloak: http://localhost:8080
+    account: http://localhost:8084
 
 eureka:
   instance:

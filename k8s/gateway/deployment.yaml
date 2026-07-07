@@ -6,6 +6,7 @@ metadata:
   labels:
     app: gateway-server
 spec:
+  type: NodePort
   replicas: 2
   selector:
     matchLabels:
@@ -17,7 +18,7 @@ spec:
     spec:
       containers:
         - name: gateway-server
-          image: ${IMAGE_NAME}:${IMAGE_TAG}
+          image: gateway:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8083

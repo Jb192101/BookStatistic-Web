@@ -37,6 +37,8 @@ external-urls:
     post-notification-settings:
 
 server:
+  lifecycle.timeout-per-shutdown-phase: 20s
+  shutdown: graceful
   port: ${ACCOUNT_SERVER_PORT:8084}
 
 eureka:
@@ -53,15 +55,13 @@ zipkin:
   baseUrl: ${ZIPKIN_URL:http://zipkin:9411}
 
 management:
+  health:
+    probes:
+      enabled: true
   endpoints:
     web:
       exposure:
         include: '*'
-  endpoint:
-    info:
-      contact:
-        email: support@bookstatistic.com
-        phone: +79009065746
     health:
       show-details: always
 

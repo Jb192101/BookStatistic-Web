@@ -1,4 +1,6 @@
 server:
+  lifecycle.timeout-per-shutdown-phase: 20s
+  shutdown: graceful
   port: ${ANALYZE_SERVER_PORT:8085}
 
 ml:
@@ -10,6 +12,9 @@ ml:
     path: classpath:models/genre_classifier_dl4j.zip
 
 management:
+  health:
+    probes:
+      enabled: true
   endpoints:
     web:
       exposure:

@@ -32,6 +32,24 @@ public class SecurityConfiguration {
     @Value("${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}")
     private String jwkSetUri;
 
+    @Value("${bookstatistic.routing.keycloak}")
+    private String keycloakRequestPath;
+
+    @Value("${bookstatistic.routing.notification}")
+    private String notificationRequestPath;
+
+    @Value("${bookstatistic.routing.book}")
+    private String bookRequestPath;
+
+    @Value("${bookstatistic.routing.analyze}")
+    private String analyzeRequestPath;
+
+    @Value("${bookstatistic.routing.gateway}")
+    private String gatewayRequestPath;
+
+    @Value("${bookstatistic.routing.account}")
+    private String accountRequestPath;
+
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
         http
@@ -113,13 +131,12 @@ public class SecurityConfiguration {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList(
-                "http://localhost:3000",  // React dev
-                "http://localhost:8080",  // Keycloak
-                "http://localhost:8081",  // Notification service
-                "http://localhost:8082",  // Book service
-                "http://localhost:8085",  // Analyze service
-                "http://localhost:8083",  // Gateway
-                "http://localhost:8084"   // Account service
+                this.keycloakRequestPath,  // Keycloak
+                this.notificationRequestPath,  // Notification service
+                this.bookRequestPath,  // Book service
+                this.analyzeRequestPath,  // Analyze service
+                this.gatewayRequestPath,  // Gateway
+                this.accountRequestPath   // Account service
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
@@ -132,7 +149,7 @@ public class SecurityConfiguration {
 
     @Bean
     public ReactiveJwtDecoder reactiveJwtDecoder() {
-        return NimbusReactiveJwtDecoder.withJwkSetUri(jwkSetUri).build();
+        return NimbusReactiveJwtDecoder.withJwkSetUri(this.jwkSetUri).build();
     }
 
     @Bean

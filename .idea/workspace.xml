@@ -5,25 +5,41 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9753a1e7-9738-471e-85b6-9d133f8e3b79" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/docker/grafana/dashboards/jvm-metrics.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docker/grafana/dashboards/spring-boot-overview.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docker/grafana/provisioning/dashboards/dashboards.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docker/grafana/provisioning/datasources/prometheus.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docker/prometheus/prometheus.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docker/dockerfiles/Dockerfile-config" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/k8s/keycloak/deployment.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/k8s/namespace.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/account-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/account-service/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analyze-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/analyze-service/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/book-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/book-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/account-service/src/main/resources/bootstrap.yml" beforeDir="false" afterPath="$PROJECT_DIR$/account-service/src/main/resources/bootstrap.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/analyze-service/src/main/resources/bootstrap.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/analyze-service/src/main/resources/bootstrap.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/book-service/src/main/resources/bootstrap.yml" beforeDir="false" afterPath="$PROJECT_DIR$/book-service/src/main/resources/bootstrap.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config-server/src/main/resources/config/account/account-service-prod.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config-server/src/main/resources/config/account/account-service-prod.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config-server/src/main/resources/config/account/account-service.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config-server/src/main/resources/config/account/account-service.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config-server/src/main/resources/config/analyze/analyze-service-prod.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config-server/src/main/resources/config/analyze/analyze-service-prod.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config-server/src/main/resources/config/analyze/analyze-service.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config-server/src/main/resources/config/analyze/analyze-service.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config-server/src/main/resources/config/book/book-service-prod.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config-server/src/main/resources/config/book/book-service-prod.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config-server/src/main/resources/config/book/book-service.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config-server/src/main/resources/config/book/book-service.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config-server/src/main/resources/config/gateway/gateway-server-prod.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config-server/src/main/resources/config/gateway/gateway-server-prod.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config-server/src/main/resources/config/gateway/gateway-server.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config-server/src/main/resources/config/gateway/gateway-server.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config-server/src/main/resources/config/notification/notification-service-prod.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config-server/src/main/resources/config/notification/notification-service-prod.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config-server/src/main/resources/config/notification/notification-service.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config-server/src/main/resources/config/notification/notification-service.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker/docker-compose-db.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/docker/docker-compose-db.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker/docker-compose.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/docker/docker-compose.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gateway/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/gateway/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker/dockerfiles/Dockerfile-account" beforeDir="false" afterPath="$PROJECT_DIR$/docker/dockerfiles/Dockerfile-account" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker/dockerfiles/Dockerfile-analyze" beforeDir="false" afterPath="$PROJECT_DIR$/docker/dockerfiles/Dockerfile-analyze" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker/dockerfiles/Dockerfile-book" beforeDir="false" afterPath="$PROJECT_DIR$/docker/dockerfiles/Dockerfile-book" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker/dockerfiles/Dockerfile-configserver" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker/dockerfiles/Dockerfile-discovery" beforeDir="false" afterPath="$PROJECT_DIR$/docker/dockerfiles/Dockerfile-discovery" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker/dockerfiles/Dockerfile-gateway" beforeDir="false" afterPath="$PROJECT_DIR$/docker/dockerfiles/Dockerfile-gateway" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker/dockerfiles/Dockerfile-notification" beforeDir="false" afterPath="$PROJECT_DIR$/docker/dockerfiles/Dockerfile-notification" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gateway/src/main/java/org/jedi_bachelor/bookstatistic/gateway/configuration/SecurityConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/gateway/src/main/java/org/jedi_bachelor/bookstatistic/gateway/configuration/SecurityConfiguration.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/notification-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway/src/main/resources/bootstrap.yml" beforeDir="false" afterPath="$PROJECT_DIR$/gateway/src/main/resources/bootstrap.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/k8s/account-service/deployment.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/k8s/account-service/deployment.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/k8s/analyze-service/deployment.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/k8s/analyze-service/deployment.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/k8s/book-service/deployment.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/k8s/book-service/deployment.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/k8s/config-server/deployment.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/k8s/config-server/deployment.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/k8s/discovery-server/deployment.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/k8s/gateway/deployment.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/k8s/gateway/deployment.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/k8s/notification-service/deployment.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/k8s/notification-service/deployment.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notification-service/src/main/resources/bootstrap.yml" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/src/main/resources/bootstrap.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
