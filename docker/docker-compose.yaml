@@ -164,8 +164,8 @@ services:
 
   discovery-server:
     build:
-      context: ../discovery-server
-      dockerfile: ../docker/dockerfiles/Dockerfile-discovery
+      context: ../
+      dockerfile: discovery-server/Dockerfile
     container_name: discovery-server
     environment:
       - SPRING_PROFILES_ACTIVE=prod
@@ -178,8 +178,8 @@ services:
 
   config-server:
     build:
-      context: ../config-server
-      dockerfile: ../docker/dockerfiles/Dockerfile-config
+      context: ../
+      dockerfile: config-server/Dockerfile
     container_name: config-server
     environment:
       - SPRING_PROFILES_ACTIVE=prod
@@ -192,8 +192,8 @@ services:
 
   account-service:
     build:
-      context: ../account-service
-      dockerfile: ../docker/dockerfiles/Dockerfile-account
+      context: ../
+      dockerfile: account-service/Dockerfile
     container_name: account-service
     environment:
       - SPRING_PROFILES_ACTIVE=prod
@@ -228,8 +228,8 @@ services:
 
   book-service:
     build:
-      context: ../book-service
-      dockerfile: ../docker/dockerfiles/Dockerfile-book
+      context: ../
+      dockerfile: book-service/Dockerfile
     container_name: book-service
     environment:
       - SPRING_PROFILES_ACTIVE=prod
@@ -269,8 +269,8 @@ services:
 
   analyze-service:
     build:
-      context: ../analyze-service
-      dockerfile: ../docker/dockerfiles/Dockerfile-analyze
+      context: ../
+      dockerfile: analyze-service/Dockerfile
     container_name: analyze-service
     environment:
       - SPRING_PROFILES_ACTIVE=prod
@@ -302,8 +302,8 @@ services:
 
   notification-service:
     build:
-      context: ../notification-service
-      dockerfile: ../docker/dockerfiles/Dockerfile-notification
+      context: ../
+      dockerfile: notification-service/Dockerfile
     container_name: notification-service
     environment:
       - SPRING_PROFILES_ACTIVE=prod
@@ -334,8 +334,8 @@ services:
 
   gateway:
     build:
-      context: ../gateway
-      dockerfile: ../docker/dockerfiles/Dockerfile-gateway
+      context: ../
+      dockerfile: gateway/Dockerfile
     container_name: gateway
     environment:
       - SPRING_PROFILES_ACTIVE=prod

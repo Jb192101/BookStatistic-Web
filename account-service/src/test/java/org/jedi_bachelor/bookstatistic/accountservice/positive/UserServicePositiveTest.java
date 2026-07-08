@@ -221,6 +221,7 @@ class UserServicePositiveTest {
                     "U",
                     "User",
                     "EN",
+                    "example@mail.com",
                     LocalDate.of(2000, 1, 1)
             );
 
