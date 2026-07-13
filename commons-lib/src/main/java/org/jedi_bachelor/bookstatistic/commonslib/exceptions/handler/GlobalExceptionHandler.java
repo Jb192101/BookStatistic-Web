@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.Instant;
 
+@Deprecated
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(NotificationNotFoundException.class)
