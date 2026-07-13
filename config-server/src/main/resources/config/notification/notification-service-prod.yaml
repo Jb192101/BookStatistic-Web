@@ -1,16 +1,3 @@
-eureka:
-  instance:
-    preferIpAddress: false
-    hostname: ${EUREKA_INSTANCE_HOSTNAME:notification-service}
-    instance-id: ${spring.application.name}:${random.value}
-    lease-renewal-interval-in-seconds: 30
-    lease-expiration-duration-in-seconds: 90
-  client:
-    registerWithEureka: ${EUREKA_REGISTER:true}
-    fetchRegistry: ${EUREKA_FETCH:true}
-    serviceUrl:
-      defaultZone: ${EUREKA_URL:http://discovery-server:8070/eureka/}
-
 server:
   lifecycle:
     timeout-per-shutdown-phase: 30s
@@ -32,7 +19,7 @@ spring:
         order_updates: true
 
   kafka:
-    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:kafka:9092}
+    bootstrap-servers: kafka:9092
     consumer:
       group-id: bs-group
       auto-offset-reset: earliest
@@ -46,7 +33,7 @@ spring:
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
   zipkin:
-    baseUrl: ${ZIPKIN_URL:http://zipkin:9411}
+    baseUrl: http://zipkin:9411
 
   sleuth:
     sampler:
@@ -92,6 +79,9 @@ external-urls:
     base-url: ${ACCOUNT_SERVICE_URL:http://account-service:8084/v1/users}
 
 management:
+  zipkin:
+    tracing:
+      endpoint: http://zipkin:9411/api/v2/spans
   health:
     probes:
       enabled: true
@@ -122,10 +112,6 @@ logging:
     org.springframework.security.oauth2: WARN
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss.SSS} ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } --- [%15.15t] %-40.40logger{39} : %m%n"
-  file:
-    name: /var/log/notification-service/application.log
-    max-size: 100MB
-    max-history: 7
 
 resilience4j:
   circuitbreaker:

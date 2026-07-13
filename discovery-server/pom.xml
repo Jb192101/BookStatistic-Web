@@ -7,7 +7,7 @@
 
     <groupId>org.jedi_bachelor.bookstatistic.discoveryserver</groupId>
     <artifactId>discovery-server</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
@@ -25,11 +25,12 @@
     </parent>
 
     <dependencies>
-        <!-- Главная зависимость для Eureka Server -->
+        <!--
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
         </dependency>
+        -->
 
         <dependency>
             <groupId>org.springframework.boot</groupId>

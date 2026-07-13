@@ -8,7 +8,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @RefreshScope
-@EnableDiscoveryClient
+//@EnableDiscoveryClient
 @EnableScheduling
 public class BookServiceApplication {
     public static void main(String[] args) {

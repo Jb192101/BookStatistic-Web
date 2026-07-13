@@ -1,13 +1,13 @@
 spring:
   profiles:
-    active: native
+    active: prod
   application:
     name: analyze-service
   config:
-    import: configserver:${CONFIG_SERVER_PATH}
+    import: configserver:http://config-server:8071
   cloud:
     config:
-      uri: ${CONFIG_SERVER_PATH}
+      uri: configserver:http://config-server:8071
       fail-fast: true
       retry:
         max-attempts: 6

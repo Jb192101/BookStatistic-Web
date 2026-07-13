@@ -6,13 +6,16 @@ server:
 
 ml:
   model:
-    path: classpath:models/sbert_base.onnx
+    path: file:/app/models/sbert_base.onnx
   vocab:
-    path: classpath:models/vocab.txt
+    path: file:/app/models/vocab.txt
   classifier:
-    path: classpath:models/genre_classifier_dl4j.zip
+    path: file:/app/models/genre_classifier_dl4j.zip
 
 management:
+  zipkin:
+    tracing:
+      endpoint: http://zipkin:9411/api/v2/spans
   health:
     probes:
       enabled: true
@@ -32,6 +35,15 @@ management:
         http.server.requests: true
 
 spring:
+  data:
+    mongodb:
+      host: ${ANALYZE_MONGO_DB_HOSTNAME}
+      port: ${ANALYZE_MONGO_DB_PORT}
+      username: ${ANALYZE_MONGO_DB_USERNAME}
+      password: ${ANALYZE_MONGO_DB_PASSWORD}
+      database: ${ANALYZE_MONGO_DB_NAME}
+      authentication-database: admin
+
   zipkin:
     baseUrl: ${ZIPKIN_URL:http://zipkin:9411}
   sleuth:
@@ -121,7 +133,3 @@ logging:
     org.springframework.web: WARN
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss.SSS} ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } --- [%15.15t] %-40.40logger{39} : %m%n"
-  file:
-    name: /var/log/analyze-service/application.log
-    max-size: 100MB
-    max-history: 7

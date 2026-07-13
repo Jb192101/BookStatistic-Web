@@ -21,6 +21,9 @@ book:
       - .docx
 
 management:
+  zipkin:
+    tracing:
+      endpoint: http://zipkin:9411/api/v2/spans
   health:
     probes:
       enabled: true
@@ -42,11 +45,11 @@ management:
 spring:
   data:
     mongodb:
-      host: ${MONGO_HOST:mongodb}
-      port: ${MONGO_PORT:27017}
-      username: ${MONGO_USERNAME}
-      password: ${MONGO_PASSWORD}
-      database: ${MONGO_DATABASE:bookstatistic}
+      host: ${BOOK_MONGO_DB_HOSTNAME}
+      port: ${BOOK_MONGO_DB_PORT}
+      username: ${BOOK_MONGO_DB_USERNAME}
+      password: ${BOOK_MONGO_DB_PASSWORD}
+      database: ${BOOK_MONGO_DB_NAME}
       authentication-database: admin
 
   servlet:
@@ -130,7 +133,3 @@ logging:
     org.springframework.web: WARN
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss.SSS} ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } --- [%15.15t] %-40.40logger{39} : %m%n"
-  file:
-    name: /var/log/book-service/application.log
-    max-size: 100MB
-    max-history: 7

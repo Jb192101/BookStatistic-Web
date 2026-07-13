@@ -41,7 +41,7 @@ public class NotificationService {
 
     private final EmailService emailService;
 
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public List<NotificationDto> getAllNotifications() {
         return this.notificationMapper.toDtoList(
                 this.notificationRepository.findAll()
@@ -53,7 +53,7 @@ public class NotificationService {
      *
      * @param dto DTO создания уведомления
      */
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public NotificationDto addNewNotification(NotificationCreationDto dto) throws NotificationSettingsNotExistsException {
         // Создание нового уведомления
         Notification notification = this.converter.convert(dto);
@@ -81,7 +81,7 @@ public class NotificationService {
         return this.notificationMapper.toDto(notification);
     }
 
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public void addNotificationSettings(NotificationSettingsCreatingDto dto) throws NotificationSettingsNotExistsException {
         //if(this.notificationSettingsRepository.existsByUserId(dto.userId())) {
         //    throw new NotificationSettingsNotExistsException(dto.userId());
@@ -99,7 +99,7 @@ public class NotificationService {
         log.info("Notification settings for user with id {} succesfully created", dto.userId());
     }
 
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public NotificationSettingsDto getNotificationSettings(UUID userId) throws UserNotFoundException, UserHaventAccessException {
         //UUID currentUserId = SecurityUtils.getCurrentUserId();
 
@@ -123,7 +123,7 @@ public class NotificationService {
      *
      * @param userId ID пользователя
      */
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public void deleteNotificationSettings(UUID userId) throws UserNotFoundException, UserHaventAccessException {
         //UUID currentUserId = SecurityUtils.getCurrentUserId();
 
@@ -143,8 +143,7 @@ public class NotificationService {
         this.notificationSettingsRepository.delete(settings.get());
     }
 
-
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public NotificationSettingsDto updateNotificationSettings(UUID userId, NotificationSettingsUpdateDto dto) throws UserNotFoundException {
         if(!this.notificationSettingsRepository.existsByUserId(userId)) {
             throw new UserNotFoundException(userId);

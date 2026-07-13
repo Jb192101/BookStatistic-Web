@@ -5,6 +5,9 @@ server:
   port: ${GATEWAY_SERVER_PORT:8083}
 
 management:
+  zipkin:
+    tracing:
+      endpoint: http://zipkin:9411/api/v2/spans
   health:
     probes:
       enabled: true
@@ -27,19 +30,6 @@ bookstatistic:
     gateway: ${GATEWAY_SERVICE_URL:http://gateway:8083}
     keycloak: ${KEYCLOAK_SERVER_URL:http://keycloak:8080}
     account: ${ACCOUNT_SERVICE_URL:http://account-service:8084}
-
-eureka:
-  instance:
-    preferIpAddress: false
-    hostname: ${EUREKA_INSTANCE_HOSTNAME:gateway}
-    instance-id: ${spring.application.name}:${random.value}
-    lease-renewal-interval-in-seconds: 30
-    lease-expiration-duration-in-seconds: 90
-  client:
-    registerWithEureka: ${EUREKA_REGISTER:true}
-    fetchRegistry: ${EUREKA_FETCH:true}
-    serviceUrl:
-      defaultZone: ${EUREKA_URL:http://discovery-server:8070/eureka/}
 
 spring:
   security:
@@ -68,58 +58,36 @@ spring:
       percentage: ${TRACING_SAMPLER_PROBABILITY:0.1}
 
   cloud:
-    discovery:
-      locator:
-        enabled: true
-        lower-case-service-id: true
-    loadbalancer:
-      ribbon:
-        enabled: false
+    loadbalancer.ribbon.enabled: false
     gateway:
       routes:
-        - id: notification-service
-          uri: lb://notification-service
-          predicates:
-            - Path=/v1/notifications/**
-          filters:
-            - RemoveRequestHeader= Cookie,Set-Cookie
-            - name: CircuitBreaker
-              args:
-                name: notificationCircuitBreaker
-                fallbackUri: forward:/fallback/notification
-
-        - id: book-service
-          uri: lb://book-service
-          predicates:
-            - Path=/v1/books/**
-          filters:
-            - RemoveRequestHeader= Cookie,Set-Cookie
-            - name: CircuitBreaker
-              args:
-                name: bookCircuitBreaker
-                fallbackUri: forward:/fallback/book
-
         - id: account-service
-          uri: lb://account-service
+          uri: http://account-service:8084
           predicates:
             - Path=/v1/users/**, /v1/auth/**
           filters:
             - RemoveRequestHeader= Cookie,Set-Cookie
-            - name: CircuitBreaker
-              args:
-                name: accountCircuitBreaker
-                fallbackUri: forward:/fallback/account
+
+        - id: book-service
+          uri: http://book-service:8082
+          predicates:
+            - Path=/v1/books/**
+          filters:
+            - RemoveRequestHeader= Cookie,Set-Cookie
 
         - id: analyze-service
-          uri: lb://analyze-service
+          uri: http://analyze-service:8085
           predicates:
             - Path=/v1/analyze/**
           filters:
             - RemoveRequestHeader= Cookie,Set-Cookie
-            - name: CircuitBreaker
-              args:
-                name: analyzeCircuitBreaker
-                fallbackUri: forward:/fallback/analyze
+
+        - id: notification-service
+          uri: http://notification-service:8081
+          predicates:
+            - Path=/v1/notifications/**
+          filters:
+            - RemoveRequestHeader= Cookie,Set-Cookie
 
 keycloak:
   client-id: bookstatistic
@@ -171,7 +139,3 @@ logging:
     org.springframework.security: WARN
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss.SSS} ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } --- [%15.15t] %-40.40logger{39} : %m%n"
-  file:
-    name: /var/log/gateway/application.log
-    max-size: 100MB
-    max-history: 7

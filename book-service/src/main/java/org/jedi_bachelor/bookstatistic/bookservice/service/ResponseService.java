@@ -41,7 +41,7 @@ public class ResponseService {
      * @throws ResponseAlreadyExistsException если отзыв с таким ключом уже есть
      * @throws BookNotFoundException если книги с таким ID нет
      */
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public ResponseDto addNewResponse(ResponseCreateUpdateDto dto) throws ResponseAlreadyExistsException, BookNotFoundException {
         // Если такой книги нет
         if(!this.bookRepository.existsById(dto.bookId())) {
@@ -68,7 +68,7 @@ public class ResponseService {
      * @return отзыв, если он есть
      * @throws ResponseNotFoundException если отзыва нет
      */
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public ResponseDto getResponse(UUID bookId, UUID userId) throws ResponseNotFoundException {
         Optional<Response> responseOptional = this.responseRepository.findById(new Response.ResponseId(userId, bookId));
 
@@ -83,7 +83,7 @@ public class ResponseService {
      * Метод выдачи всех отзывов в системе
      * @return все отзывы
      */
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public List<ResponseDto> getAllResponses() {
         return this.responseMapper.toDtoList(
                 this.responseRepository.findAll()
@@ -96,7 +96,7 @@ public class ResponseService {
      * @param bookId ID книги
      * @return список отзывов, принадлежащих этой книге
      */
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public List<ResponseDto> getAllResponsesOnBook(UUID bookId) {
         List<Response> responses = this.responseRepository.findAll()
                 .stream().filter(e -> e.getBookId().equals(bookId)).toList();
@@ -104,7 +104,7 @@ public class ResponseService {
         return this.responseMapper.toDtoList(responses);
     }
 
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public List<ResponseDto> getAllResponsesOfUser(UUID userId) {
         List<Response> responses = this.responseRepository.findAll()
                 .stream().filter(e -> e.getUserId().equals(userId)).toList();
@@ -112,7 +112,7 @@ public class ResponseService {
         return this.responseMapper.toDtoList(responses);
     }
 
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public ResponseDto updateResponse(ResponseCreateUpdateDto dto) throws ResponseNotFoundException {
         if(!this.responseRepository.existsById(new Response.ResponseId(dto.userId(), dto.bookId()))) {
             throw new ResponseNotFoundException(dto.userId(), dto.bookId());
@@ -128,7 +128,7 @@ public class ResponseService {
         return this.responseMapper.toDto(response);
     }
 
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public ResponseDto deleteResponse(UUID bookId, UUID userId) throws ResponseNotFoundException {
         if(!this.responseRepository.existsById(new Response.ResponseId(userId, bookId))) {
             throw new ResponseNotFoundException(userId, bookId);

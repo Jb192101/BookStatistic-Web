@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.core.io.Resource;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,9 +24,9 @@ import java.util.Map;
 @Slf4j
 @Service
 public class ONNXEmbeddingService implements EmbeddingService {
-    private final Resource modelResource;
+    private final String modelPath;
 
-    private final Resource vocabResource;
+    private final String vocabPath;
 
     private OrtEnvironment env;
 
@@ -36,17 +38,21 @@ public class ONNXEmbeddingService implements EmbeddingService {
     private static final int MAX_TOKENS = 512;
 
     public ONNXEmbeddingService(
-            @Value("classpath:models/sbert_base.onnx") Resource modelResource,
-            @Value("classpath:models/vocab.txt") Resource vocabResource) {
-        this.modelResource = modelResource;
-        this.vocabResource = vocabResource;
+            @Value("${ml.model.path}") String modelResource,
+            @Value("${ml.vocab.path}") String vocabResource) {
+        this.modelPath = modelResource;
+        this.vocabPath = vocabResource;
     }
 
     @PostConstruct
     public void init() {
         try {
-            String modelPath = modelResource.getFile().getAbsolutePath();
-            String vocabPath = vocabResource.getFile().getAbsolutePath();
+            if (!Files.exists(Paths.get(this.modelPath))) {
+                throw new RuntimeException("Model file not found: " + this.modelPath);
+            }
+            if (!Files.exists(Paths.get(this.vocabPath))) {
+                throw new RuntimeException("Vocab file not found: " + this.vocabPath);
+            }
 
             this.env = OrtEnvironment.getEnvironment();
 
@@ -54,12 +60,12 @@ public class ONNXEmbeddingService implements EmbeddingService {
             options.setOptimizationLevel(OrtSession.SessionOptions.OptLevel.ALL_OPT);
             options.setIntraOpNumThreads(Runtime.getRuntime().availableProcessors());
 
-            this.session = env.createSession(modelPath, options);
-            this.tokenizer = new BertTokenizer(vocabPath);
+            this.session = env.createSession(this.modelPath, options);
+            this.tokenizer = new BertTokenizer(this.vocabPath);
 
-            log.info("ONNX model loaded successfully from: {}", modelPath);
+            log.info("ONNX model loaded successfully from: {}", this.modelPath);
             log.info("Embedding size: {}, Max tokens: {}", EMBEDDING_SIZE, MAX_TOKENS);
-        } catch (OrtException | IOException e) {
+        } catch (OrtException e) {
             log.error("Failed to initialize ONNX model", e);
             throw new RuntimeException("Cannot load SBERT model", e);
         }

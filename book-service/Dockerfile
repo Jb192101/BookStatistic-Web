@@ -21,7 +21,7 @@ RUN mvn install:install-file \
     -Dpackaging=jar \
     -DgeneratePom=true
 
-RUN mvn clean package -DskipTests -pl account-service -am
+RUN mvn clean package -DskipTests -pl book-service -am
 
 FROM eclipse-temurin:21-jre-alpine
 
@@ -30,6 +30,6 @@ WORKDIR /app
 RUN addgroup -S spring && adduser -S spring -G spring
 USER spring
 
-COPY --from=builder /app/account-service/target/*.jar app.jar
+COPY --from=builder /app/book-service/target/*.jar app.jar
 
 ENTRYPOINT ["java", "-XX:+UseContainerSupport", "-XX:MaxRAMPercentage=75.0", "-jar", "app.jar"]

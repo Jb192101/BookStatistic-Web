@@ -72,7 +72,7 @@ public class BookService {
      * @param dto DTO на создание книги
      * @return созданную книгу
      */
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public BookDto addBookWithoutText(BookCreationUpdatingDto dto) {
         Book newBook = this.bookConverter.convert(dto);
 
@@ -87,7 +87,7 @@ public class BookService {
      * @param userId ID пользователя
      * @return список книг
      */
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public List<BookDto> getBooksOfUser(UUID userId) {
         List<Book> resultList = new ArrayList<>();
 
@@ -113,6 +113,7 @@ public class BookService {
      * @return статистику по кол-ву книг каждой категории
      * @throws UserNotFoundException если пользователя с таким ID нет в системе
      */
+    @Transactional(rollbackOn = Exception.class)
     public UserReadingStat getReadingStatsByUserId(UUID userId) {
         List<UserBookRelation> userBookRelations = this.userBookRelationRepository.findById_UserId(userId);
 
@@ -184,7 +185,7 @@ public class BookService {
      * @param bookId ID книги для обновления
      * @param dto DTO с данными на обновление
      */
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public BookDto updateBookData(UUID bookId, BookCreationUpdatingDto dto) throws BookNotFoundException {
         Optional<Book> book = this.bookRepository.findById(bookId);
 
@@ -208,7 +209,7 @@ public class BookService {
      * @return книгу, если она есть
      * @throws BookNotFoundException если книга не найдена
      */
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public BookDto getBookById(UUID bookId) throws BookNotFoundException {
         Optional<Book> bookOptional = this.bookRepository.findById(bookId);
 
@@ -224,7 +225,7 @@ public class BookService {
      *
      * @return список книг
      */
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public List<BookDto> getAllBooks() {
         return this.bookMapper.toDtoList(this.bookRepository.findAll());
     }
@@ -234,7 +235,7 @@ public class BookService {
      *
      * @return список текстов
      */
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public List<TextFile> findAllTexts() {
         return this.bookFileStorageService.findAll();
     }
@@ -242,7 +243,7 @@ public class BookService {
     /**
      * Метод выдачи текста книги по ID книги
      */
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public TextFile getBookTextById(UUID bookId) throws BookNotFoundException, TextNotFoundException {
         if (!this.bookExistsById(bookId)) {
             throw new BookNotFoundException(bookId);
@@ -263,7 +264,7 @@ public class BookService {
      *
      * @param bookId ID книги
      */
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public void deleteBookById(UUID bookId) throws BookNotFoundException {
         if(!this.bookRepository.existsById(bookId)) {
             throw new BookNotFoundException(bookId);
@@ -287,7 +288,7 @@ public class BookService {
      * @param file файл с новым текстом
      * @return обновлённый текст в качестве подтверждения операции
      */
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public TextFile updateBookText(UUID bookId, MultipartFile file) throws BookNotFoundException, IOException {
         if(!this.bookRepository.existsById(bookId)) {
             throw new BookNotFoundException(bookId);
@@ -334,7 +335,7 @@ public class BookService {
     /**
      * Метод связки текста с книгой
      */
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public void linkTextToBook(UUID bookId, MultipartFile file)
             throws BookNotFoundException, IOException, TextAlreadyLinkedException, TextNotFoundException {
 
@@ -379,7 +380,7 @@ public class BookService {
         log.info("Text linked to book: {}", bookId);
     }
 
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public UserBookRelationDto addUserBookRelation(UserBookRelationCreatingUpdatingDto dto) throws BookNotFoundException {
         if(!this.bookRepository.existsById(dto.bookId())) {
             throw new BookNotFoundException(dto.bookId());
@@ -395,7 +396,7 @@ public class BookService {
         return this.userBookMapper.toDto(userBookRelation);
     }
 
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public UserBookRelationDto updateUserBookRelation(UserBookRelationCreatingUpdatingDto dto) throws
             BookNotFoundException, UserBookRelationNotFoundException {
         if(!this.userBookRelationRepository.existsById(new UserBookRelation.UserBookRelationId(dto.userId(), dto.bookId()))) {
@@ -420,7 +421,7 @@ public class BookService {
         return this.userBookMapper.toDto(userBookRelation);
     }
 
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public UserBookRelationDto getUserBookRelation(UUID userId, BookIdEntity key) throws UserBookRelationNotFoundException {
         Optional<UserBookRelation> relation = this.userBookRelationRepository.findById(new UserBookRelation.UserBookRelationId(userId, key.bookId()));
 
@@ -431,14 +432,14 @@ public class BookService {
         return this.userBookMapper.toDto(relation.get());
     }
 
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public List<UserBookRelationDto> findAllUserBookRelations() {
         List<UserBookRelation> relations = this.userBookRelationRepository.findAll();
 
         return this.userBookMapper.toDtoList(relations);
     }
 
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public UserBookRelationDto deleteUserBookRelation(UUID userId, BookIdEntity key) throws UserBookRelationNotFoundException {
         Optional<UserBookRelation> relation = this.userBookRelationRepository.findById(new UserBookRelation.UserBookRelationId(userId, key.bookId()));
 
@@ -451,14 +452,14 @@ public class BookService {
         return this.userBookMapper.toDto(relation.get());
     }
 
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public List<BookAuthorRelationDto> getBookAuthorRelationOfBook(UUID bookId) {
         List<BookAuthorRelation> relations = this.bookAuthorRepository.findByBookId(bookId);
 
         return this.bookAuthorMapper.toDtoList(relations);
     }
 
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public List<BookDto> searchBooksByInputString(String inputString) {
         String lowerCaseResult = inputString.toLowerCase().trim();
 

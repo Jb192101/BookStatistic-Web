@@ -42,7 +42,7 @@ public class AuthorService {
      * @param dto DTO создания автора
      * @return сущность автора
      */
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public AuthorDto addNewAuthor(AuthorCreationUpdatingDto dto) throws AuthorAlreadyExistsException {
         Optional<Author> authorOptional = this.authorRepository.findByFirstNameAndMiddleNameAndLastName(
                 dto.firstName(),
@@ -75,7 +75,7 @@ public class AuthorService {
      *
      * @param authorId ID автора
      */
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public void deleteAuthor(UUID authorId) throws AuthorNotFoundException {
         if(!this.authorRepository.existsById(authorId)) {
             log.info("Author with ID {} does not exists", authorId);
@@ -102,7 +102,7 @@ public class AuthorService {
      * @param dto DTO обновления
      * @return автора с обновлёнными данными (для подтверждения)
      */
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public AuthorDto updateAuthor(UUID authorId, AuthorCreationUpdatingDto dto) throws AuthorNotFoundException {
         Optional<Author> author = this.authorRepository.findById(authorId);
 
@@ -126,7 +126,7 @@ public class AuthorService {
         return this.authorMapper.toDto(savedAuthor);
     }
 
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public AuthorDto getAuthorById(UUID authorId) throws AuthorNotFoundException {
         if(!this.authorRepository.existsById(authorId)) {
             log.info("Author with ID {} does not exists", authorId);
@@ -137,14 +137,14 @@ public class AuthorService {
         return this.authorMapper.toDto(this.authorRepository.findById(authorId).get());
     }
 
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public List<AuthorDto> getAllAuthors() {
         List<Author> authors = this.authorRepository.findAll();
 
         return this.authorMapper.toDtoList(authors);
     }
 
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public BookAuthorRelationDto linkBookToAuthor(LinkBookToAuthorTaskDto dto)
             throws AuthorNotFoundException, BookNotFoundException,
             BookAuthorRelationAlreadyExistsException {
@@ -178,7 +178,7 @@ public class AuthorService {
         return this.bookAuthorMapper.toDto(savedRelation);
     }
 
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public void deleteBookAuthorRelation(BookAuthorRelationKey key)
             throws BookAuthorRelationNotFoundException {
         if(!this.bookAuthorRepository.existsByBook_IdAndAuthor_Id(key.bookId(), key.authorId())) {
@@ -192,14 +192,14 @@ public class AuthorService {
         log.info("Book-author relation with author ID {} and book ID {} succesfully deleted", key.authorId(), key.bookId());
     }
 
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public List<BookAuthorRelationDto> getAllBookAuthorRelations() {
         List<BookAuthorRelation> relations = this.bookAuthorRepository.findAll();
 
         return this.bookAuthorMapper.toDtoList(relations);
     }
 
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public List<BookAuthorRelationDto> getAllBookAuthorRelationsOfAuthor(UUID authorId) {
         List<BookAuthorRelation> relations = this.bookAuthorRepository.findByAuthorId(authorId);
 

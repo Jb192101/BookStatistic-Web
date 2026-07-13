@@ -1,4 +1,7 @@
 spring:
+  cloud:
+    config:
+      enabled: false
   security:
     user:
       name: admin

@@ -31,7 +31,7 @@ public class AuditService {
      * Получить всю историю изменений книг
      * @param desc - выводить в обратном порядке или нет
      */
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public List<AuditRevisionDto> getUserAuditHistory(boolean desc) {
         AuditReader auditReader = AuditReaderFactory.get(this.entityManager);
 

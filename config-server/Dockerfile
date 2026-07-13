@@ -2,7 +2,6 @@ FROM maven:3.9-eclipse-temurin-21-alpine AS builder
 
 WORKDIR /app
 
-# Копируется весь контекст (потом поменяю)
 COPY . .
 
 RUN mvn install:install-file \
@@ -21,15 +20,17 @@ RUN mvn install:install-file \
     -Dpackaging=jar \
     -DgeneratePom=true
 
-RUN mvn clean package -DskipTests -pl account-service -am
+RUN mvn clean package -DskipTests -pl config-server -am
 
 FROM eclipse-temurin:21-jre-alpine
 
 WORKDIR /app
 
+COPY --from=builder /app/config-server/target/*.jar app.jar
+
+COPY --from=builder /app/config-server/src/main/resources/config /config
+
 RUN addgroup -S spring && adduser -S spring -G spring
 USER spring
-
-COPY --from=builder /app/account-service/target/*.jar app.jar
 
 ENTRYPOINT ["java", "-XX:+UseContainerSupport", "-XX:MaxRAMPercentage=75.0", "-jar", "app.jar"]

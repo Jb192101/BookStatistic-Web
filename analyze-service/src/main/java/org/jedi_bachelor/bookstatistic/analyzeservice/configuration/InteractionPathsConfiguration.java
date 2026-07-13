@@ -15,15 +15,15 @@ public class InteractionPathsConfiguration {
     @Value("${external-urls.account.get-account-uri}")
     private String accountGetUri;
 
-    @Value("${external-urls.books.base-url}")
+    @Value("${external-urls.book.book-base-url}")
     private String bookBaseUrl;
 
-    @Value("${external-urls.books.get-users-book-uri}")
+    @Value("${external-urls.book.get-users-book-uri}")
     private String bookGetUsersBooksUri;
 
-    @Value("${external-urls.books.response-base-url}")
+    @Value("${external-urls.book.response-base-url}")
     private String responseBaseUrl;
 
-    @Value("${external-urls.books.get-users-responses-uri}")
+    @Value("${external-urls.book.get-users-responses-uri}")
     private String responseGetUsersResponsesUri;
 }

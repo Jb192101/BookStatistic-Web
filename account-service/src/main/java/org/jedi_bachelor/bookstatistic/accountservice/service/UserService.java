@@ -77,7 +77,7 @@ public class UserService {
      *
      * @return список пользователей
      */
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public List<UserDto> getAllProfiles() {
         List<UserProfile> profiles = this.userRepository.findAll();
 
@@ -90,7 +90,7 @@ public class UserService {
      * @param userId ID пользователя
      * @return пользователя, если он есть
      */
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public UserDto getUserById(UUID userId) throws UserNotFoundException {
         Optional<UserProfile> profile = this.userRepository.findById(userId);
 
@@ -101,7 +101,7 @@ public class UserService {
         return this.userMapper.toDto(profile.get());
     }
 
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public JwtResponse login(LoginDto loginDto) {
         try {
             String tokenResponse = this.getKeycloakTokens(loginDto.username(), loginDto.password());
@@ -112,7 +112,7 @@ public class UserService {
         }
     }
 
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public void logout(String refreshToken) {
         String logoutUrl = this.issuerUri + "/protocol/openid-connect/logout";
 
@@ -134,7 +134,7 @@ public class UserService {
         }
     }
 
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public JwtResponse refreshToken(String refreshToken) {
         String tokenUrl = this.issuerUri + "/protocol/openid-connect/token";
 
@@ -163,7 +163,7 @@ public class UserService {
      *
      * @return новый профиль
      */
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public UserDto register(RegisterDto dto) throws UserAlreadyExistsInSystemException, PasswordInvalidException {
         if(this.userRepository.findByUsername(dto.username()).isPresent()) {
             throw new UserAlreadyExistsInSystemException(dto.username());
@@ -218,7 +218,7 @@ public class UserService {
      * @param userId ID пользователя
      * @return удалённого пользователя
      */
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public UserDto deleteUser(UUID userId) throws UserNotFoundException {
         UserProfile profile = this.userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
@@ -249,7 +249,7 @@ public class UserService {
      * @throws UserNotFoundException если пользователя с ID нет
      * @return пользователя с новыми данными
      */
-    @Transactional
+    @Transactional(rollbackOn = Exception.class)
     public UserDto updateUser(UUID id, UserUpdateDto dto) throws UserNotFoundException, UsernameAlreadyExistsException, PasswordInvalidException {
         if(!this.userRepository.existsById(id)) {
             log.error("User with ID {} doesn't exists", id);
