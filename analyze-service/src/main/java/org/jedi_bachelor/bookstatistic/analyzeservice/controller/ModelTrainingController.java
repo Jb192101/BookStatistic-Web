@@ -18,15 +18,9 @@ public class ModelTrainingController {
     public ResponseEntity<String> runTraining() {
         log.info("Training requested via API");
 
-        try {
-            this.modelTrainerService.train();
+        this.modelTrainerService.train();
 
-            return ResponseEntity.ok("Training completed successfully");
-        } catch (Exception e) {
-            log.error("Training failed", e);
-            return ResponseEntity.internalServerError()
-                    .body("Training failed: " + e.getMessage());
-        }
+        return ResponseEntity.ok("Training completed successfully");
     }
 }
 
