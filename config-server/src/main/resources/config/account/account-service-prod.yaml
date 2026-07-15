@@ -1,0 +1,121 @@
+spring:
+  security:
+    oauth2:
+      client:
+        provider:
+          keycloak:
+            issuer-uri: http://keycloak:8080/realms/bookstatistic-realm
+        registration:
+          keycloak:
+            client-id: ${KEYCLOAK_CLIENT_ID:bookstatistic}
+            client-secret: ${KEYCLOAK_CLIENT_SECRET}
+
+  sleuth:
+    sampler:
+      probability: ${TRACING_SAMPLER_PROBABILITY:0.1}
+
+  application:
+    name: account-service
+
+  datasource:
+    url: jdbc:postgresql://account-postgres:5432/account_pgsql_db
+    username: ${ACCOUNT_DB_USER}
+    password: ${ACCOUNT_DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: false
+    show-sql: false
+
+external-urls:
+  analyze:
+    base-url: http://analyze-service:8085/v1/analyze
+    delete-user-data: /
+  notification:
+    base-url: http://notification-service:8081/v1/notification-setting
+    post-notification-settings:
+
+server:
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
+  shutdown: graceful
+  port: ${ACCOUNT_SERVER_PORT:8084}
+
+zipkin:
+  baseUrl: ${ZIPKIN_URL:http://zipkin:9411}
+
+management:
+  zipkin:
+    tracing:
+      endpoint: http://zipkin:9411/api/v2/spans
+  health:
+    probes:
+      enabled: true
+    liveness-state:
+      enabled: true
+    readiness-state:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+    health:
+      show-details: when-authorized
+      show-components: when-authorized
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    tags:
+      application: ${spring.application.name}
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+
+kafka:
+  bootstrap-servers: kafka:9092
+  topics:
+    sending-notification-topic: "sending-notification-topic"
+    sending-notification-result-topic: "sending-notification-result-topic"
+  groups:
+    bs-group: "bs-group"
+
+keycloak:
+  auth-server-url: http://keycloak:8080
+  realm: ${KEYCLOAK_REALM:bookstatistic-realm}
+  client-id: ${KEYCLOAK_CLIENT_ID:bookstatistic}
+  credentials:
+    secret: ${KEYCLOAK_CLIENT_SECRET}
+  init:
+    enabled: false
+  smtp:
+    host: ${KEYCLOAK_SMTP_HOST}
+    port: ${KEYCLOAK_SMTP_PORT:465}
+    from: ${KEYCLOAK_SMTP_FROM}
+    from-display-name: ${KEYCLOAK_SMTP_FROM_DISPLAY_NAME:BookStatistic Team}
+    reply-to: ${KEYCLOAK_SMTP_REPLY_TO}
+    username: ${KEYCLOAK_SMTP_USERNAME}
+    password: ${KEYCLOAK_SMTP_PASSWORD}
+    ssl: ${KEYCLOAK_SMTP_SSL:true}
+    starttls: ${KEYCLOAK_SMTP_STARTTLS:false}
+    auth: ${KEYCLOAK_SMTP_AUTH:true}
+
+logging:
+  level:
+    root: WARN
+    org.jedi_bachelor.bookstatistic.accountservice: INFO
+    org.springframework.web: WARN
+    org.springframework.security: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } --- [%15.15t] %-40.40logger{39} : %m%n"

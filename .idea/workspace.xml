@@ -6,7 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="9753a1e7-9738-471e-85b6-9d133f8e3b79" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/documentation/ER-diagramm.puml" beforeDir="false" afterPath="$PROJECT_DIR$/documentation/ER-diagramm.puml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/accountservice/exception/AccountExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/account-service/src/main/java/org/jedi_bachelor/bookstatistic/accountservice/exception/AccountExceptionHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/analyze-service/src/main/java/org/jedi_bachelor/bookstatistic/analyzeservice/controller/ModelTrainingController.java" beforeDir="false" afterPath="$PROJECT_DIR$/analyze-service/src/main/java/org/jedi_bachelor/bookstatistic/analyzeservice/controller/ModelTrainingController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/exception/BookExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/book-service/src/main/java/org/jedi_bachelor/bookstatistic/bookservice/exception/BookExceptionHandler.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -16,14 +18,14 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Dockerfile" />
         <option value="AnnotationType" />
         <option value="Python Script" />
-        <option value="Enum" />
+        <option value="Interface" />
         <option value="Record" />
+        <option value="Enum" />
+        <option value="Dockerfile" />
         <option value="Interface" />
         <option value="Class" />
-        <option value="Interface" />
       </list>
     </option>
   </component>
@@ -48,25 +50,162 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;Application.Account-server.executor&quot;: &quot;Run&quot;,
+    &quot;Application.AccountServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Application.Analyze-server.executor&quot;: &quot;Run&quot;,
+    &quot;Application.Book-server.executor&quot;: &quot;Run&quot;,
+    &quot;Application.Config-server.executor&quot;: &quot;Run&quot;,
+    &quot;Application.ConfigApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Application.Discovery-server.executor&quot;: &quot;Run&quot;,
+    &quot;Application.Gateway-server.executor&quot;: &quot;Run&quot;,
+    &quot;Application.JdbcTest.executor&quot;: &quot;Run&quot;,
     &quot;Application.Main.executor&quot;: &quot;Run&quot;,
+    &quot;Application.Notification-server.executor&quot;: &quot;Run&quot;,
+    &quot;Application.NotificationServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.NotificationNegativeTests.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.NotificationPositiveTests.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserServiceNegativeTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UserServicePositiveTest.executor&quot;: &quot;Run&quot;,
+    &quot;Maven.account-service [package].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.analyze-service [package].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.book-service [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.book-service [compile].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.book-service [package].executor&quot;: &quot;Run&quot;,
     &quot;Maven.commons-lib [clean].executor&quot;: &quot;Run&quot;,
-    &quot;OverrideImplement.generate.javadoc&quot;: &quot;true&quot;,
+    &quot;Maven.commons-lib [install].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.commons-lib [package].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.config-server [package].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.discovery-server [package].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.gateway [package].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.notification-service [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.notification-service [compile].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.notification-service [install].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.notification-service [package].executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;account-service-branch&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;dev&quot;,
+    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;corretto-21&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/gogat/OneDrive/Рабочий стол/Учёба РГРТУ/Моделирование/ЛР/LR3&quot;,
-    &quot;onboarding.tips.debug.path&quot;: &quot;C:/Users/gogat/Git/BookStatistic-Web/audit-service/src/main/java/org/jedi_bachelor/bookstatistic/Main.java&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Artifacts&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/gogat/Git/BookStatistic-Web/notification-service&quot;,
+    &quot;onboarding.tips.debug.path&quot;: &quot;C:/Users/gogat/Git/BookStatistic-Web/analyze-service/src/main/java/org/jedi_bachelor/bookstatistic/analyzeservice/Main.java&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Facets&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.24252874&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.56551725&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
   }
 }</component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\gogat\Git\BookStatistic-Web\account-processing\src\main\resources" />
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\gogat\Git\BookStatistic-Web\notification-service" />
+      <recent name="C:\Users\gogat\Git\BookStatistic-Web\ift-module" />
+      <recent name="C:\Users\gogat\Git\BookStatistic-Web\gateway" />
+      <recent name="C:\Users\gogat\Git\BookStatistic-Web\discovery-server" />
+      <recent name="C:\Users\gogat\Git\BookStatistic-Web\config-server" />
     </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\gogat\Git\BookStatistic-Web\docker\prometheus" />
+      <recent name="C:\Users\gogat\Git\BookStatistic-Web\docker" />
+      <recent name="C:\Users\gogat\Git\BookStatistic-Web\analyze-service\src\main\resources\models" />
+      <recent name="C:\Users\gogat\Git\BookStatistic-Web\docker\logstash\pipeline" />
+      <recent name="C:\Users\gogat\Git\BookStatistic-Web\docker\dockerfiles" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="org.jedi_bachelor.bookstatistic.notificationservice.configuration" />
+      <recent name="org.jedi_bachelor.bookstatistic.bookservice.configuration" />
+      <recent name="org.jedi_bachelor.bookstatistic.notificationservice.service" />
+      <recent name="org.jedi_bachelor.bookstatistic.bookservice.service" />
+      <recent name="org.jedi_bachelor.bookstatistic.analyzeservice.service" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Application.Config-server">
+    <configuration name="Account-server" type="Application" factoryName="Application">
+      <option name="envFilePaths">
+        <option value="$PROJECT_DIR$/docker/.env" />
+      </option>
+      <option name="MAIN_CLASS_NAME" value="org.jedi_bachelor.bookstatistic.accountservice.AccountServiceApplication" />
+      <module name="account-service" />
+      <shortenClasspath name="ARGS_FILE" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Analyze-server" type="Application" factoryName="Application">
+      <option name="envFilePaths">
+        <option value="$PROJECT_DIR$/docker/.env" />
+      </option>
+      <option name="MAIN_CLASS_NAME" value="org.jedi_bachelor.bookstatistic.analyzeservice.AnalyzeServiceApplication" />
+      <module name="analyze-service" />
+      <shortenClasspath name="ARGS_FILE" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Book-server" type="Application" factoryName="Application">
+      <option name="envFilePaths">
+        <option value="$PROJECT_DIR$/docker/.env" />
+      </option>
+      <option name="MAIN_CLASS_NAME" value="org.jedi_bachelor.bookstatistic.bookservice.BookServiceApplication" />
+      <module name="book-service" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Config-server" type="Application" factoryName="Application">
+      <option name="envFilePaths">
+        <option value="$PROJECT_DIR$/docker/.env" />
+      </option>
+      <option name="MAIN_CLASS_NAME" value="org.jedi_bachelor.bookstatistic.configserver.ConfigApplication" />
+      <module name="config-server" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Discovery-server" type="Application" factoryName="Application">
+      <option name="envFilePaths">
+        <option value="$PROJECT_DIR$/docker/.env" />
+      </option>
+      <option name="MAIN_CLASS_NAME" value="org.jedi_bachelor.bookstatistic.discoveryserver.DiscoveryServerApplication" />
+      <module name="discovery-server" />
+      <shortenClasspath name="ARGS_FILE" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Gateway-server" type="Application" factoryName="Application">
+      <option name="envFilePaths">
+        <option value="$PROJECT_DIR$/docker/.env" />
+      </option>
+      <option name="MAIN_CLASS_NAME" value="org.jedi_bachelor.bookstatistic.gateway.GatewayApplication" />
+      <module name="gateway" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Notification-server" type="Application" factoryName="Application">
+      <option name="envFilePaths">
+        <option value="$PROJECT_DIR$/docker/.env" />
+      </option>
+      <option name="MAIN_CLASS_NAME" value="org.jedi_bachelor.bookstatistic.notificationservice.NotificationServiceApplication" />
+      <module name="notification-service" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="Application" factoryName="Application">
+      <shortenClasspath name="ARGS_FILE" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Application.Account-server" />
+      <item itemvalue="Application.Analyze-server" />
+      <item itemvalue="Application.Book-server" />
+      <item itemvalue="Application.Config-server" />
+      <item itemvalue="Application.Discovery-server" />
+      <item itemvalue="Application.Gateway-server" />
+      <item itemvalue="Application.Notification-server" />
+    </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -94,5 +233,26 @@
     <option featureType="dependencySupport" implementationName="java:org.thymeleaf:thymeleaf" />
     <option featureType="dependencySupport" implementationName="java:org.springframework:spring-messaging" />
     <option featureType="dependencySupport" implementationName="java:org.springframework.boot:spring-boot" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="org.springframework.web.client.HttpClientErrorException$Unauthorized" package="org.springframework.web.client" />
+          <option name="timeStamp" value="1" />
+        </breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

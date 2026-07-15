@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: config-server
+  profiles:
+    active: native
+  cloud:
+    config:
+      server:
+        encrypt:
+          enabled: true
+        native:
+          search-locations: file:/config/account,file:/config/book,file:/config/analyze,file:/config/notification,file:/config/gateway
+
+encrypt:
+  key: ${ENCRYPT_KEY}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

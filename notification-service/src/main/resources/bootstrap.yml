@@ -1,0 +1,15 @@
+spring:
+  profiles:
+    active: prod
+  application:
+    name: notification-service
+  config:
+    import: configserver:${CONFIG_SERVER_PATH}
+  cloud:
+    config:
+      uri: ${CONFIG_SERVER_PATH}
+      fail-fast: true
+      retry:
+        max-attempts: 6
+        initial-interval: 1000
+        multiplier: 1.1

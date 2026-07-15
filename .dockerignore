@@ -1,0 +1,37 @@
+# Java / Maven
+**/target/
+**/dependency-reduced-pom.xml
+
+# Git
+.git/
+.gitignore
+.github/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.settings/
+.classpath
+.project
+
+# Логи
+*.log
+logs/
+
+# Docker
+docker/
+Dockerfile*
+docker-compose*.yaml
+*.dockerignore
+
+# Системные файлы
+.DS_Store
+Thumbs.db
+*.tmp
+*.swp
+*.swo
+
+# Secrets
+.env
+**/.env

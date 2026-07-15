@@ -81,7 +81,10 @@ application-dev.properties
 *.db
 
 # Environment variables
-.env
+docker/.env
 
 #properties
 *.properties
+/.idea/
+/docker/.env.docker
+/docker/.env.docker

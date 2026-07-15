@@ -1,0 +1,5 @@
+name: BookStatistic CD - Kubernetes
+
+on:
+  push:
+    branches: [ "main" ]

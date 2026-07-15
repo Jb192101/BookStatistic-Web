@@ -1,0 +1,135 @@
+external-urls:
+  notification:
+    base-url: ${NOTIFICATION_SERVICE_URL:http://notification-service:8081/}
+    add-new-notification:
+
+server:
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
+  shutdown: graceful
+  port: ${BOOK_SERVER_PORT:8082}
+
+book:
+  storage:
+    path: ${BOOK_STORAGE_PATH:/data/books}
+    max-file-size: 104857600
+    allowed-extensions:
+      - .txt
+      - .pdf
+      - .epub
+      - .fb2
+      - .docx
+
+management:
+  zipkin:
+    tracing:
+      endpoint: http://zipkin:9411/api/v2/spans
+  health:
+    probes:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+      base-path: /actuator
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    tags:
+      application: ${spring.application.name}
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+
+spring:
+  data:
+    mongodb:
+      host: ${BOOK_MONGO_DB_HOSTNAME}
+      port: ${BOOK_MONGO_DB_PORT}
+      username: ${BOOK_MONGO_DB_USERNAME}
+      password: ${BOOK_MONGO_DB_PASSWORD}
+      database: ${BOOK_MONGO_DB_NAME}
+      authentication-database: admin
+
+  servlet:
+    multipart:
+      max-file-size: 30MB
+      max-request-size: 30MB
+      enabled: true
+
+  application:
+    name: book-service
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:kafka:9092}
+    consumer:
+      group-id: bs-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+  datasource:
+    url: ${BOOK_PG_DB_URL}
+    username: ${BOOK_PG_DB_USER}
+    password: ${BOOK_PG_DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-timeout: 30000
+      maximum-pool-size: 10
+      minimum-idle: 2
+
+  jpa:
+    database: POSTGRESQL
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: false
+        jdbc:
+          batch_size: 20
+        order_inserts: true
+        order_updates: true
+
+  zipkin:
+    baseUrl: ${ZIPKIN_URL:http://zipkin:9411}
+
+  sleuth:
+    sampler:
+      percentage: ${TRACING_SAMPLER_PROBABILITY:0.1}
+
+keycloak:
+  realm: ${KEYCLOAK_REALM:bookstatistic-realm}
+  auth-server-url: ${KEYCLOAK_SERVER_URL:http://keycloak:8080}
+  ssl-required: external
+  resource: bookstatistic
+  credentials:
+    secret: ${KEYCLOAK_CLIENT_SECRET}
+  bearer-only: true
+  use-resource-role-mappings: true
+
+kafka:
+  topics:
+    sending-notification-topic: "sending-notification-topic"
+    sending-notification-result-topic: "sending-notification-result-topic"
+    book-text-analyze-topic: "book-text-analyze-topic"
+  groups:
+    bs-group: "bs-group"
+
+outbox:
+  enabled: ${OUTBOX_ENABLED:true}
+
+logging:
+  level:
+    root: WARN
+    org.jedi_bachelor.bookstatistic.bookservice: INFO
+    org.springframework.web: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } --- [%15.15t] %-40.40logger{39} : %m%n"

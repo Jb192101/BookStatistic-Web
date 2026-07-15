@@ -1,0 +1,135 @@
+server:
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
+  shutdown: graceful
+  port: ${ANALYZE_SERVER_PORT:8085}
+
+ml:
+  model:
+    path: file:/app/models/sbert_base.onnx
+  vocab:
+    path: file:/app/models/vocab.txt
+  classifier:
+    path: file:/app/models/genre_classifier_dl4j.zip
+
+management:
+  zipkin:
+    tracing:
+      endpoint: http://zipkin:9411/api/v2/spans
+  health:
+    probes:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+      base-path: /actuator
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    tags:
+      application: ${spring.application.name}
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+
+spring:
+  data:
+    mongodb:
+      host: ${ANALYZE_MONGO_DB_HOSTNAME}
+      port: ${ANALYZE_MONGO_DB_PORT}
+      username: ${ANALYZE_MONGO_DB_USERNAME}
+      password: ${ANALYZE_MONGO_DB_PASSWORD}
+      database: ${ANALYZE_MONGO_DB_NAME}
+      authentication-database: admin
+
+  zipkin:
+    baseUrl: ${ZIPKIN_URL:http://zipkin:9411}
+  sleuth:
+    sampler:
+      probability: ${TRACING_SAMPLER_PROBABILITY:0.1}
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:kafka:9092}
+    consumer:
+      group-id: bs-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+  application:
+    name: analyze-service
+
+  datasource:
+    url: ${ANALYZE_PG_DB_URL}
+    username: ${ANALYZE_PG_DB_USER}
+    password: ${ANALYZE_PG_DB_PASSWORD}
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 30000
+
+  redis:
+    host: ${REDIS_HOST:analyze-redis}
+    port: ${REDIS_PORT:6379}
+    password: ${REDIS_PASSWORD:}
+    database: 0
+    timeout: 2000ms
+    jedis:
+      pool:
+        max-active: 8
+        max-idle: 8
+        min-idle: 0
+    lettuce:
+      pool:
+        max-active: 8
+        max-idle: 8
+        min-idle: 0
+        max-wait: -1ms
+
+servlet:
+  multipart:
+    max-file-size: 30MB
+    max-request-size: 30MB
+    enabled: true
+
+external-urls:
+  account:
+    base-url: ${ACCOUNT_SERVICE_URL:http://account-service:8084/v1/users}
+    get-account-uri: "/"
+  book:
+    book-base-url: ${BOOK_SERVICE_URL:http://book-service:8082/v1/books}
+    get-users-book-uri: "/user/"
+    response-base-url: ${BOOK_SERVICE_URL:http://book-service:8082/v1/responses}
+    get-users-responses-uri: "/users/"
+
+keycloak:
+  realm: ${KEYCLOAK_REALM:bookstatistic-realm}
+  auth-server-url: ${KEYCLOAK_SERVER_URL:http://keycloak:8080}
+  ssl-required: external
+  resource: bookstatistic
+  credentials:
+    secret: ${KEYCLOAK_CLIENT_SECRET}
+  bearer-only: true
+  use-resource-role-mappings: true
+
+kafka:
+  topics:
+    book-text-analyze-topic: "book-text-analyze-topic"
+    book-text-analyze-result-topic: "book-text-analyze-result-topic"
+  groups:
+    bs-group: "bs-group"
+
+logging:
+  level:
+    root: WARN
+    org.jedi_bachelor.bookstatistic.analyzeservice: INFO
+    org.springframework.web: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } --- [%15.15t] %-40.40logger{39} : %m%n"

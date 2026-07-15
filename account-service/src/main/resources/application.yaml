@@ -1,3 +1,0 @@
-external-url:
-  book: "http://localhost:8082/books"
-  analyzer: "http://localhost:8083/analyze"

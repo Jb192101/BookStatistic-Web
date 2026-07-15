@@ -75,6 +75,14 @@ package "analyze-service" {
         user_id : uuid
         genre : Genre
     }
+
+    entity "Жанровая принадлежность" as genre_preferences {
+        *book_id : uuid
+        ---
+        text_version_number : int
+        analyze_date : date
+        analyzed_data : jsonb
+    }
 }
 
 package "notification-service" {
@@ -114,5 +122,6 @@ book ||--o{ book_text
 response ||--o{ user
 response ||--o{ book
 user ||--o{ notification
+text_file ||--|| book_text
 
 @enduml

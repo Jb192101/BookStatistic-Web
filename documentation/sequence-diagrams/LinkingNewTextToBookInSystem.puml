@@ -1,0 +1,21 @@
+@startuml
+
+actor Пользователь as user
+participant Gateway as gateway
+participant BookService as bs
+queue book_text_analyze_topic as bqueue
+participant AnalyzeService as analyzes
+
+user -> gateway : 1. Отправка файла с текстом для книги
+gateway -> bs : 2. Передача запроса с прикреплением correlation-id
+bs -> bs : 3. Проверка bookId на наличие в системе и проверку существования текстов
+alt "BookId не существует или к существующей книге уже привязан текст"
+    bs -> user : 4. Уведомление о некорректном bookId
+end
+bs -> bqueue : 5. Отправка данных для проверки текста в analyze-service
+analyzes -> bqueue : 6. Чтение данных из топика
+analyzes -> analyzes : 7. Анализ нового текста
+analyzes -> analyzes : 8. Сохранение результатов обработки в системе
+analyzes -> user : 9. Передача ответа об успешном анализе текста
+
+@enduml
