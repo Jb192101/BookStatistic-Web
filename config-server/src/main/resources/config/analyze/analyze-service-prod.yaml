@@ -6,11 +6,11 @@ server:
 
 ml:
   model:
-    path: file:/app/models/sbert_base.onnx
+    path: /app/models/sbert_base.onnx
   vocab:
-    path: file:/app/models/vocab.txt
+    path: /app/models/vocab.txt
   classifier:
-    path: file:/app/models/genre_classifier_dl4j.zip
+    path: /app/models/genre_classifier_dl4j.zip
 
 management:
   zipkin:

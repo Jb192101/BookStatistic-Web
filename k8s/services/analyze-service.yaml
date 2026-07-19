@@ -1,0 +1,159 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: analyze-service
+  namespace: bookstatistic
+  labels:
+    app: analyze-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: analyze-service
+  template:
+    metadata:
+      labels:
+        app: analyze-service
+    spec:
+      containers:
+        - name: analyze-service
+          image: analyze-service:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8085
+          envFrom:
+            - configMapRef:
+                name: bookstatistic-config
+            - secretRef:
+                name: bookstatistic-secrets
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "prod"
+            - name: CONFIG_SERVER_PATH
+              valueFrom:
+                configMapKeyRef:
+                  name: bookstatistic-config
+                  key: CONFIG_SERVER_PATH
+            - name: ANALYZE_PG_DB_URL
+              valueFrom:
+                secretKeyRef:
+                  name: bookstatistic-secrets
+                  key: ANALYZE_PG_DB_URL
+            - name: ANALYZE_PG_DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: bookstatistic-secrets
+                  key: ANALYZE_PG_DB_USER
+            - name: ANALYZE_PG_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: bookstatistic-secrets
+                  key: ANALYZE_PG_DB_PASSWORD
+            - name: ANALYZE_REDIS_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: bookstatistic-config
+                  key: ANALYZE_REDIS_HOST
+            - name: ANALYZE_REDIS_DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: bookstatistic-config
+                  key: ANALYZE_REDIS_DB_PORT
+            - name: KAFKA_BOOTSTRAP_SERVERS
+              valueFrom:
+                configMapKeyRef:
+                  name: bookstatistic-config
+                  key: KAFKA_BOOTSTRAP_SERVERS
+            - name: KEYCLOAK_SERVER_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: bookstatistic-config
+                  key: KEYCLOAK_SERVER_URL
+            - name: KEYCLOAK_REALM
+              valueFrom:
+                configMapKeyRef:
+                  name: bookstatistic-config
+                  key: KEYCLOAK_REALM
+            - name: KEYCLOAK_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: bookstatistic-secrets
+                  key: KEYCLOAK_CLIENT_SECRET
+            - name: ACCOUNT_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: bookstatistic-config
+                  key: ACCOUNT_SERVICE_URL
+            - name: BOOK_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: bookstatistic-config
+                  key: BOOK_SERVICE_URL
+            - name: ANALYZE_MONGO_DB_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: bookstatistic-config
+                  key: ANALYZE_MONGO_DB_USERNAME
+            - name: ANALYZE_MONGO_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: bookstatistic-secrets
+                  key: ANALYZE_MONGO_DB_PASSWORD
+            - name: ANALYZE_MONGO_DB_HOSTNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: bookstatistic-config
+                  key: ANALYZE_MONGO_DB_HOSTNAME
+            - name: ANALYZE_MONGO_DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: bookstatistic-config
+                  key: ANALYZE_MONGO_DB_PORT
+            - name: ANALYZE_MONGO_DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: bookstatistic-config
+                  key: ANALYZE_MONGO_DB_NAME
+            - name: MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE
+              value: "health,info,prometheus,metrics"
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "500m"
+            limits:
+              memory: "1Gi"
+              cpu: "1000m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: analyze-service
+  namespace: bookstatistic
+spec:
+  selector:
+    app: analyze-service
+  ports:
+    - protocol: TCP
+      port: 8085
+      targetPort: 8085
+  type: ClusterIP
+#---
+#apiVersion: v1
+#kind: ReplicationController
+#metadata:
+#  name: analyze-service
+#  namespace: bookstatistic
+#spec:
+#  replicas: 1
+#  selector:
+#    app: analyze-service
+#template:
+#  metadata:
+#    labels:
+#      app: analyze-service
+#  spec:
+#    containers:
+#      – name: analyze-service
+#   image: jb192101/analyze-service
+#    ports:
+#    – containerPort: 8085

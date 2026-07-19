@@ -88,3 +88,4 @@ docker/.env
 /.idea/
 /docker/.env.docker
 /docker/.env.docker
+/k8s/secrets/secrets.yaml

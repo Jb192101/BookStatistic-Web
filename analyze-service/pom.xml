@@ -85,6 +85,7 @@
             <groupId>org.bytedeco</groupId>
             <artifactId>javacpp</artifactId>
             <version>1.5.9</version>
+            <classifier>linux-x86_64</classifier>
         </dependency>
 
         <!-- Security -->

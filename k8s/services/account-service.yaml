@@ -1,0 +1,129 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: account-service
+  namespace: bookstatistic
+  labels:
+    app: account-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: account-service
+  template:
+    metadata:
+      labels:
+        app: account-service
+    spec:
+      containers:
+        - name: account-service
+          image: account-service:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8084
+          envFrom:
+            - configMapRef:
+                name: bookstatistic-config
+            - secretRef:
+                name: bookstatistic-secrets
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "prod"
+            - name: CONFIG_SERVER_PATH
+              valueFrom:
+                configMapKeyRef:
+                  name: bookstatistic-config
+                  key: CONFIG_SERVER_PATH
+            - name: ACCOUNT_DB_URL
+              valueFrom:
+                secretKeyRef:
+                  name: bookstatistic-secrets
+                  key: ACCOUNT_DB_URL
+            - name: ACCOUNT_DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: bookstatistic-secrets
+                  key: ACCOUNT_DB_USER
+            - name: ACCOUNT_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: bookstatistic-secrets
+                  key: ACCOUNT_DB_PASSWORD
+            - name: KEYCLOAK_SERVER_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: bookstatistic-config
+                  key: KEYCLOAK_SERVER_URL
+            - name: KEYCLOAK_ISSUER_URI
+              valueFrom:
+                configMapKeyRef:
+                  name: bookstatistic-config
+                  key: KEYCLOAK_ISSUER_URI
+            - name: KEYCLOAK_REALM
+              valueFrom:
+                configMapKeyRef:
+                  name: bookstatistic-config
+                  key: KEYCLOAK_REALM
+            - name: KEYCLOAK_CLIENT_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: bookstatistic-config
+                  key: KEYCLOAK_CLIENT_ID
+            - name: KEYCLOAK_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: bookstatistic-secrets
+                  key: KEYCLOAK_CLIENT_SECRET
+            - name: ENCRYPT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: bookstatistic-secrets
+                  key: ENCRYPT_KEY
+            - name: KAFKA_BOOTSTRAP_SERVERS
+              valueFrom:
+                configMapKeyRef:
+                  name: bookstatistic-config
+                  key: KAFKA_BOOTSTRAP_SERVERS
+            - name: MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE
+              value: "health,info,prometheus,metrics"
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "500m"
+            limits:
+              memory: "1Gi"
+              cpu: "1000m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: account-service
+  namespace: bookstatistic
+spec:
+  selector:
+    app: account-service
+  ports:
+    - protocol: TCP
+      port: 8084
+      targetPort: 8084
+  type: ClusterIP
+#---
+#apiVersion: v1
+#kind: ReplicationController
+#metadata:
+#  name: account-service
+#  namespace: bookstatistic
+#spec:
+#  replicas: 2
+#  selector:
+#    app: account-service
+#template:
+#  metadata:
+#    labels:
+#      app: account-service
+#  spec:
+#    containers:
+#      – name: account-service
+#    image: jb192101/account-service
+#    ports:
+#    – containerPort: 8084

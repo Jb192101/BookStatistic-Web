@@ -1,0 +1,147 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: book-service
+  namespace: bookstatistic
+  labels:
+    app: book-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: book-service
+  template:
+    metadata:
+      labels:
+        app: book-service
+    spec:
+      containers:
+        - name: book-service
+          image: book-service:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8082
+          envFrom:
+            - configMapRef:
+                name: bookstatistic-config
+            - secretRef:
+                name: bookstatistic-secrets
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "prod"
+            - name: CONFIG_SERVER_PATH
+              valueFrom:
+                configMapKeyRef:
+                  name: bookstatistic-config
+                  key: CONFIG_SERVER_PATH
+            - name: BOOK_PG_DB_URL
+              valueFrom:
+                secretKeyRef:
+                  name: bookstatistic-secrets
+                  key: BOOK_PG_DB_URL
+            - name: BOOK_PG_DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: bookstatistic-secrets
+                  key: BOOK_PG_DB_USER
+            - name: BOOK_PG_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: bookstatistic-secrets
+                  key: BOOK_PG_DB_PASSWORD
+            - name: BOOK_MONGO_DB_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: bookstatistic-config
+                  key: BOOK_MONGO_DB_USERNAME
+            - name: BOOK_MONGO_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: bookstatistic-secrets
+                  key: BOOK_MONGO_DB_PASSWORD
+            - name: BOOK_MONGO_DB_HOSTNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: bookstatistic-config
+                  key: BOOK_MONGO_DB_HOSTNAME
+            - name: BOOK_MONGO_DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: bookstatistic-config
+                  key: BOOK_MONGO_DB_PORT
+            - name: BOOK_MONGO_DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: bookstatistic-config
+                  key: BOOK_MONGO_DB_NAME
+            - name: REDIS_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: bookstatistic-config
+                  key: BOOK_DB_REDIS_HOST
+            - name: REDIS_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: bookstatistic-config
+                  key: BOOK_DB_REDIS_PORT
+            - name: KAFKA_BOOTSTRAP_SERVERS
+              valueFrom:
+                configMapKeyRef:
+                  name: bookstatistic-config
+                  key: KAFKA_BOOTSTRAP_SERVERS
+            - name: BOOK_STORAGE_PATH
+              valueFrom:
+                configMapKeyRef:
+                  name: bookstatistic-config
+                  key: BOOK_STORAGE_PATH
+            - name: ZIPKIN_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: bookstatistic-config
+                  key: ZIPKIN_URL
+            - name: OUTBOX_ENABLED
+              valueFrom:
+                configMapKeyRef:
+                  name: bookstatistic-config
+                  key: OUTBOX_ENABLED
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "500m"
+            limits:
+              memory: "1Gi"
+              cpu: "1000m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: book-service
+  namespace: bookstatistic
+spec:
+  selector:
+    app: book-service
+  ports:
+    - protocol: TCP
+      port: 8082
+      targetPort: 8082
+  type: ClusterIP
+#---
+#apiVersion: v1
+#kind: ReplicationController
+#metadata:
+#  name: book-service
+#  namespace: bookstatistic
+#spec:
+#  replicas: 2
+#  selector:
+#    app: book-service
+#template:
+#  metadata:
+#    labels:
+#      app: book-service
+#  spec:
+#    containers:
+#      – name: book-service
+#    image: jb192101/book-service
+#   ports:
+#    – containerPort: 8082

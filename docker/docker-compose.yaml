@@ -314,9 +314,9 @@ services:
         condition: service_started
 
   analyze-service:
+    user: "root"
     build:
-      context: ../
-      dockerfile: analyze-service/Dockerfile
+      context: ../analyze-service
       cache_from:
         - bookstatistic/analyze-service:latest
     container_name: analyze-service

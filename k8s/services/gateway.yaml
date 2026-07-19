@@ -1,0 +1,94 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway
+  namespace: bookstatistic
+  labels:
+    app: gateway
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: gateway
+  template:
+    metadata:
+      labels:
+        app: gateway
+    spec:
+      containers:
+        - name: gateway
+          image: gateway:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8083
+          envFrom:
+            - configMapRef:
+                name: bookstatistic-config
+            - secretRef:
+                name: bookstatistic-secrets
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "prod"
+            - name: CONFIG_SERVER_PATH
+              valueFrom:
+                configMapKeyRef:
+                  name: bookstatistic-config
+                  key: CONFIG_SERVER_PATH
+            - name: KEYCLOAK_ISSUER_URI
+              valueFrom:
+                configMapKeyRef:
+                  name: bookstatistic-config
+                  key: KEYCLOAK_ISSUER_URI
+            - name: KEYCLOAK_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: bookstatistic-secrets
+                  key: KEYCLOAK_CLIENT_SECRET
+            - name: KEYCLOAK_SERVER_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: bookstatistic-config
+                  key: KEYCLOAK_SERVER_URL
+            - name: ACCOUNT_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: bookstatistic-config
+                  key: ACCOUNT_SERVICE_URL
+            - name: BOOK_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: bookstatistic-config
+                  key: BOOK_SERVICE_URL
+            - name: ANALYZE_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: bookstatistic-config
+                  key: ANALYZE_SERVICE_URL
+            - name: NOTIFICATION_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: bookstatistic-config
+                  key: NOTIFICATION_SERVICE_URL
+            - name: MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE
+              value: "health,info,prometheus,metrics"
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "500m"
+            limits:
+              memory: "1Gi"
+              cpu: "1000m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gateway
+  namespace: bookstatistic
+spec:
+  selector:
+    app: gateway
+  ports:
+    - protocol: TCP
+      port: 8083
+      targetPort: 8083
+  type: NodePort
